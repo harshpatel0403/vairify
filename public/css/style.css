@@ -1,0 +1,11 @@
+
+body {
+    /* background-image: url("/images/7img.svg"); */
+    /* background-repeat: no-repeat; */
+    background: #040B47;
+    width:100%;
+    background-size: cover;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif !important;
+    overflow: hidden;
+}
