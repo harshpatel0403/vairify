@@ -3,7 +3,7 @@ import "./login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { HandleLogIn, SendOTP } from "../../../redux/action/Auth";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Loading from "../../../components/Loading/Index";
 import InputPassword from "../../../components/InputPassword";
 
@@ -108,6 +108,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
+      <ToastContainer />
       <div className="login-header">
         <div className="login-img mt-3">
           <img src={"/images/loginAvatar.png"} alt="" />

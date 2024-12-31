@@ -5,7 +5,7 @@ import InputPassword from "../../../components/InputPassword";
 import SelectBox from "../../../components/SelectBox";
 import { useDispatch, useSelector } from "react-redux";
 import { HandleLogIn, HandleSignUp, SendOTP } from "../../../redux/action/Auth";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Loading from "../../Loading/Index";
 import { useLocation, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
@@ -180,6 +180,7 @@ export default function ClientHobbyistPage() {
 
   return (
     <div className="main-container flex flex-col justify-between px-0">
+      <ToastContainer />
       <div className="w-full mt-6 mb-6 bg-gradient-to-b from-[#040B473D] to-[#040B473D] h-[47px] flex items-center justify-center">
         <span
           style={{ fontFamily: "Roboto" }}
