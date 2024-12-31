@@ -180,7 +180,6 @@ export default function ClientHobbyistPage() {
 
   return (
     <div className="main-container flex flex-col justify-between px-0">
-      <ToastContainer />
       <div className="w-full mt-6 mb-6 bg-gradient-to-b from-[#040B473D] to-[#040B473D] h-[47px] flex items-center justify-center">
         <span
           style={{ fontFamily: "Roboto" }}

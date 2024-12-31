@@ -108,7 +108,6 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
-      <ToastContainer />
       <div className="login-header">
         <div className="login-img mt-3">
           <img src={"/images/loginAvatar.png"} alt="" />

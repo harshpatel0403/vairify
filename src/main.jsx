@@ -17,14 +17,12 @@ import { subscribeUser } from "./subscription.js";
 // import './@fake-db'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <>
-    <Provider store={store}>
-      <BrowserRouter>
-        <Layout appComponent={<App />} />
-      </BrowserRouter>
-    </Provider>
+  <Provider store={store}>
     <ToastContainer closeOnClick draggable pauseOnFocusLoss hideProgressBar />
-  </>
+    <BrowserRouter>
+      <Layout appComponent={<App />} />
+    </BrowserRouter>
+  </Provider>
 );
 
 serviceWorker.register();
