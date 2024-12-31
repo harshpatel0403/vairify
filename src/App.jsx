@@ -137,7 +137,7 @@ import ChangeAppointmentTime from "./pages/varidate/ChangeAppointmentTime";
 import UpcomingAppointmentsList from "./pages/varidate/UpcomingAppointmentsList";
 import VaiNow from "./pages/Setup/VaiNow/VaiNow";
 import ScanQR from "./pages/Setup/VaiNow/ScanQR";
-import VaiNowList from "./pages/Setup/VaiNow/pendingVaiNowList";
+import VaiNowList from "./pages/Setup/VaiNow/PendingVaiNowList";
 import Accept from "./pages/Setup/VaiNow/Accept";
 import ShowQR from "./pages/Setup/VaiNow/ShowQR";
 import PastInvitations from "./pages/varidate/pastAppointmentsList";
