@@ -164,7 +164,7 @@ export default function ProtectedRoute(props) {
 
         //******************************* Flag For Skipp Kyc **************************************/
         // if (kyc) {
-        if (FACE_VERIFICATION && facevarification) {
+        if (FACE_VERIFICATION) {
           navigate("/setup");
         }
         //******************************* Flag For Skipp Kyc **************************************/

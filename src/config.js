@@ -1,1 +1,1 @@
-export const FACE_VERIFICATION = false;
+export const FACE_VERIFICATION = true;
