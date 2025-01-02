@@ -345,7 +345,7 @@ function App() {
           path="/setup-face-verification"
           element={
             <ProtectedRoute level={["login"]}
-            //  step="Step1" path="/setup-face-verification"
+              step="Step1" path4="/setup-face-verification"
             >
               <SetupFaceVerification />
             </ProtectedRoute>

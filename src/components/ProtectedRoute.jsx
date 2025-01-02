@@ -88,14 +88,18 @@ export default function ProtectedRoute(props) {
         const membershipSubscription = UserDetails?.subscription;
         const kycSubscription = UserDetails?.kyc;
 
-        let facevarification;
-        if (UserDetails?.faceVerificationImage) {
-          if (props.path1) {
+        let facevarification = false;
+
+        if (UserDetails?.faceVerificationImage !== "") {
+          if (props.path) {
             // navigate(props.path1);
           } else {
             navigate("/get-vai");
             facevarification = true;
           }
+        }
+        if (UserDetails?.faceVerificationImage === "") {
+          navigate('/setup-face-verification')
         }
 
         // if membership not founds 
@@ -164,7 +168,7 @@ export default function ProtectedRoute(props) {
 
         //******************************* Flag For Skipp Kyc **************************************/
         // if (kyc) {
-        if (FACE_VERIFICATION) {
+        if (FACE_VERIFICATION && facevarification) {
           navigate("/setup");
         }
         //******************************* Flag For Skipp Kyc **************************************/
