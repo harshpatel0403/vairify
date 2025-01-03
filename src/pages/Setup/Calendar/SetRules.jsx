@@ -75,7 +75,7 @@ export default function SetRules() {
   const getData = () => {
     dispatch(HandleGetCalendarSettings(UserDetails?._id))
       .then((res) => {
-        setColorStatus(res.payload?.notificationRule);
+        setColorStatus(res.payload?.notificationRule || colorStatus);
         setBufferDay(res?.payload?.bufferTime?.day);
         setBufferHr(res?.payload?.bufferTime?.hr);
         setBufferMin(res?.payload?.bufferTime?.min);
