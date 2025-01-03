@@ -1,58 +1,18 @@
 import { useSelector } from "react-redux";
 import Button from "../../components/Button";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import Loading from "../../components/Loading/Index";
-import VaridateService from "../../services/VaridateServices";
 const SetupProfile = () => {
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  let UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
+  const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const UserProfile = useSelector((state) => state?.Profile);
   const CalendarSchedule = useSelector((state) => state?.Calendar?.getschedule);
   const GallaryData = useSelector((state) => state?.Gallary)
   const ServicesData = useSelector((state) => state?.Services?.getservices);
   const LanguagesData = useSelector((state) => state?.Auth?.language);
   const SocialData = useSelector((state) => state?.Social);
-
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      UserData = await VaridateService?.fetchUserDetails(UserData?._id)
-    }
-    fetchUserDetails();
-    if (
-      UserData &&
-      CalendarSchedule &&
-      ServicesData &&
-      LanguagesData) {
-      setIsLoading(true);
-    }
-    // if (UserData?.language) {
-    //   setIsLoading(false)
-    // } 
-    else {
-      setIsLoading(true);
-    }
-  }, [UserData, CalendarSchedule, ServicesData, LanguagesData]);
-
-
-  // console.log(
-  //   UserProfile?.orientation,
-  //   UserProfile?.gender,
-  //   UserData?.profilePic,
-  //   CalendarSchedule?.schedule.length > 0,
-  //   "profile pic",
-  //   UserData?.mutualContractSigned,
-  //   UserData?.varipayActivity,
-  //   UserData?.incallAddresses.length > 0,
-  //   rateAndServices,
-  //   GallaryData?.length > 0,
-  //   UserData?.dateGuardActivity,
-  //   UserData,
-  //   LanguagesData,
-  // "Data condition 1")
 
   const rateAndServices = useMemo(() => {
     let HourllyRate;
@@ -154,14 +114,14 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Language</span>
-                  {LanguagesData || UserData?.language ? "" : (
-                    isLoading ? (
-                      <span style={{ color: "red" }}>*</span>
+                  {UserData || LanguagesData ?
+                    (
+                      LanguagesData || UserData?.language ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+
                     ) :
-                      (
-                        <Loading />
-                      )
-                  )
+                    (<Loading />)
                   }
                 </div>
               }
@@ -174,14 +134,14 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Personal Profile</span>
-                  {
-                    UserProfile?.loading ? (
-                      UserProfile?.profiledata?.orientation && UserProfile?.profiledata?.gender ? ("") : (
-                        <span style={{ color: "red" }}>*</span>
-                      )
-                    ) : (
-                      <Loading />
-                    )
+                  {UserProfile ?
+                    (
+                      UserProfile?.profiledata?.orientation && UserProfile?.profiledata?.gender ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+
+                    ) :
+                    (<Loading />)
                   }
                 </div>
               }
@@ -194,15 +154,14 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Upload Profile Pic</span>
-                  {UserData?.profilePic ? "" :
+                  {UserData ?
                     (
-                      isLoading ? (
-                        <span style={{ color: "red" }}>*</span>
-                      ) :
-                        (
-                          <Loading />
-                        )
-                    )
+                      UserData?.profilePic != "" && UserData?.profilePic !== undefined ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+
+                    ) :
+                    (<Loading />)
                   }
                 </div>
               }
@@ -215,15 +174,14 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Mutual Consent Contract</span>
-                  {UserData?.mutualContractSigned ? "" :
+                  {UserData ?
                     (
-                      isLoading ? (
-                        <span style={{ color: "red" }}>*</span>
-                      ) :
-                        (
-                          <Loading />
-                        )
-                    )
+                      UserData?.mutualContractSigned ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+
+                    ) :
+                    (<Loading />)
                   }
                 </div>
               }
@@ -236,15 +194,14 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>VAIRIPAY</span>
-                  {UserData?.varipayActivity ? "" :
+                  {UserData ?
                     (
-                      isLoading ? (
-                        <span style={{ color: "red" }}>*</span>
-                      ) :
-                        (
-                          <Loading />
-                        )
-                    )
+                      UserData?.varipayActivity ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+
+                    ) :
+                    (<Loading />)
                   }
                 </div>
               }
@@ -257,14 +214,14 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Gallery Photo</span>
-                  {
-                    GallaryData?.loading ? (
-                      GallaryData?.userGallary?.images?.length > 0 ? ("") : (
-                        <span style={{ color: "red" }}>*</span>
-                      )
-                    ) : (
-                      <Loading />
-                    )
+                  {GallaryData ?
+                    (
+                      GallaryData?.userGallary?.images?.length > 0 ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+
+                    ) :
+                    (<Loading />)
                   }
                 </div>
               }
@@ -288,15 +245,9 @@ const SetupProfile = () => {
                     <>
                       <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                         <span>Rates/Services</span>
-                        {rateAndServices ? "" :
-                          (
-                            isLoading ? (
-                              <span style={{ color: "red" }}>*</span>
-                            ) :
-                              (
-                                <Loading />
-                              )
-                          )
+                        {rateAndServices ?
+                          ("") :
+                          (<span style={{ color: "red" }}>*</span>)
                         }
                       </div>
                     </>
@@ -314,15 +265,14 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>Calender</span>
-                    {CalendarSchedule?.schedule.length > 0 ? "" :
+                    {CalendarSchedule ?
                       (
-                        isLoading ? (
-                          <span style={{ color: "red" }}>*</span>
-                        ) :
-                          (
-                            <Loading />
-                          )
-                      )
+                        CalendarSchedule?.schedule.length > 0 ?
+                          ("") :
+                          (<span style={{ color: "red" }}>*</span>)
+
+                      ) :
+                      (<Loading />)
                     }
                   </div>
                 </>
@@ -337,15 +287,14 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>DateGuard</span>
-                    {UserData?.dateGuardActivity ? "" :
+                    {UserData ?
                       (
-                        isLoading ? (
-                          <span style={{ color: "red" }}>*</span>
-                        ) :
-                          (
-                            <Loading />
-                          )
-                      )
+                        UserData?.dateGuardActivity ?
+                          ("") :
+                          (<span style={{ color: "red" }}>*</span>)
+
+                      ) :
+                      (<Loading />)
                     }
                   </div>
                 </>
@@ -360,19 +309,14 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>Social</span>
-                    {
-                      SocialData?.loading ?
-                        (
-                          SocialData?.socialData?.find((item) => item)?.message ? (
-                            <span style={{ color: "red" }}>*</span>
-                          ) : (
-                            ""
-                          )
+                    {SocialData ?
+                      (
+                        !SocialData?.socialData?.find((item) => item)?.message ?
+                          ("") :
+                          (<span style={{ color: "red" }}>*</span>)
 
-                        )
-                        : (
-                          <Loading />
-                        )
+                      ) :
+                      (<Loading />)
                     }
                   </div>
                 </>
@@ -387,15 +331,14 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>Incall Addresses</span>
-                    {UserData?.incallAddresses.length > 0 ? "" :
+                    {UserData ?
                       (
-                        isLoading ? (
-                          <span style={{ color: "red" }}>*</span>
-                        ) :
-                          (
-                            <Loading />
-                          )
-                      )
+                        UserData?.incallAddresses.length > 0 ?
+                          ("") :
+                          (<span style={{ color: "red" }}>*</span>)
+
+                      ) :
+                      (<Loading />)
                     }
                   </div>
                 </>

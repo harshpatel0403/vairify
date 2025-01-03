@@ -1,32 +1,21 @@
-import { checkWebSocketsSupport } from "detectrtc";
-import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import moment from "moment";
-import VaridateService from "../services/VaridateServices";
 import { FACE_VERIFICATION } from "../config";
+import moment from "moment";
+
 export default function ProtectedRoute(props) {
-  // const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMounted, setIsMounted] = useState(false);
   const [currentSubscriptionIndex, setCurrentSubscriptionIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const Auth = useSelector((state) => state?.Auth?.Auth?.status);
-  let UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
-  // useEffect(()=>{
-  //   dispatch(HandleGetProfile(UserDetails._id));
-  // },[]);
-
+  const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const UserProfile = useSelector((state) => state?.Profile);
-  const KycUserPlan = useSelector((state) => state?.Vai?.kycuserPlan?.data);
-  const MembershipUserPlan = useSelector((state) => state?.Vai?.membershipUserPlan?.data);
   const CalendarSchedule = useSelector((state) => state?.Calendar?.getschedule);
   const GallaryData = useSelector((state) => state?.Gallary);
   const ServicesData = useSelector((state) => state?.Services?.getservices);
   const SocialData = useSelector((state) => state?.Social);
-  const LanguagesData = useSelector((state) => state?.Auth?.language);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const protectionLevel = props?.level || ["login"];
   //   HERE ARE DIFFERENT LEVELS
@@ -36,19 +25,19 @@ export default function ProtectedRoute(props) {
   // vaiMember
   // tokens
 
+  function calculateDays(expiryDate) {
+    const updatedExpiryDate = moment(expiryDate);
+    const currentDate = moment();
+    const daysRemaining = updatedExpiryDate.diff(currentDate, "days");
+    return daysRemaining;
+  }
+
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      UserDetails = await VaridateService?.fetchUserDetails(UserDetails?._id)
-    }
-    fetchUserDetails();
     if (protectionLevel.includes("login") && !UserDetails) {
       navigate("/login", { state: location.state });
     }
 
     if (SocialData?.loading && GallaryData?.loading && UserProfile?.loading && UserProfile?.profiledata) {
-      setIsMounted(false);
-      // console.log(SocialData?.socialData, GallaryData?.userGallary?.images, UserProfile?.profiledata, "data12")
-
       let HourllyRate;
       let Services;
 
@@ -65,22 +54,10 @@ export default function ProtectedRoute(props) {
         HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
         Services = ServicesData?.find((item) => item)?.services?.length > 0;
       }
-
-      // const FlagStatus = localStorage.getItem('Flag');
       StepWisePagesProtection(props?.step, HourllyRate, Services);
-      setIsLoading(false);
-      setIsMounted(true);
-    } else {
-      setIsMounted(true);
     }
-  }, [location.pathname, SocialData, GallaryData, UserProfile, UserDetails]);
-
-  function calculateDays(expiryDate) {
-    const updatedExpiryDate = moment(expiryDate);
-    const currentDate = moment();
-    const daysRemaining = updatedExpiryDate.diff(currentDate, "days");
-    return daysRemaining;
-  }
+    setIsMounted(true);
+  }, [location.pathname, SocialData, GallaryData, UserProfile, UserDetails, ServicesData]);
 
   function StepWisePagesProtection(Step, HourllyRate, Services) {
     switch (Step) {
@@ -89,16 +66,10 @@ export default function ProtectedRoute(props) {
         const kycSubscription = UserDetails?.kyc;
 
         let facevarification = false;
-
         if (UserDetails?.faceVerificationImage !== "") {
-          if (props.path) {
-            // navigate(props.path1);
-          } else {
-            navigate("/get-vai");
-            facevarification = true;
-          }
-        }
-        if (UserDetails?.faceVerificationImage === "") {
+          navigate("/get-vai");
+          facevarification = true ;
+        } else if (UserDetails?.faceVerificationImage === "") {
           navigate('/setup-face-verification')
         }
 
@@ -172,31 +143,11 @@ export default function ProtectedRoute(props) {
           navigate("/setup");
         }
         //******************************* Flag For Skipp Kyc **************************************/
-
-
-        // const KycSubscriptionStatus = KycUserPlan.some((item) => item?.slug == "paid");
-        // const MembershipSubscriptionStatus = MembershipUserPlan.some((item) => item?.slug == "paid");
-
-        // console.log(MembershipSubscriptionStatus, props.path2, KycSubscriptionStatus && props.path, "kyc and membership")
-        // // if (FlagStatus === "VAI") {
-        // if (MembershipSubscriptionStatus && props.path1) {
-        //   navigate("/payment-success");
-        //   // navigate("/setup")
-        // }
-        // if (KycSubscriptionStatus && props.path2) {
-        //   navigate("/setup")
-        // }
-        // } else if (FlagStatus === "WithoutVAI") {
-        //   navigate("/self-verification-completed")
-        //   // navigate("/setup")
-        // }
-        //  else {
-        //   navigate("/get-vai")
-        // }
         break;
 
       default:
-        // setup flag
+        const socialdata = !SocialData?.socialData?.find((item) => item)?.message;
+
         if (
           UserProfile?.profiledata?.orientation &&
           UserProfile?.profiledata?.gender &&
@@ -210,7 +161,7 @@ export default function ProtectedRoute(props) {
           UserDetails?.dateGuardActivity &&
           // LanguagesData &&
           UserDetails?.language &&
-          !SocialData?.socialData?.find((item) => item)?.message
+          socialdata
         ) {
           if (location.pathname === "/marketplace/post/review" && !location.state) {
             navigate('/marketplace/post')
@@ -227,9 +178,6 @@ export default function ProtectedRoute(props) {
 
   if (!isMounted) {
     return <>Please wait..</>;
-  }
-  if (isLoading) {
-    return <>Loading..</>;
   }
 
   return props?.children;

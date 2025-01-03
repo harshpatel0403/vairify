@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
 import Webcam from "react-webcam";
-import Button from "../../components/Button";
 import DateGuardService from "../../services/DateGuardService";
 import { toast } from "react-toastify";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DetectRTC from "detectrtc";
 import { useDispatch, useSelector } from "react-redux";
-import VaridateService from "../../services/VaridateServices";
 import Loading from "../../components/Loading/Index";
 import UserService from "../../services/userServices";
 import { HandleUser } from "../../redux/action/Auth";
@@ -40,7 +38,6 @@ export default function SetupFaceVerification() {
             setFaceCompareLoading(true);
             if (!DetectRTC.hasWebcam) {
                 setHasCamara(false);
-                handleReject();
             } else {
                 setHasCamara(true);
             }
@@ -60,7 +57,6 @@ export default function SetupFaceVerification() {
             console.log(userFile, " <=== user file..");
         } catch (error) {
             console.log(error, " <=== Error while verifing user face");
-            handleReject();
         } finally {
             setFaceCompareLoading(true);
             setIsApproved(true);
@@ -73,10 +69,8 @@ export default function SetupFaceVerification() {
             let data = new FormData();
             data.append("userId", UserDetails._id);
             data.append("image", file);
-            console.log(file, data, "verification image is this")
             await UserService.uploadFaceVerificationImage(data)
-                .then((res) => {
-                    console.log(res, "profile data is this")
+                .then(() => {
                     dispatch(HandleUser(UserDetails?._id));
                     toast("Face Verification Completed", {
                         hideProgressBar: true,
@@ -179,9 +173,9 @@ export default function SetupFaceVerification() {
                     <div className="w-full mt-5">
                         {isApproved && (
                             <div className="flex flex-col items-center">
-                                <div className="bg-[#ff0000] rounded-full mb-3">
+                                {/* <div className="bg-[#ff0000] rounded-full mb-3">
                                     <img src="/images/close-btn.svg" className="w-[70px]" />
-                                </div>
+                                </div> */}
                                 <button
                                     onClick={handleRetry}
                                     className="bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1"
