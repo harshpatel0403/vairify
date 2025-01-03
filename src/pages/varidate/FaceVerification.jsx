@@ -56,6 +56,7 @@ export default function FaceVerification() {
       handleApprove();
     } catch (error) {
       console.log(error, " <=== Error while verifing user face");
+      toast.error(error?.response?.data?.error)
       handleReject();
     } finally {
       setFaceCompareLoading(false);
