@@ -145,14 +145,14 @@ export default function SelectTime() {
               className="absolute w-full h-full"
             >
               <img
-               src={
-                varidateData?.companionData?.profilePic
-                  ? import.meta.env.VITE_APP_S3_IMAGE +
-                  `/${varidateData?.companionData?.profilePic}`
-                  : varidateData?.companionData?.gender === "Male"
-                    ? "/images/male.png"
-                    : "/images/female.png"
-              }
+                src={
+                  varidateData?.companionData?.profilePic
+                    ? import.meta.env.VITE_APP_S3_IMAGE +
+                    `/${varidateData?.companionData?.profilePic}`
+                    : varidateData?.companionData?.gender === "Male"
+                      ? "/images/male.png"
+                      : "/images/female.png"
+                }
                 // src={
                 //   varidateData?.companionData?.profilePic
                 //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
@@ -162,7 +162,7 @@ export default function SelectTime() {
                 //       : "/images/female.png"
                 // }
                 alt="Sugar"
-                className="rounded-full"
+                className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
               />
             </div>
             <div style={{ right: "0px", top: "25px" }} className="absolute" onClick={() => { followLoading ? null : handleFollow() }} >
@@ -184,7 +184,7 @@ export default function SelectTime() {
           <div>
             <div>
               <span className="text-[18px] text-[#040C50] font-bold">
-              TruRevu
+                TruRevu
               </span>
             </div>
             <div className="flex flex-row justify-center items-center">

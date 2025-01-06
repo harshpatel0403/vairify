@@ -426,18 +426,18 @@ export default function SelectDate() {
             </div>
             <div className="w-[120px] relative">
               <div
-                className="border-2 w-[120px] rounded-full"
-                style={{ marginTop: "-67px", zIndex: "99" }}
+                style={{ left: "10px", bottom: "65px" }}
+                className="absolute w-full h-full"
               >
                 <img
-                 src={
-                  companionData?.profilePic
-                    ? import.meta.env.VITE_APP_S3_IMAGE +
+                  src={
+                    companionData?.profilePic
+                      ? import.meta.env.VITE_APP_S3_IMAGE +
                       `/${companionData?.profilePic}`
-                    : companionData?.gender === "Male"
-                    ? "/images/male.png"
-                    : "/images/female.png"
-                }
+                      : companionData?.gender === "Male"
+                        ? "/images/male.png"
+                        : "/images/female.png"
+                  }
                   // src={
                   //   companionData?.profilePic
                   //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
@@ -446,12 +446,12 @@ export default function SelectDate() {
                   //     ? "/images/male.png"
                   //     : "/images/female.png"
                   // }
-                  className="rounded-full"
+                  className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
                   alt="Intimate Massage"
                 />
               </div>
               <div
-                style={{ right: "0px", top: "25px", zIndex: "999" }}
+                style={{ right: "0px", top: "25px" }}
                 className="absolute"
                 onClick={() => {
                   followLoading ? null : handleFollow();
@@ -466,17 +466,18 @@ export default function SelectDate() {
                   <img
                     src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
                     alt="Intimate Massage Icon Second"
-                    className={`${
-                      isFollowed(companionData?._id) ? "" : "grayscale"
-                    }`}
+                    className={`${isFollowed(companionData?._id) ? "" : "grayscale"
+                      }`}
                   />
                 )}
               </div>
             </div>
+
+
             <div>
               <div>
                 <span className="text-[18px] text-[#040C50] font-bold">
-                TruRevu
+                  TruRevu
                 </span>
               </div>
               <div className="flex flex-row justify-center items-center">
@@ -540,18 +541,18 @@ export default function SelectDate() {
           </div>
           <div className="w-[120px] relative">
             <div
-              className="border-2 w-[120px] rounded-full"
-              style={{ marginTop: "-67px", zIndex: "99" }}
+              style={{ left: "10px", bottom: "65px" }}
+              className="absolute w-full h-full"
             >
               <img
-                className="rounded-full"
+                className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
                 src={
                   companionData?.profilePic
                     ? import.meta.env.VITE_APP_S3_IMAGE +
-                      `/${companionData?.profilePic}`
+                    `/${companionData?.profilePic}`
                     : companionData?.gender === "Male"
-                    ? "/images/male.png"
-                    : "/images/female.png"
+                      ? "/images/male.png"
+                      : "/images/female.png"
                 }
                 // src={
                 //   companionData?.profilePic
@@ -580,9 +581,8 @@ export default function SelectDate() {
                 <img
                   src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
                   alt="Intimate Massage Icon Second"
-                  className={`${
-                    isFollowed(companionData?._id) ? "" : "grayscale"
-                  }`}
+                  className={`${isFollowed(companionData?._id) ? "" : "grayscale"
+                    }`}
                 />
               )}
             </div>
@@ -590,7 +590,7 @@ export default function SelectDate() {
           <div>
             <div>
               <span className="text-[18px] text-[#040C50] font-bold">
-              TruRevu
+                TruRevu
               </span>
             </div>
             <div className="flex flex-row justify-center items-center">
@@ -665,8 +665,8 @@ export default function SelectDate() {
                   activeScheduleData.venue === "Both"
                     ? typeOptions
                     : typeOptions.filter(
-                        (type) => activeScheduleData.venue === type
-                      )
+                      (type) => activeScheduleData.venue === type
+                    )
                 }
                 value={selectedType}
                 onChange={(e) => {
@@ -733,12 +733,12 @@ export default function SelectDate() {
                   e.target.value === "add-new-addr"
                     ? navigate("/manage-incall-addresses")
                     : handleChangeSelect(
-                        e,
-                        setSelectedCountry,
-                        true,
-                        UserData?.incallAddresses,
-                        "_id"
-                      );
+                      e,
+                      setSelectedCountry,
+                      true,
+                      UserData?.incallAddresses,
+                      "_id"
+                    );
                 }}
               >
                 <option selected={!selectedCountry}>Select Address</option>
@@ -763,7 +763,7 @@ export default function SelectDate() {
               </select>
               <div
                 className="border-none border-[#CFCFCF] border-t-0 border-r-0 border-b-0 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 bg-transparent"
-                // style="top: 2px;"
+              // style="top: 2px;"
               >
                 <svg
                   className="w-8 h-8 fill-current text-blue-500 text-white undefined"

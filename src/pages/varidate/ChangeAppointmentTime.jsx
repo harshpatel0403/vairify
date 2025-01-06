@@ -106,17 +106,17 @@ export default function ChangeAppointmentTime() {
           <div className="w-[120px] relative">
             <div
               style={{ left: "10px", bottom: "65px" }}
-              className="absolute w-full h-full rounded-full"
+              className="absolute w-full h-full"
             >
               <img
-               src={
-                varidateData?.companionData?.profilePic
-                  ? import.meta.env.VITE_APP_S3_IMAGE +
+                src={
+                  varidateData?.companionData?.profilePic
+                    ? import.meta.env.VITE_APP_S3_IMAGE +
                     `/${varidateData?.companionData?.profilePic}`
-                  : varidateData?.companionData?.gender === "Male"
-                  ? "/images/male.png"
-                  : "/images/female.png"
-              }
+                    : varidateData?.companionData?.gender === "Male"
+                      ? "/images/male.png"
+                      : "/images/female.png"
+                }
                 // src={
                 //   varidateData?.companionData?.profilePic
                 //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
@@ -126,7 +126,7 @@ export default function ChangeAppointmentTime() {
                 //     : "/images/female.png"
                 // }
                 alt="Sugar"
-                className="rounded-full"
+                className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
               />
             </div>
             {/* <div style={{ right: '0px', top: '25px' }} className='absolute'><img src={'/images/SugarIcon2.png'} alt="Sugar Icon Second" /></div> */}
