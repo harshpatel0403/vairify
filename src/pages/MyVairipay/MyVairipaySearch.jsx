@@ -122,7 +122,6 @@ export default function MyVairipaySearch() {
                       <div className="bg-[#fff] w-[65px] h-[45px] rounded-[4px] text-center flex items-center p-2">
                         <img
                           className="max-h-[36px] mx-auto"
-                          style={{ width: 'auto', height: '36px' }}
                           src={
                             import.meta.env
                               .VITE_APP_API_USER_VARIPAY_IMAGE_URL +
