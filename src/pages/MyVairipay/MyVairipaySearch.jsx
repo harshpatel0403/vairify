@@ -126,7 +126,7 @@ export default function MyVairipaySearch() {
                           src={
                             import.meta.env
                               .VITE_APP_API_USER_VARIPAY_IMAGE_URL +
-                            `/${item?.image?.toLowerCase()}`
+                            `/${item?.image}`
                           }
                           alt={item.name}
                         />
