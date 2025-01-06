@@ -95,6 +95,18 @@ export default function PostReview() {
       dispatch(HandleUser(UserDetails?._id));
     }
   }, []);
+
+  const convertToLocalTime = (utcTimeStr) => {
+    const [startTime, endTime] = utcTimeStr.split(' to ');
+
+    const startTimeUTC = moment.utc(`1970-01-01 ${startTime}`, 'YYYY-MM-DD hh:mm A');
+    const endTimeUTC = moment.utc(`1970-01-01 ${endTime}`, 'YYYY-MM-DD hh:mm A');
+
+    const localStartTime = startTimeUTC.local().format('hh:mm A');
+    const localEndTime = endTimeUTC.local().format('hh:mm A');
+
+    return `${localStartTime} to ${localEndTime}`;
+  };
   return (
     <div className="main-container pt-6 px-0 max-height-card-data mt-[-15px]">
       <div className="bg-[#040B476f] w-full py-2">
@@ -141,7 +153,8 @@ export default function PostReview() {
             </div>
             <h5 className="text-[16px] font-medium text-start">
               {/* {state?.time?.from} - {state?.time?.to} */}
-              {formattedTimeRange}
+              {state?.Repost ? `${convertToLocalTime(`${state?.time?.from} to ${state?.time?.to}`)}` : `${formattedTimeRange}`}
+
             </h5>
           </div>
           <div className="grid grid-cols-2 w-72">

@@ -12,6 +12,7 @@ import Loading from "../Loading/Index";
 import { toast } from "react-toastify";
 import BaseAPI from "../../BaseAPI";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 export default function ExistingPost() {
   const dispatch = useDispatch();
@@ -56,6 +57,18 @@ export default function ExistingPost() {
         setIsLoading(false);
         console.error(err, "Error");
       });
+  };
+
+  const convertToLocalTime = (utcTimeStr) => {
+    const [startTime, endTime] = utcTimeStr.split(' to ');
+
+    const startTimeUTC = moment.utc(`1970-01-01 ${startTime}`, 'YYYY-MM-DD hh:mm A');
+    const endTimeUTC = moment.utc(`1970-01-01 ${endTime}`, 'YYYY-MM-DD hh:mm A');
+
+    const localStartTime = startTimeUTC.local().format('hh:mm A');
+    const localEndTime = endTimeUTC.local().format('hh:mm A');
+
+    return `${localStartTime} to ${localEndTime}`;
   };
 
   return (
@@ -134,7 +147,8 @@ export default function ExistingPost() {
                       </div>
                       <div className="text-start">
                         <h6 className="text-[10px] text-white font-bold">
-                          {item?.time?.from} to {item?.time?.to}
+                          {convertToLocalTime(`${item?.time?.from} to ${item?.time?.to}`)}
+                          {/* {item?.time?.from} to {item?.time?.to} */}
                         </h6>
                       </div>
                     </div>
