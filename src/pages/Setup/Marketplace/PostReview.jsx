@@ -73,7 +73,7 @@ export default function PostReview() {
             type: "success",
           });
           setIsLoading(false);
-          // navigate("/marketplace/post");
+          navigate("/marketplace/post");
         } else {
           setIsLoading(false);
           // setError(true);
