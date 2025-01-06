@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Button from "../../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../components/Loading/Index";
 import { HandleCreateNewPost } from "../../../redux/action/MarketplaceSearch";
@@ -19,11 +19,23 @@ export default function PostReview() {
 
   const fromMoment = moment(state?.date?.from, "DD/MM/YYYY");
   const toMoment = moment(state?.date?.to, "DD/MM/YYYY");
+
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   // Format the date range as "Month Day - Day"
   const formattedDateRange =
     state?.date?.to !== "Invalid date"
       ? `${fromMoment.format("MMMM D")} - ${toMoment.format("D")}`
       : `${fromMoment.format("MMMM D")}`;
+
+  const formattedTimeRange =
+    state?.time?.from && state?.time?.to
+      ? `${moment.utc(state?.time?.from)
+        .tz(userTimezone)
+        .format("hh:mm A")} - 
+           ${moment.utc(state?.time?.to)
+        .tz(userTimezone)
+        .format("hh:mm A")}`
+      : "Invalid Time Range";
 
   const HandleButton = async () => {
     if (UserDetails?.tokens > 0 && state?.totalGRT > UserDetails?.tokens) {
@@ -61,7 +73,7 @@ export default function PostReview() {
             type: "success",
           });
           setIsLoading(false);
-          navigate("/marketplace/post");
+          // navigate("/marketplace/post");
         } else {
           setIsLoading(false);
           // setError(true);
@@ -128,7 +140,8 @@ export default function PostReview() {
               <h5 className="text-[16px] font-bold">Time :</h5>
             </div>
             <h5 className="text-[16px] font-medium text-start">
-              {state?.time?.from} - {state?.time?.to}
+              {/* {state?.time?.from} - {state?.time?.to} */}
+              {formattedTimeRange}
             </h5>
           </div>
           <div className="grid grid-cols-2 w-72">

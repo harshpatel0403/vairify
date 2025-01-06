@@ -40,6 +40,7 @@
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.46",
     "npm": "^10.0.0",
     "react": "^18.2.0",
     "react-big-calendar": "^1.8.2",

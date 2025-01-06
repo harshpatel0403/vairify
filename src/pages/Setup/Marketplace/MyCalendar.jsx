@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { addMonths } from "date-fns";
-import moment from "moment";
+import moment from "moment-timezone";
 
 const locales = {
   "en-US": enUSLocale,
@@ -98,12 +98,24 @@ export default function MyCalendar() {
 
     // Hours
     const newtformtime = fromTime + " " + fromZone;
-
     const newtotime = toTime + " " + toZone;
-    const startTime = moment(newtformtime, "hh:mm A");
-    const endTime = moment(newtotime, "hh:mm A");
-    const duration = moment.duration(endTime.diff(startTime));
-    const hours = duration.hours();
+
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const startTimeWithTimezone = moment.tz(newtformtime, "hh:mm A", userTimezone);
+    const endTimeWithTimezone = moment.tz(newtotime, "hh:mm A", userTimezone);
+
+    const fromUtc = startTimeWithTimezone.utc().format("YYYY-MM-DD hh:mm A");
+    const toUtc = endTimeWithTimezone.utc().format("YYYY-MM-DD hh:mm A");
+
+    const duration = moment.duration(endTimeWithTimezone.diff(startTimeWithTimezone));
+    const hours = duration.asHours();
+
+    // const startTime = moment(newtformtime, "hh:mm A");
+    // const endTime = moment(newtotime, "hh:mm A");
+    // const duration = moment.duration(endTime.diff(startTime));
+    // const hours = duration.hours();
+
     // Days
     const startdate = moment(startDate, "DD/MM/YYYY");
     const enddate = moment(endDate, "DD/MM/YYYY");
@@ -124,8 +136,8 @@ export default function MyCalendar() {
       to: ToDate === "Invalid date" ? FromDate : ToDate,
     };
     newData.time = {
-      from: startTime.format("hh:mm A"),
-      to: endTime.format("hh:mm A"),
+      from: fromUtc,
+      to: toUtc,
     };
     const locData = UserDetails.savedLocations.find(
       (item) => item._id === selectedLocation
