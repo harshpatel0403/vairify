@@ -134,7 +134,7 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Personal Profile</span>
-                  {UserProfile ?
+                  {UserProfile.loading ?
                     (
                       UserProfile?.profiledata?.orientation && UserProfile?.profiledata?.gender ?
                         ("") :
@@ -214,7 +214,7 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Gallery Photo</span>
-                  {GallaryData ?
+                  {GallaryData.loading ?
                     (
                       GallaryData?.userGallary?.images?.length > 0 ?
                         ("") :

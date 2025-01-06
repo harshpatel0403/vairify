@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const ChatLogs = () => {
   const socket = io(import.meta.env.VITE_APP_SOCKET_BASE_URL);
@@ -68,6 +69,10 @@ const ChatLogs = () => {
 
   const isSender = currentChat?.senderId?._id === UserDetails?._id;
   const sendMessage = async (chat) => {
+    if (message == "" || message == undefined || message == null){
+      toast.error("Please Enter Message")
+      return
+    }
     socket.emit(
       "sendMessage-in-app-chat",
       {

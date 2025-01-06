@@ -2,8 +2,8 @@ import { useState } from "react";
 import "./login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { HandleLogIn, SendOTP } from "../../../redux/action/Auth";
-import { toast, ToastContainer } from "react-toastify";
+import { HandleLogIn } from "../../../redux/action/Auth";
+import { toast } from "react-toastify";
 import Loading from "../../../components/Loading/Index";
 import InputPassword from "../../../components/InputPassword";
 
@@ -93,7 +93,7 @@ export default function LoginPage() {
           setIsLoading(false);
         } else {
           setIsLoading(false);
-          toast(result?.payload?.data?.message, {
+          toast(result?.payload, {
             hideProgressBar: true,
             autoClose: 1000,
             type: "error",
@@ -102,6 +102,11 @@ export default function LoginPage() {
       })
       .catch((err) => {
         setIsLoading(false);
+        toast("Netwok Error", {
+          hideProgressBar: true,
+          autoClose: 1000,
+          type: "error",
+        });
         console.error(err, "Error");
       });
   };
