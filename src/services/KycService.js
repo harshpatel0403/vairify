@@ -19,6 +19,13 @@ const KycService = {
   checkResult(body) {
     return requests.post(`/kyc/getResults`, body);
   },
+  validateDocument(body) {
+    return requests.post(`/kyc/validateDocument`, body);
+  },
+  DocCheckstatus(documentCheckId) {
+    return requests.get(`/kyc/DocCheckstatus?documentCheckId=${documentCheckId}`);
+}
+  
 };
 
 export default KycService;

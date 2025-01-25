@@ -14,13 +14,12 @@ function PublicRoute(props) {
 
     useEffect(() => {
         if (UserDetails) {
-            navigate("/get-vai");
+            navigate("/setup-face-verification");
         }
 
         if(UserDetails && props.path){
             navigate("/business/community")
         }
-
         setIsMounted(true);
     }, []);
 

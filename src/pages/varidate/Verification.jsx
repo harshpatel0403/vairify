@@ -28,7 +28,7 @@ export default function Verification() {
     }
     return (
         <div className='main-container px-0 '>
-            <div className='w-full mx-auto flex flex-col justify-center items-center'>
+            <div className="w-full mx-auto flex flex-col justify-center items-center sm:h-[80vh] md:h-[75vh]  xl:h-[100vh]  pt-5 sm:pt-10 md:pt-20 xl:pt-0 overflow-auto  bg-gray-100">
                 <div className='max-w-[300px] w-[70vw] flex rounded-full flex-col justify-center items-center mt-7 bg-[#797E9E] py-2'><span className='font-bold text-[30px] text-[#02227E]'>VAI<span className='font-normal'>RIDATE</span></span></div>
                 <div className='w-[100%] flex flex-col justify-center items-center mt-9 bg-[#587EE7] py-4'>
                     <div className='w-[150px] h-[150px] overflow-hidden rounded-full'>

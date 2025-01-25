@@ -5,7 +5,7 @@ import InputPassword from "../../../components/InputPassword";
 import SelectBox from "../../../components/SelectBox";
 import { useDispatch, useSelector } from "react-redux";
 import { HandleLogIn, HandleSignUp, SendOTP } from "../../../redux/action/Auth";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Loading from "../../Loading/Index";
 import { useLocation, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";

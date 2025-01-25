@@ -13,11 +13,10 @@ const videoConstraints = {
   facingMode: "user",
 };
 const BackID = ({
-  setBackImage,
   documentID,
-  setIsBackDocUploaded,
   setIsFileUploaded,
   handleLoader,
+  setBackImageUploaded
 }) => {
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const webcamRef = useRef(null);
@@ -57,19 +56,18 @@ const BackID = ({
             };
             KycService.uploadBackDoc(body)
               .then((response) => {
-                toast.success("Back image uploaded successfully", {
-                  autoClose: 1000,
-                });
+                toast.success("Back image uploaded successfully", {autoClose: 1000});
                 setIsFileUploaded(true);
+                setBackImageUploaded(true)
                 handleLoader(false);
               })
               .catch((error) => {
-                toast.error(error?.response?.data?.error || error?.message);
+                toast.error(error?.response?.data?.error || error?.message,{autoClose: 1000});
                 handleLoader(false);
               });
           })
           .catch((error) => {
-            toast.error(error?.response?.data?.error || error?.message);
+            toast.error(error?.response?.data?.error || error?.message,{autoClose: 1000});
             handleLoader(false);
           });
       } catch (error) {
@@ -87,6 +85,7 @@ const BackID = ({
   const handleRetry = () => {
     setImgSrc(null);
     setFaceCompareLoading(false);
+    setIsFileUploaded(false);
   };
 
   useEffect(() => {

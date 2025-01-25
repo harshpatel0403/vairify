@@ -18,20 +18,28 @@ const SetupProfile = () => {
     let HourllyRate;
     let Services;
 
-    if (UserData?.user_type == "client-hobbyist") {
-      HourllyRate = true;
-      Services = true;
-    } else if (UserData?.user_type == "agency-business") {
-      HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-      Services = true;
-    } else if (UserData?.user_type == "companion-provider") {
-      HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-      Services = ServicesData?.find((item) => item)?.services?.length > 0;
-    } else if (UserData?.user_type == "influencer-affiliate") {
-      HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-      Services = ServicesData?.find((item) => item)?.services?.length > 0;
+    if (Object.keys(UserData).length > 0) {
+      if (UserData?.user_type == "client-hobbyist") {
+        HourllyRate = true;
+        Services = true;
+      } else if (UserData?.user_type == "agency-business") {
+        // HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
+        // Services = true;
+        HourllyRate = true;
+        Services = true;
+      } else if (UserData?.user_type == "companion-provider") {
+        // HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
+        // Services = ServicesData?.find((item) => item)?.services?.length > 0;
+        HourllyRate = true;
+        Services = true;
+      } else if (UserData?.user_type == "influencer-affiliate") {
+        // HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
+        // Services = ServicesData?.find((item) => item)?.services?.length > 0;
+        HourllyRate = true;
+        Services = true;
+      }
+      return HourllyRate || Services
     }
-    return HourllyRate || Services
   }, [ServicesData, UserData]);
 
   console.log(
@@ -94,7 +102,7 @@ const SetupProfile = () => {
           </span>
 
           <span className="text-[#0636C1] !text-[25px] font-bold ml-1">
-            {UserData?.name}
+            {Object.keys(UserData).length > 0 && UserData?.name}
           </span>
         </div>
         <div>
@@ -114,9 +122,9 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Language</span>
-                  {UserData || LanguagesData ?
+                  {Object.keys(UserData).length > 0 || LanguagesData ?
                     (
-                      LanguagesData || UserData?.language ?
+                      LanguagesData && LanguagesData || UserData?.language ?
                         ("") :
                         (<span style={{ color: "red" }}>*</span>)
 
@@ -134,7 +142,7 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Personal Profile</span>
-                  {UserProfile.loading ?
+                  {Object.keys(UserProfile).length > 0 && UserProfile.loading ?
                     (
                       UserProfile?.profiledata?.orientation && UserProfile?.profiledata?.gender ?
                         ("") :
@@ -154,7 +162,7 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Upload Profile Pic</span>
-                  {UserData ?
+                  {Object.keys(UserData).length > 0 ?
                     (
                       UserData?.profilePic != "" && UserData?.profilePic !== undefined ?
                         ("") :
@@ -174,7 +182,7 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Mutual Consent Contract</span>
-                  {UserData ?
+                  {Object.keys(UserData).length > 0 ?
                     (
                       UserData?.mutualContractSigned ?
                         ("") :
@@ -194,7 +202,7 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>VAIRIPAY</span>
-                  {UserData ?
+                  {Object.keys(UserData).length > 0 ?
                     (
                       UserData?.varipayActivity ?
                         ("") :
@@ -214,7 +222,7 @@ const SetupProfile = () => {
               text={
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span>Gallery Photo</span>
-                  {GallaryData.loading ?
+                  {Object.keys(GallaryData).length > 0 && GallaryData.loading ?
                     (
                       GallaryData?.userGallary?.images?.length > 0 ?
                         ("") :
@@ -235,7 +243,7 @@ const SetupProfile = () => {
               className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] flex flex-row justify-start items-center px-5 py-3 border-2 border-gray-300"
             />
           </div>
-          {UserData?.user_type !== "client-hobbyist" ? (
+          {Object.keys(UserData).length > 0 && UserData?.user_type !== "client-hobbyist" ? (
             <>
               {" "}
               <div className="w-full mt-4">
@@ -265,7 +273,7 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>Calender</span>
-                    {CalendarSchedule ?
+                    {Object.keys(CalendarSchedule).length > 0 ?
                       (
                         CalendarSchedule?.schedule.length > 0 ?
                           ("") :
@@ -287,7 +295,7 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>DateGuard</span>
-                    {UserData ?
+                    {Object.keys(UserData).length > 0 ?
                       (
                         UserData?.dateGuardActivity ?
                           ("") :
@@ -309,7 +317,7 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>Social</span>
-                    {SocialData ?
+                    {Object.keys(SocialData).length > 0 ?
                       (
                         !SocialData?.socialData?.find((item) => item)?.message ?
                           ("") :
@@ -331,7 +339,7 @@ const SetupProfile = () => {
                 <>
                   <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
                     <span>Incall Addresses</span>
-                    {UserData ?
+                    {Object.keys(UserData).length > 0 ?
                       (
                         UserData?.incallAddresses.length > 0 ?
                           ("") :

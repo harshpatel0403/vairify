@@ -53,6 +53,7 @@ export default function SelectDate() {
   const [appointments, setAppointments] = useState([]);
   const [firstAvailableSlot, setFirstAvailableSlot] = useState("");
 
+  console.log(firstAvailableSlot, "first slot is this")
   const toggleFirstAvaliableSlot = (slot) => {
     // setStaff(props);
     let newSelectedCountry;
@@ -278,6 +279,7 @@ export default function SelectDate() {
       let day = activeScheduleData?.days?.find(
         (item) => item?.day == getDayInWordFromIndex(date)
       );
+      console.log(getDayInWordFromIndex(date), "dateas slot")
       const slots = generateTimeSlots(
         selectedHours?.time * 60,
         day?.start,
@@ -299,6 +301,7 @@ export default function SelectDate() {
 
   useEffect(() => {
     let slot = getFirstAvailableSlot(activeDates);
+    console.log(slot, "slot")
     setFirstAvailableSlot(slot);
   }, [
     activeDates,

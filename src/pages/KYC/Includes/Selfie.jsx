@@ -56,19 +56,17 @@ const Selfie = ({
           KycService.uploadSelfie(body)
             .then((response) => {
               setLivePhotoData(response);
-              toast.success("Selfie image uploaded successfully", {
-                autoClose: 1000,
-              });
+              toast.success("Selfie image uploaded successfully", { autoClose: 1000, });
               setIsFileUploaded(true);
               handleLoader(false);
             })
             .catch((error) => {
-              toast.error(error?.response?.data || error?.message);
+              toast.error(error?.response?.data || error?.message, { autoClose: 1000 });
               handleLoader(false);
             });
         })
         .catch((error) => {
-          toast.error(error?.response?.data?.error || error?.message);
+          toast.error(error?.response?.data?.error || error?.message, { autoClose: 1000 });
           handleLoader(false);
         });
     } catch (error) {
@@ -84,6 +82,7 @@ const Selfie = ({
   const handleRetry = () => {
     setImgSrc(null);
     setFaceCompareLoading(false);
+    setIsFileUploaded(false);
   };
 
   useEffect(() => {

@@ -192,6 +192,10 @@ export default function Profile() {
     [UserData]
   );
 
+  console.log(userDetails ,
+  userDetails?.market || userDetails?.vairipay
+    ? userDetails?.item?.userId?.user_type || userDetails?.item?.user_type
+    : UserData?.userType, userDetails, userDetails, "user id and type")
   useEffect(() => {
     dispatch(
       HandleGetServices(
@@ -199,8 +203,8 @@ export default function Profile() {
           ? userDetails?.item?.userId?._id || userDetails?.item?._id
           : UserData?._id,
         userDetails?.market || userDetails?.vairipay
-          ? userDetails?.item?.userId?.userType || userDetails?.item?.userType
-          : UserData?.userType
+          ? userDetails?.item?.userId?.user_type || userDetails?.item?.user_type
+          : UserData?.userType, userDetails
       )
     );
   }, []);
@@ -246,14 +250,14 @@ export default function Profile() {
                   : UserData?.profilePic
               ) ? (
                 <img
-                src={
-                  import.meta.env.VITE_APP_S3_IMAGE +
-                  `/${userDetails?.market || userDetails?.vairipay
-                    ? userDetails?.item?.userId?.profilePic ||
-                    userDetails?.item?.profilePic
-                    : UserData?.profilePic
-                  }`
-                }
+                  src={
+                    import.meta.env.VITE_APP_S3_IMAGE +
+                    `/${userDetails?.market || userDetails?.vairipay
+                      ? userDetails?.item?.userId?.profilePic ||
+                      userDetails?.item?.profilePic
+                      : UserData?.profilePic
+                    }`
+                  }
                   // src={
                   //   import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
                   //   `/${userDetails?.market || userDetails?.vairipay

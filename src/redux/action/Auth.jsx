@@ -29,7 +29,7 @@ export const HandleLogIn = (data) => {
     } catch (err) {
       return dispatch({
         type: "SET_LOADING",
-        payload: err.response,
+        payload: err.message,
       });
     }
   };

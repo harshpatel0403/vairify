@@ -4,7 +4,7 @@ const initialState = {
   notificationCount: 0,
   OTPEmail: {},
   ResetPassword: {},
-  language: {},
+  language: "",
   country: [],
   savedLocations: [],
 };

@@ -12,9 +12,13 @@ export default function Footer({ bgColor }) {
   const [notificationCount, setNotificationCount] = useState(0);
   const [tokenAvailable, setTokenAvailable] = useState(false);
 
+  useEffect(()=>{
+    if(UserData?._id){
+      fetchNotificationData();
+    }
+  },[])
 
   const fetchNotificationData = async () => {
-
     await NotificationServices.getAllNotifications(UserData?._id)
       .then((res) => {
         const notificationData = res?.filter((item) => item?.read === false)?.length;
@@ -22,7 +26,6 @@ export default function Footer({ bgColor }) {
       })
       .catch((error) => console.log(error));
   }
-  fetchNotificationData();
   useEffect(() => {
 
     setTokenAvailable(!!AuthToken);

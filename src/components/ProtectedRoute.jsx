@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FACE_VERIFICATION } from "../config";
@@ -7,15 +7,16 @@ import moment from "moment";
 export default function ProtectedRoute(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(true);
   const [currentSubscriptionIndex, setCurrentSubscriptionIndex] = useState(0);
+  const [memberShipStatus, setMemberShipStatus] = useState(true);
 
-  const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
-  const UserProfile = useSelector((state) => state?.Profile);
-  const CalendarSchedule = useSelector((state) => state?.Calendar?.getschedule);
-  const GallaryData = useSelector((state) => state?.Gallary);
-  const ServicesData = useSelector((state) => state?.Services?.getservices);
-  const SocialData = useSelector((state) => state?.Social);
+  const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user) || {};
+  const UserProfile = useSelector((state) => state?.Profile?.profiledata) || {};
+  const CalendarSchedule = useSelector((state) => state?.Calendar?.getschedule?.schedule) || [];
+  const GallaryData = useSelector((state) => state?.Gallary?.userGallary?.images) || [];
+  const ServicesData = useSelector((state) => state?.Services?.getservices) || [];
+  const SocialData = useSelector((state) => state?.Social?.socialData) || [];
 
   const protectionLevel = props?.level || ["login"];
   //   HERE ARE DIFFERENT LEVELS
@@ -32,151 +33,131 @@ export default function ProtectedRoute(props) {
     return daysRemaining;
   }
 
+  const { HourllyRate, Services } = useMemo(() => {
+    let HourllyRate = false;
+    let Services = false;
+
+    if (Object.keys(UserDetails).length > 0 && Object.keys(UserProfile).length > 0) {
+      if (UserDetails?.user_type === "client-hobbyist") {
+        HourllyRate = true;
+        Services = true;
+      }
+
+      if (UserDetails?.user_type === "agency-business") {
+        HourllyRate = true;
+        Services = true;
+        // HourllyRate = ServicesData?.some((item) => item?.hourlyRates?.length > 0);
+        // Services = true;
+      }
+
+      if (
+        UserDetails?.user_type === "companion-provider" ||
+        UserDetails?.user_type === "influencer-affiliate"
+      ) {
+        HourllyRate = true;
+        Services = true;
+        // HourllyRate = ServicesData?.some((item) => item?.hourlyRates?.length > 0);
+        // Services = ServicesData?.some((item) => item?.services?.length > 0);
+      }
+    }
+
+    return { HourllyRate, Services };
+  }, [UserDetails, ServicesData, UserProfile]);
+
   useEffect(() => {
-    if (protectionLevel.includes("login") && !UserDetails) {
+    if (protectionLevel.includes("login") && !Object.keys(UserDetails).length > 0) {
       navigate("/login", { state: location.state });
     }
 
-    if (SocialData?.loading && GallaryData?.loading && UserProfile?.loading && UserProfile?.profiledata) {
-      let HourllyRate;
-      let Services;
+    if (Object.keys(UserDetails).length > 0) {
+      const latestMembershipSubscription = UserDetails?.subscription[currentSubscriptionIndex];
+      const latestKycSubscription = UserDetails?.kyc[currentSubscriptionIndex];
 
-      if (UserDetails?.user_type == "client-hobbyist") {
-        HourllyRate = true;
-        Services = true;
-      } else if (UserDetails?.user_type == "agency-business") {
-        HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-        Services = true;
-      } else if (UserDetails?.user_type == "companion-provider") {
-        HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-        Services = ServicesData?.find((item) => item)?.services?.length > 0;
-      } else if (UserDetails?.user_type == "influencer-affiliate") {
-        HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-        Services = ServicesData?.find((item) => item)?.services?.length > 0;
+      if (UserDetails?.faceVerificationImage === "") {
+        navigate("/setup-face-verification");
+      } else if (!latestMembershipSubscription || !latestKycSubscription) {
+        if (!props?.path1) {
+          navigate("/get-vai");
+        }
+      } else if (!UserDetails?.isKycCompleted) {
+        if (!props?.path2) {
+          navigate("/vai");
+        }
       }
-      StepWisePagesProtection(props?.step, HourllyRate, Services);
+
+      StepWisePagesProtection(props?.step, HourllyRate, Services, latestMembershipSubscription, latestKycSubscription);
+      setIsMounted(false);
     }
-    setIsMounted(true);
-  }, [location.pathname, SocialData, GallaryData, UserProfile, UserDetails, ServicesData]);
+  }, [location.pathname, UserDetails]);
 
-  function StepWisePagesProtection(Step, HourllyRate, Services) {
+
+  function StepWisePagesProtection(Step, HourllyRate, Services, latestMembershipSubscription, latestKycSubscription) {
     switch (Step) {
-      case Step = 'Step1':
-        const membershipSubscription = UserDetails?.subscription;
-        const kycSubscription = UserDetails?.kyc;
-
-        let facevarification = false;
+      case Step = 'Step0':
+        //setUp Face Verification
         if (UserDetails?.faceVerificationImage !== "") {
           navigate("/get-vai");
-          facevarification = true ;
-        } else if (UserDetails?.faceVerificationImage === "") {
-          navigate('/setup-face-verification')
         }
+        break;
 
-        // if membership not founds 
+      case Step = 'Step1':
+        if (latestMembershipSubscription && latestMembershipSubscription?.expiryDate && latestKycSubscription && latestKycSubscription?.expiryDate) {
 
-        // if (membershipSubscription?.length <= 0) {
-        //   if (props.path1) {
-        //     // navigate(props.path2);
-        //   } else {
-        //     navigate("/get-vai");
-        //   }
-        // }
+          const membershipDaysRemaining = calculateDays(latestMembershipSubscription?.expiryDate)
+          const kycDaysRemaining = calculateDays(latestKycSubscription?.expiryDate)
 
-        // if (kycSubscription?.length <= 0) {
-        //   if (props.path1) {
-        //     // navigate(props.pat1);
-        //   } else {
-        //     navigate("/get-vai");
-        //   }
-        // }
-
-        //if membershi founds so we exicute next step
-        if (membershipSubscription && membershipSubscription?.length > 0 && kycSubscription && kycSubscription?.length > 0) {
-
-          const latestMembershipSubscription = membershipSubscription[currentSubscriptionIndex];
-          const latestKycSubscription = kycSubscription[currentSubscriptionIndex];
-
-          if (latestMembershipSubscription && latestMembershipSubscription?.expiryDate && latestKycSubscription && latestKycSubscription?.expiryDate) {
-
-            const membershipDaysRemaining = calculateDays(latestMembershipSubscription?.expiryDate)
-            const kycDaysRemaining = calculateDays(latestKycSubscription?.expiryDate)
-
-            let membership
-            if (membershipDaysRemaining && kycDaysRemaining && facevarification) {
-              // if (props.path5) {
-              // }
-              if (props.path2) {
-                navigate(props.path2);
-              } else {
-                navigate("/payment-success");
-                membership = true
-              }
-            }
-
-            if (kycDaysRemaining <= 0 && membershipDaysRemaining <= 0) {
-              setCurrentSubscriptionIndex((prevIndex) => prevIndex + 1);
-            }
+          if (membershipDaysRemaining && kycDaysRemaining) {
+            navigate("/vai");
           }
-        } else {
-          //******************************* Flag For Skipp Kyc **************************************/
-          // if (props.path1) {
-          //   // navigate(props.pat1);
-          // } else {
-          //   navigate("/get-vai");
-          // }
-          //******************************* Flag For Skipp Kyc **************************************/
+
+          if (kycDaysRemaining <= 0 && membershipDaysRemaining <= 0) {
+            setCurrentSubscriptionIndex((prevIndex) => prevIndex + 1);
+          }
         }
+        break;
 
-
-        // it checks kyc documents and photo uploaded or not 
-        let kyc;
-        if (UserDetails?.isKycCompleted && membership) {
-          // navigate("/kyc-success");
+      //documents and photo kyc 
+      case Step = 'Step2':
+        if (UserDetails?.isKycCompleted) {
+          // if (true) {
           navigate("/self-verification-completed");
-          kyc = true
         }
-
-        //******************************* Flag For Skipp Kyc **************************************/
-        // if (kyc) {
-        if (FACE_VERIFICATION && facevarification) {
-          navigate("/setup");
-        }
-        //******************************* Flag For Skipp Kyc **************************************/
         break;
 
       default:
-        const socialdata = !SocialData?.socialData?.find((item) => item)?.message;
+        const socialdata = !SocialData?.find((item) => item)?.message;
 
-        if (
-          UserProfile?.profiledata?.orientation &&
-          UserProfile?.profiledata?.gender &&
-          CalendarSchedule?.schedule.length > 0 &&
-          UserDetails?.profilePic &&
-          UserDetails?.mutualContractSigned &&
-          UserDetails?.varipayActivity &&
-          UserDetails?.incallAddresses.length > 0 &&
-          (HourllyRate || Services) &&
-          GallaryData?.userGallary?.images?.length > 0 &&
-          UserDetails?.dateGuardActivity &&
-          // LanguagesData &&
-          UserDetails?.language &&
-          socialdata
-        ) {
-          if (location.pathname === "/marketplace/post/review" && !location.state) {
-            navigate('/marketplace/post')
-          }
+        if (Object.keys(UserDetails).length > 0 &&
+          Object.keys(UserProfile).length > 0) {
+          if (
+            UserProfile?.orientation &&
+            UserProfile?.gender &&
+            CalendarSchedule.length > 0 &&
+            UserDetails?.profilePic &&
+            UserDetails?.mutualContractSigned &&
+            UserDetails?.varipayActivity &&
+            UserDetails?.incallAddresses.length > 0 &&
+            (HourllyRate || Services) &&
+            GallaryData?.length > 0 &&
+            UserDetails?.dateGuardActivity &&
+            UserDetails?.language &&
+            socialdata
+          ) {
+            if (location.pathname === "/marketplace/post/review" && !location.state) {
+              navigate('/marketplace/post')
+            }
 
-          // navigate(location.pathname, { state: location.state });
-        } else {
-          if (!props?.path) {
-            navigate("/setup-face-verification");
+            // navigate(location.pathname, { state: location.state });
+          } else {
+            if (!props?.path) {
+              navigate("/setup-face-verification");
+            }
           }
         }
     }
   }
 
-  if (!isMounted) {
+  if (isMounted) {
     return <>Please wait..</>;
   }
 

@@ -42,6 +42,13 @@ export default function Header({ onClick, bgColor }) {
       dispatch(HandleUser(UserDetails?._id));
     }
   }, []);
+
+  useEffect(() => {
+    if (UserDetails?._id) {
+      getTokens()
+    }
+  }, [UserDetails?._id]);
+
   const getTokens = () => {
     UserService.getUserTokens(UserDetails?._id)
       .then((res) => {
@@ -51,7 +58,6 @@ export default function Header({ onClick, bgColor }) {
         console.log(err);
       });
   }
-  getTokens()
   const pageWithHiddenLogo = [
     "/vairipay-request",
     "/service-business/add-staff",

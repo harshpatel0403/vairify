@@ -16,13 +16,15 @@ const Invitations = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
-  let marketplacedata;
-  const fetchMarketPlaceData = async () => {
-    marketplacedata = await useSelector(
-      (state) => state?.Market?.marketplacedata
-    );
-  }
-  fetchMarketPlaceData();
+  const marketplacedata = useSelector((state) => state?.Market?.marketplacedata  );
+
+  // let marketplacedata;
+  // const fetchMarketPlaceData = async () => {
+  //   marketplacedata = await useSelector(
+  //     (state) => state?.Market?.marketplacedata
+  //   );
+  // }
+  // fetchMarketPlaceData();
 
   const [isLoading, setIsLoading] = useState(false); // State to track loading
   const [open, setopen] = useState(false);

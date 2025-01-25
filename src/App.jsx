@@ -206,11 +206,9 @@ function App() {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    // handleLocation();
-    // Notification.requestPermission();
-    dispatch(HandleUserCurrentLocation());
-    // localStorage.removeItem('Flag');
-    // localStorage.removeItem('Flag2');
+    if (UserData?._id) {
+      dispatch(HandleUserCurrentLocation());
+    }
   }, []);
 
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -242,7 +240,7 @@ function App() {
         .catch((err) => console.log(err));
     }
   }, [UserData?._id]);
-
+  const ServicesData = useSelector((state) => state?.Services?.getservices);
   useEffect(() => {
     if (UserData?._id) {
       dispatch(HandleGetProfile(UserData._id));
@@ -356,7 +354,7 @@ function App() {
         <Route
           path="/vai"
           element={
-            <ProtectedRoute level={["login"]} step="Step1" path2="/vai">
+            <ProtectedRoute level={["login"]} step="Step2" path2="/vai">
               <Kyc />
             </ProtectedRoute>
           }
@@ -364,7 +362,7 @@ function App() {
         <Route
           path="/kyc-success"
           element={
-            <ProtectedRoute level={["login"]} step="Step1" path="/kyc-success">
+            <ProtectedRoute level={["login"]} step="Step2" path="/kyc-success">
               <KycSuccess />
             </ProtectedRoute>
           }
@@ -422,7 +420,7 @@ function App() {
         <Route
           path="/payment-success"
           element={
-            <ProtectedRoute level={["login"]} step="Step1" path="/payment-success">
+            <ProtectedRoute level={["login"]} step="Step1" path1="/payment-success">
               <PaymentSuccess />
             </ProtectedRoute>
           }
@@ -430,7 +428,7 @@ function App() {
         <Route
           path="/self-verification-process"
           element={
-            <ProtectedRoute level={["login"]} step="Step1" path2="/self-verification-process">
+            <ProtectedRoute level={["login"]} step="Step2" path2="/self-verification-process">
               <SelfVerificationProcess />
             </ProtectedRoute>
           }
@@ -438,7 +436,7 @@ function App() {
         <Route
           path="/self-verification-completed"
           element={
-            <ProtectedRoute level={["login"]} step="Step1" path="/self-verification-completed">
+            <ProtectedRoute level={["login"]} step="Step2" path="/self-verification-completed">
               <SelfVerificationCompleted />
             </ProtectedRoute>
           }
@@ -470,7 +468,7 @@ function App() {
         <Route
           path="/bussiness-vai"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} step="Step1" path1="/bussiness-vai">
               <BussinessVai />
             </ProtectedRoute>
           }
@@ -478,7 +476,7 @@ function App() {
         <Route
           path="/bussiness-vai-codes"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/bussiness-vai-codes">
               <VaiCodes />
             </ProtectedRoute>
           }
@@ -770,7 +768,7 @@ function App() {
           path="/vai-now"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]} >
+              <ProtectedRoute level={["login"]} path="/vai-now">
                 <VaiNow />
               </ProtectedRoute>
             </ServiceRoute>
@@ -787,7 +785,7 @@ function App() {
         <Route
           path="/vai-now/show-qr"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/vai-now/show-qr">
               <ShowQR />
             </ProtectedRoute>
           }
@@ -796,7 +794,7 @@ function App() {
           path="/vai-now/list"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]}>
+              <ProtectedRoute level={["login"]} path="/vai-now/list">
                 <VaiNowList />
               </ProtectedRoute>
             </ServiceRoute>
@@ -805,7 +803,7 @@ function App() {
         <Route
           path="/vai-check/list"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/vai-check/list">
               <VaiCheckList />
             </ProtectedRoute>
           }
@@ -899,7 +897,7 @@ function App() {
           path="/marketplace/invitation"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]}>
+              <ProtectedRoute level={["login"]} path="/marketplace/invitation">
                 <Invite />
               </ProtectedRoute>
             </ServiceRoute>
@@ -1299,7 +1297,7 @@ function App() {
           path="/varidate/invitations-list"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]}>
+              <ProtectedRoute level={["login"]} path="/varidate/invitations-list">
                 <InvitationsList />
               </ProtectedRoute>
             </ServiceRoute>
@@ -1309,7 +1307,7 @@ function App() {
           path="/varidate/past-appointments"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]}>
+              <ProtectedRoute level={["login"]} path="/varidate/past-appointments">
                 <PastInvitations />
               </ProtectedRoute>
             </ServiceRoute>
@@ -1351,7 +1349,7 @@ function App() {
           path="/varidate/upcoming-appointments"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]}>
+              <ProtectedRoute level={["login"]} path="/varidate/upcoming-appointments">
                 <UpcomingAppointmentsList />
               </ProtectedRoute>
             </ServiceRoute>
@@ -1401,7 +1399,7 @@ function App() {
         <Route
           path="/varidate/reviews"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/varidate/reviews">
               <Reviews />
             </ProtectedRoute>
           }
@@ -1427,7 +1425,7 @@ function App() {
         <Route
           path="/service-business/add-staff"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/service-business/add-staff">
               <AddStaff />
             </ProtectedRoute>
           }
@@ -1451,7 +1449,7 @@ function App() {
         <Route
           path="/service-business/user-list"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/service-business/user-list">
               <UserList />
             </ProtectedRoute>
           }
@@ -1484,7 +1482,7 @@ function App() {
         <Route
           path="/location-requests"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/location-requests">
               <LocationRequests />
             </ProtectedRoute>
           }
@@ -1550,7 +1548,7 @@ function App() {
         <Route
           path="/profile-permissions"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/profile-permissions">
               <ProfilePermissions />
             </ProtectedRoute>
           }
@@ -1558,7 +1556,7 @@ function App() {
         <Route
           path="/kyc-membership-history"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/kyc-membership-history">
               <KycMembershipHistory />
             </ProtectedRoute>
           }
@@ -1566,7 +1564,7 @@ function App() {
         <Route
           path="/vairify-membership-history"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/vairify-membership-history">
               <VairifyMembershipHistory />
             </ProtectedRoute>
           }
@@ -1574,7 +1572,7 @@ function App() {
         <Route
           path="/vairify-membership-plans"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/vairify-membership-plans"  >
               <VairifyMembershipPlans />
             </ProtectedRoute>
           }
@@ -1616,7 +1614,7 @@ function App() {
         <Route
           path="/user-payment-history"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/user-payment-history">
               <PaymentHistory />
             </ProtectedRoute>
           }
@@ -1642,7 +1640,7 @@ function App() {
         <Route
           path="/settings/date-history"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/settings/date-history">
               <DateHistory />
             </ProtectedRoute>
           }
@@ -1650,7 +1648,7 @@ function App() {
         <Route
           path="/settings/about-me"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/settings/about-me">
               <AboutMe />
             </ProtectedRoute>
           }
@@ -1666,7 +1664,7 @@ function App() {
         <Route
           path="/disclosure"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/disclosure">
               <Disclosure />
             </ProtectedRoute>
           }
@@ -1681,11 +1679,23 @@ function App() {
         ></Route>
 
         {/* public routes */}
-        <Route path="/privacy-policy" element={<PrivacyPolicy />}></Route>
-        <Route path="/disclosure" element={<Disclosure />}></Route>
+        <Route path="/privacy-policy" element={
+          <ProtectedRoute level={["login"]} path="/privacy-policy">
+            <PrivacyPolicy />
+          </ProtectedRoute>
+        }></Route>
+        <Route path="/disclosure" element={
+          <ProtectedRoute level={["login"]} path="/disclosure">
+            <Disclosure />
+          </ProtectedRoute>
+        }></Route>
         <Route
           path="/terms-and-conditions"
-          element={<TermsCondition />}
+          element={
+            <ProtectedRoute level={["login"]} path="/terms-and-conditions">
+              <TermsCondition />
+            </ProtectedRoute>
+          }
         ></Route>
       </Routes>
     </div>

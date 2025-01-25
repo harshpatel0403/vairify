@@ -16,15 +16,17 @@ const videoConstraints = {
 
 const FrontID = ({
   documentID,
-  setIsFrontDocUploaded,
+  // setIsFrontDocUploaded,
   setIsFileUploaded,
   handleLoader,
+  setFrontImageUploaded
 }) => {
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const webcamRef = useRef(null);
   const [imgSrc, setImgSrc] = useState(null);
   const [faceCompareLoading, setFaceCompareLoading] = useState(true);
   const [hasCamara, setHasCamara] = useState(true);
+
   const nav = useNavigate();
   const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -38,13 +40,11 @@ const FrontID = ({
 
   const handleApprove = async () => {
     try {
-      setIsFrontDocUploaded(true);
-      toast.success("Front image uploaded successfully", {
-        autoClose: 1000,
-      });
+      // setIsFrontDocUploaded(true);
+      toast.success("Front image uploaded successfully", {autoClose: 1000});
       setIsFileUploaded(true);
     } catch (error) {
-      toast.error(error?.response?.data?.error || error?.message);
+      toast.error(error?.response?.data?.error || error?.message,{ autoClose: 1000 });
     }
   };
 
@@ -71,15 +71,16 @@ const FrontID = ({
             KycService.uploadFrontDoc(body)
               .then((response) => {
                 handleApprove();
+                setFrontImageUploaded(true)
                 handleLoader(false);
               })
               .catch((error) => {
-                toast.error(error?.response?.data || error?.message);
+                toast.error(error?.response?.data || error?.message,{ autoClose: 1000 });
                 handleLoader(false);
               });
           })
           .catch((error) => {
-            toast.error(error?.response?.data?.error || error?.message);
+            toast.error(error?.response?.data?.error || error?.message,{ autoClose: 1000 });
             handleLoader(false);
           });
       } catch (error) {
@@ -89,6 +90,7 @@ const FrontID = ({
     },
     [webcamRef, setImgSrc]
   );
+
   const handleCapture = async () => {
     handleLoader(true);
     await capture(documentID);
@@ -97,6 +99,7 @@ const FrontID = ({
   const handleRetry = () => {
     setImgSrc(null);
     setFaceCompareLoading(false);
+    setIsFileUploaded(false);
   };
 
   useEffect(() => {

@@ -45,7 +45,7 @@ const Payment = () => {
       }
 
       setIsLoading(false);
-      navigate("/vai");
+      navigate("/payment-success");
 
       await dispatch(HandleUpdateUser(UserDetails?._id));
     } catch (error) {
@@ -127,7 +127,7 @@ const Payment = () => {
                 return await GenerateCoupon();
               }
 
-              navigate("/vai");
+              navigate("/payment-success");
 
               await dispatch(HandleUpdateUser(UserDetails?._id));
             })
