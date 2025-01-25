@@ -136,6 +136,7 @@ const Selfie = ({
                       width={300}
                       screenshotFormat="image/jpeg"
                       videoConstraints={videoConstraints}
+                      screenshotQuality={1}
                     />
                   </>
                 )}
