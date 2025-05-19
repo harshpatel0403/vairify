@@ -17,7 +17,7 @@ import {
   withScriptjs,
   InfoWindow,
 } from "react-google-maps";
-import { GoogleApiWrapper } from "@react-google-maps/api";
+import { GoogleApiWrapper } from "google-maps-react";
 import VaridateService from "../../../services/VaridateServices";
 import { toast } from "react-toastify";
 import moment from "moment";

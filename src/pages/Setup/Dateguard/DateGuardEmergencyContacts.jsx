@@ -16,7 +16,7 @@ import DateGuardService from "../../../services/DateGuardService";
 import { toast } from "react-toastify";
 import { withScriptjs } from "react-google-maps";
 import Map from "../../../components/Map.jsx";
-import { GoogleApiWrapper } from "@react-google-maps/api";
+import { GoogleApiWrapper } from "google-maps-react";
 import { ChatCenteredDots, CalendarCheck, MapPin } from "phosphor-react";
 import Tabbar from "../../../components/EmergencyTabBar/EmergencyTabBar.jsx";
 import Loading from "../../../components/Loading/Index.jsx";
