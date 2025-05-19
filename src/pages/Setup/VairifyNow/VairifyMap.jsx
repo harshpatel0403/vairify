@@ -17,7 +17,7 @@ import {
   withScriptjs,
   InfoWindow,
 } from "react-google-maps";
-import { GoogleApiWrapper } from "google-maps-react";
+import { GoogleApiWrapper } from "@react-google-maps/api";
 import VaridateService from "../../../services/VaridateServices";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -243,7 +243,7 @@ function VairifyMap() {
         className="min-h-[calc(100vh-280px)]"
       >
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Search results"} isSmall={true}/>
+          <PageTitle title={"Search results"} isSmall={true} />
         </div>
         <div className="w-full mx-auto flex flex-row justify-between items-center sm:mt-[48px] mt-[24px] mb-[24px]">
           <div className="flex gap-[16px]">

@@ -10,7 +10,7 @@ import moment from "moment";
 import DateGuardService from "../../services/DateGuardService";
 import CalendarService from "../../services/CalendarService";
 import { fetchLocation } from "../../utils";
-import { GoogleApiWrapper } from "google-maps-react";
+import { GoogleApiWrapper } from "@react-google-maps/api";
 import Loading from "../../components/Loading/Index";
 import PageTitle from "../../components/PageTitle";
 
