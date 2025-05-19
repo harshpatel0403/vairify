@@ -32,8 +32,8 @@ export default function TextContainer({ text }) {
   };
 
   return (
-    <div className="custom-text-container py-2 px-4 text-custom-7 flex flex-row justify-between">
-      <span>{text}</span>
+    <div className="custom-text-container border-none sm:p-[16px] p-[12px] text-custom-7 flex flex-row justify-between items-center">
+      <span className='text-sm'>{text}</span>
       <button onClick={handleCopyClick}>
         {isCopied ? 'Copied!' : (
           <svg

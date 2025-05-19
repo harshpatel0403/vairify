@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import Button from "../../../components/Button";
 import DateGuardService from "../../../services/DateGuardService";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import Header from "../../../components/Header/Header";
+import Loading from "../../../components/Loading/Index";
+import PageTitle from "../../../components/PageTitle";
 
 export default function DateGuardSelectAppointment() {
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
 
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
-  const userType = UserDetails?.user_type; //'companion-provider'
-
+  const userType = UserDetails?.user_type;
   const navigate = useNavigate();
 
   const userId = UserDetails?._id;
@@ -40,24 +42,22 @@ export default function DateGuardSelectAppointment() {
     navigate(`/dateguard/pick-group/${appointment._id}`);
   };
   return (
-    <div className="main-container form-field-container p-0">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-        <div className="w-full mx-auto flex items-center justify-center">
-          <span className="font-bold text-[30px] text-[#05B7FD] change-font-family">
-            Date Guard
-          </span>
-        </div>
-        <div className="w-full mx-auto flex items-center justify-center mt-4">
-          <div className="w-[67px] h-[82px]">
-            <img src={"/images/DateGuardMask.png"} alt="Date Guard Mask" />
-          </div>
-        </div>
+    <div className="container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Date Guard"} />
+      </div>
+      <div className="flex items-center justify-center">
+        <img src="/images/setup/Disarm.svg" alt="guard" />
+      </div>
 
+
+      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
         {appointments?.length > 0 ? (
-          <div className="w-full mx-auto flex items-center justify-center mt-4">
-            <span className="font-bold text-[30px] text-[#D9D9D9] change-font-family">
-              SELECT APPOINTMENT
+          <div className="mt-4">
+            <span className="font-medium sm:text-[28px] text-[24px] text-white text-center">
+              Select Appointment
             </span>
+            <p className="font-normal sm:text-[18px] text-[14px] opacity-70 text-white text-center">Select Client for meeting</p>
           </div>
         ) : null}
 
@@ -75,53 +75,54 @@ export default function DateGuardSelectAppointment() {
         </div> */}
         <div className="w-full mx-auto flex flex-col justify-between items-center mt-7 mb-20">
           {loading ? (
-            <div className="text-white">Loading...</div>
+            <Loading />
           ) : (
             <>
               {appointments?.length === 0 ? (
-                <div className="text-[32px] text-[#4b4b4b] font-bold text-center h-[300px] flex flex-col justify-center items-center">
+                <div className="text-[24px] text-white font-medium text-center h-[300px] flex flex-col justify-center items-center gap-2">
                   <div className="image-not">
-                    <img src="/images/notFound.png" alt="logo" />
+                    <img src="/images/home/notfound.svg" alt="logo" />
                   </div>
                   Result not found
                 </div>
               ) : (
                 <>
-                  {appointments.map((appointment, index) => (
-                    <div
-                      key={index}
-                      className="w-full mx-auto flex flex-row justify-between items-center flex-wrap mb-4"
-                    >
-                      <div className="name-time-part flex flex-row justify-start items-center">
-                        <div className="w-[40px] h-[40px] rounded-[50%] bg-[#05B7FD] flex items-center justify-center mr-4 mb-0">
-                          {/* <img
+                  <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-[24px]">
+                    {appointments.map((appointment, index) => (
+                      <div
+                        key={index}
+                        className="w-full mx-auto flex flex-row justify-between items-center mb-4"
+                      >
+                        <div className="name-time-part flex flex-row justify-start items-center">
+                          <div className="w-[50px] h-[50px] rounded-[50%] bg-[#FFFFFF14] flex items-center justify-center sm:mr-4 mt-2 mb-0">
+                            {/* <img
                         src={"/images/MathPlusMinus.png"}
                         alt="Plus-Minus Icon"
                       /> */}
-                          <span>
-                            {
-                              appointment?.[
-                                userType === "client-hobbyist"
-                                  ? "companionId"
-                                  : "clientId"
-                              ]?.name?.[0]
-                            }
-                          </span>
-                        </div>
-                        <div className="w-[150px] flex flex-col justify-center items-start mr-6 ml-2">
-                          <div>
-                            <span className="font-bold text-[20px] text-[#D9D9D9]">
+                            <span className="font-medium text-[20px] text-[#ffffff]">
                               {
                                 appointment?.[
                                   userType === "client-hobbyist"
                                     ? "companionId"
                                     : "clientId"
-                                ].name
+                                ]?.name?.[0]
                               }
                             </span>
                           </div>
-                          <div className="w-[150px] flex flex-start ">
-                            {/* <Link to={`/dateguard/edit-group/${appointment._id}`}>
+                          <div className="w-[150px] flex flex-col justify-center items-start sm:mr-6 mr-2 ml-2">
+                            <div>
+                              <span className="font-medium text-[14px] text-[#ffffff]">
+                                {
+                                  appointment?.[
+                                    userType === "client-hobbyist"
+                                      ? "companionId"
+                                      : "clientId"
+                                  ].name
+                                }
+                              </span>
+                            </div>
+                            <div className="w-[150px] flex flex-start ">
+                              {/* <Link to={`/dateguard/edit-group/${appointment._id}`}>
                       <Button
                         text="Edit/Details"
                         className={
@@ -130,28 +131,26 @@ export default function DateGuardSelectAppointment() {
                         size="20px"
                       />
                     </Link> */}
-                            {appointment?.startDateTime && (
-                              <span className="rounded-[10px] text-left font-bold text-[14px] text-[#fff] opacity-50">
-                                {moment(appointment?.startDateTime)?.format(
-                                  "DD/MM/YYYY HH:mm:ss"
-                                )}
-                              </span>
-                            )}
+                              {appointment?.startDateTime && (
+                                <span className="font-medium text-[14px] text-[#ffffff] opacity-70">
+                                  {moment(appointment?.startDateTime)?.format(
+                                    "DD/MM/YYYY HH:mm:ss"
+                                  )}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
+                        <div>
+                          <Button
+                            onClick={() => handleSelectAppointment(appointment)}
+                            text="Select"
+                            className="font-medium text-[14px] text-[#ffffff] py-[5px] px-[18px]"
+                          />
+                        </div>
                       </div>
-                      <div className="w-[77px]">
-                        <Button
-                          onClick={() => handleSelectAppointment(appointment)}
-                          text="Select"
-                          className={
-                            "rounded-[10px] change-font-family bg-[#05B7FD] font-bold text-[20px]"
-                          }
-                          size="34px"
-                        />
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </>
               )}
             </>

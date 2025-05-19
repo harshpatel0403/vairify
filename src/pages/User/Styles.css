@@ -5,7 +5,7 @@
   --receive-text: #212121;
   --page-background: #b9bbcb;
 }
-.send p,
+/* .send p,
 .receive p,
 .chat-p p {
   max-width: 255px;
@@ -73,4 +73,4 @@
     &:last-child { 
       margin-bottom: 24px; 
     }
-} 
+}  */

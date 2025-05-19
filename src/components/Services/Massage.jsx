@@ -56,8 +56,8 @@ export default function Massage() {
         HandleSelectServices(service.filter((item) => item?.name !== massage))
       );
     } else {
-      setSelectedTraditional([...selectedTraditional, {name: massage, type: "Massage"}]);
-      dispatch(HandleSelectServices([...service, {name: massage, type: "Massage"}]));
+      setSelectedTraditional([...selectedTraditional, { name: massage, type: "Massage" }]);
+      dispatch(HandleSelectServices([...service, { name: massage, type: "Massage" }]));
     }
   };
 
@@ -86,84 +86,88 @@ export default function Massage() {
   };
 
   return (
-    <div className="pb-8">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-        <div className="w-full mx-auto flex items-center justify-center mt-2">
-          <span className="font-extrabold text-[24px] text-[#02227E]">
-            Traditional Massage
-          </span>
+    <div className="w-full">
+      <div className="w-full mx-auto flex flex-col justify-center items-center ">
+        <div className="pb-[24px] text-lg text-white font-medium">
+          Traditional Massage
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-2">
+        <div className="grid grid-cols-2 sm:gap-[24px] gap-[16px] w-full">
           {traditionalMassage.map((item) => (
             <div
               key={item}
-              className={`bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[20px] flex flex-row items-center justify-center px-6 pl-8 py-2 h-[38px] relative`}
+              className={`p-[12px] rounded-[8px] flex items-center justify-center  relative w-full cursor-pointer
+                ${selectedTraditional?.find(obj => (obj?.name === item))
+                  ? "sm:bg-[#405FC4] bg-[#2F3BA480]"
+                  : "bg-[#FFFFFF14]"
+                }`}
               onClick={() => handleTraditionalToggle(item)}
             >
-              <div className="flex items-center justify-center absolute left-1">
+              {/* <div className="flex items-center justify-center absolute left-1">
                 <button
                   className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${selectedTraditional?.find(obj => (obj?.name === item))
                     ? "bg-[#08FA5A]"
                     : "bg-[#D9D9D9]"
                     }`}
                 ></button>
-              </div>
-              <div className="flex items-center justify-center w-[100px] leading-4">
-                <span className="font-bold text-[14px] text-white">{item}</span>
+              </div> */}
+              <div className="text-xs font-bold text-center text-white">
+                {item}
               </div>
             </div>
           ))}
         </div>
-        <div className="w-full mx-auto flex items-center justify-center mt-2">
-          <span className="font-extrabold text-[24px] text-[#02227E]">
-            Sensual Massage
-          </span>
+        <div className="py-[24px] text-lg text-white font-medium">
+          Sensual Massage
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-2">
+        <div className="grid grid-cols-2 sm:gap-[24px] gap-[16px] w-full">
           {sensualMassage.map((items) => (
             <div
               key={items}
-              className={`bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[20px] flex flex-row items-center justify-center px-6 pl-8 py-2 h-[38px] relative`}
+              className={`p-[12px] rounded-[8px] flex items-center justify-center  relative w-full cursor-pointer
+                ${selectedSensual?.find(item => (item?.name === items))
+                  ? "sm:bg-[#405FC4] bg-[#2F3BA480]"
+                  : "bg-[#FFFFFF14]"
+                }`}
               onClick={() => handleSensualToggle(items)}
             >
-              <div className="flex items-center justify-center absolute left-1">
+              {/* <div className="flex items-center justify-center absolute left-1">
                 <button
                   className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${selectedSensual?.find(item => (item?.name === items))
                     ? "bg-[#08FA5A]"
                     : "bg-[#D9D9D9]"
                     }`}
                 ></button>
-              </div>
-              <div className="flex items-center justify-center w-[100px] leading-4">
-                <span className="font-bold text-[14px] text-white">
+              </div> */}
+              <div className="text-xs font-bold text-center text-white">
                   {items}
-                </span>
               </div>
             </div>
           ))}
         </div>
-        <div className="w-full mx-auto flex items-center justify-center mt-2">
-          <span className="font-extrabold text-[24px] text-[#02227E]">
-            Release
-          </span>
+        <div className="py-[24px] text-lg text-white font-medium">
+          Release
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-2">
+        <div className="grid grid-cols-2 sm:gap-[24px] gap-[16px] w-full">
           {release.map((data) => (
             <div
               key={data}
-              className={`bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[20px] flex flex-row items-center justify-center px-6 pl-8 py-2 h-[38px] relative`}
+              className={`p-[12px] rounded-[8px] flex items-center justify-center  relative w-full cursor-pointer
+                ${selectedRelease?.find(item => (item?.name === data))
+                  ? "sm:bg-[#405FC4] bg-[#2F3BA480]"
+                  : "bg-[#FFFFFF14]"
+                }`}
               onClick={() => handleReleaseToggle(data)}
             >
-              <div className="flex items-center justify-center absolute left-1">
+              {/* <div className="flex items-center justify-center absolute left-1">
                 <button
                   className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${selectedRelease?.find(item => (item?.name === data))
                     ? "bg-[#08FA5A]"
                     : "bg-[#D9D9D9]"
                     }`}
                 ></button>
-              </div>
-              <div className="flex items-center justify-center w-[100px] leading-4">
-                <span className="font-bold text-[14px] text-white">{data}</span>
+              </div> */}
+              <div className="text-xs font-bold text-center text-white">
+                {data}
               </div>
             </div>
           ))}

@@ -3,6 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Button from "../../../components/Button";
+import { GoPerson } from "react-icons/go";
+import PageTitle from "../../../components/PageTitle";
+
 
 const EscortResults = () => {
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -47,64 +51,55 @@ const EscortResults = () => {
     ) / ((data?.profile?.userId?.reviews || []).length || 1);
 
   return (
-    <div>
-      <div className="pt-2">
-        <p className="text-[24px] text-[#02227E] font-bold text-center max-w-none">
-          Escort Results
-        </p>
-        <div className="bg-linear-gradient h-[40px]  mb-3 mt-3"></div>
-        <div className="flex flex-wrap justify-center sm:justify-center gap-2 sm:gap-4">
-          {ResultsData?.length > 0 ? (
+    <div className="container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Escort Results"} />
+      </div>
+      <div>
+        <div className={`sm:grid-cols-2 grid grid-cols-1 gap-[24px] w-full`}>
+          {ResultsData?.length > 0 && (
             ResultsData?.filter(
               (item) => item?.profile?.userId?.user_type !== user_type
             )?.map((data, index) => (
               <div
                 key={index}
                 data-index={index}
-                className="rounded-2xl px-4 pt-2 bg-gradient-to-b from-[#0247FF] to-[#fff] mb-4 w-[47%] max-w-[190px]"
+                className="w-full bg-[#919EAB33] rounded-[16px] p-[16px]"
               >
                 <div
-                  className="flex justify-center flex-col"
-                  onClick={() =>
-                    navigate("/user/profile", {
-                      state: {
-                        item: data?.profile,
-                        market: true,
-                        service_type: "escort",
-                      },
-                    })
-                  }
+                  className="flex justify-between gap-2"
                 >
-                  <img
-                    // TODO: add base url if needed for the profile pic image path
-                    src={
-                      data?.profile?.userId?.profilePic
-                        ? import.meta.env.VITE_APP_S3_IMAGE +
+                  <div className="flex items-center gap-2">
+                    <img
+                      // TODO: add base url if needed for the profile pic image path
+                      src={
+                        data?.profile?.userId?.profilePic
+                          ? import.meta.env.VITE_APP_S3_IMAGE +
                           "/" +
                           data?.profile?.userId?.profilePic
-                        : "/images/female.png"
-                    }
-                    // src={
-                    //   data?.profile?.userId?.profilePic
-                    //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                    //       "/" +
-                    //       data?.profile?.userId?.profilePic
-                    //     : "/images/female.png"
-                    // }
-                    alt=""
-                    className="rounded-2xl"
-                  />
-                  <div className="text-center">
-                    <p className="text-[12px] text-[#000] font-bold">
-                    TruRevu<br />{" "}
-                      <span className="capitalize">
+                          : "/images/female.png"
+                      }
+                      // src={
+                      //   data?.profile?.userId?.profilePic
+                      //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
+                      //       "/" +
+                      //       data?.profile?.userId?.profilePic
+                      //     : "/images/female.png"
+                      // }
+                      alt=""
+                      className=" rounded-full w-[48px] h-[48px]"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <p className="text-[16px] text-white font-normal">
                         {data?.profile?.userId?.name}
-                      </span>{" "}
-                      / ID#{" "}
-                      <span className="uppercase">{data?.profile?.siteId}</span>
-                    </p>
+                      </p>
+                      <p className="text-[14px] text-[#919EAB] font-normal">{data?.profile?.siteId}</p>
+                    </div>
+                  </div>
+                  <div className="text-center">
+
                     {/* TODO: add trurevu rating here */}
-                    <div className="flex flex-row-reverse items-center justify-center gap-1">
+                    {/* <div className="flex flex-row-reverse items-center justify-center gap-1">
                       <FontAwesomeIcon
                         icon={faStar}
                         color={getRate(data) >= 5 ? "#E1AB3F" : "#111"}
@@ -130,23 +125,41 @@ const EscortResults = () => {
                         color={getRate(data) >= 1 ? "#E1AB3F" : "#111"}
                         className="text-[10px]"
                       />
-                    </div>
-                    <span className="text-[#000] font-bold">
+                    </div> */}
+                    <h5 className="text-white font-medium text-[18px] flex items-center gap-1">
                       {getRate(data).toFixed(1)}
-                    </span>
+                      <img src="/images/home/star.svg" alt="icon" />
+                    </h5>
                   </div>
                 </div>
+                <button
+                  className="flex items-center justify-center gap-1 bg-white text-[#060C4D] rounded-[8px] py-[7px] px-4 w-full mt-[24px] hover:scale-[0.98] transition-all duration-200"
+                  onClick={() =>
+                    navigate("/user/profile", {
+                      state: {
+                        item: data?.profile,
+                        market: true,
+                        service_type: "escort",
+                      },
+                    })
+                  }>
+                  <GoPerson />
+                  Profile
+                </button>
               </div>
             ))
-          ) : (
-            <div className="text-[32px] text-[#4b4b4b] font-bold text-center h-[430px] flex flex-col justify-center items-center">
-              <div className="image-not">
-                <img src="/images/notFound.png" alt="logo" />
-              </div>
-              Result not found
-            </div>
           )}
         </div>
+
+        {!ResultsData?.length > 0 && (
+          <div className="text-[20px] text-white font-medium text-center flex flex-col justify-center items-center w-full mb-[48px] h-full">
+            <div>
+              <img src="/images/home/notfound.svg" alt="logo" />
+            </div>
+            Result not found
+          </div>
+        )}
+
       </div>
     </div>
   );

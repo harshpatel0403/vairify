@@ -1,0 +1,19 @@
+{
+  "login": {
+    "joinUs": "Join us Today",
+    "makeFriends": "Let's make new Friends",
+    "welcomeBack": "Welcome back to VAIRIFY!",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot Password?",
+    "dontHaveAccount": "Don’t have an account?",
+    "loginButton": "Login",
+    "otpSent": "OTP sent successfully",
+    "networkError": "Network Error"
+  },
+  "global":{
+    "signUp": "Sign Up",
+    "login": "Login"
+  }
+}

@@ -13,7 +13,8 @@ import {
 import { toast } from "react-toastify";
 import Loading from "../Loading/Index";
 import { useNavigate } from "react-router-dom";
-
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { CaretDown } from "phosphor-react";
 const times = [
   "1:00",
   "2:00",
@@ -51,7 +52,9 @@ export default function MarketPlaceModale({
 
   const [system, setSystem] = useState(false);
   const [escort, setEscort] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // State to track loading
+  const [invitationLoading, setInvitationLoading] = useState(false);
+  const [addInvitationLoading, setAddInvitationLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [searchname, setSearchname] = useState("");
   const [fromTime, setFromTime] = useState("02:00");
   const [fromZone, setFromZone] = useState("A.M");
@@ -87,7 +90,7 @@ export default function MarketPlaceModale({
   const zones = ["A.M", "P.M"];
 
   const HandleSubmit = async () => {
-    setIsLoading(true);
+    setLoading(true);
 
     const validationErrors = {};
     if (!searchname && favoriteStatus) {
@@ -95,7 +98,7 @@ export default function MarketPlaceModale({
     }
     if (Object.keys(validationErrors).length > 0) {
       setError(validationErrors);
-      setIsLoading(false);
+      setInvitationLoading(false);
       console.log(validationErrors, " <=== errors..");
       return; // Prevent form submission if there are errors
     }
@@ -145,7 +148,7 @@ export default function MarketPlaceModale({
             autoClose: 1000,
             type: "success",
           });
-          setIsLoading(false);
+          setLoading(false);
           dispatch(
             HandleResultMarketPlace(result?.payload?.data?.MarketSearch?._id)
           );
@@ -155,12 +158,12 @@ export default function MarketPlaceModale({
             navigate("/results");
           }
         } else {
-          setIsLoading(false);
+          setLoading(false);
           // setError(true);
         }
       })
       .catch((err) => {
-        setIsLoading(false);
+        setLoading(false);
         console.error(err, "Error");
       });
   };
@@ -168,13 +171,13 @@ export default function MarketPlaceModale({
     if (AllData.favoriteStatus && AllData.inquiry !== "Invitation") {
       HandleSubmit();
     } else {
-      setIsLoading(true);
+      setAddInvitationLoading(true);
       await dispatch(HandleInvitation(AllData))
         .then((result) => {
           if (result?.payload?.result?.length > 0) {
             navigate("/results");
             setsearchOpen(true);
-            setIsLoading(false);
+            setAddInvitationLoading(false);
           } else {
             toast(result?.payload?.message, {
               hideProgressBar: true,
@@ -185,11 +188,11 @@ export default function MarketPlaceModale({
             // navigate("/advance/search", {
             //   state: { state, AllData, EditData: EditData },
             // });
-            setIsLoading(false);
+            setAddInvitationLoading(false);
           }
         })
         .catch((err) => {
-          setIsLoading(false);
+          setAddInvitationLoading(false);
           console.error(err, "Error");
         });
       // setIsLoading(false);
@@ -200,22 +203,22 @@ export default function MarketPlaceModale({
   const Invitations = async () => {
     // Clear any previous errors
     setError({});
-    setIsLoading(true);
+    setInvitationLoading(true);
     const validationErrors = {};
     if (!priceoffered) {
       validationErrors.name = "priceoffered is required";
-      setIsLoading(false);
+      setInvitationLoading(false);
       return toast.error("priceoffered is required");
     }
     if (Object.keys(validationErrors).length > 0) {
       setError(validationErrors);
-      setIsLoading(false);
+      setInvitationLoading(false);
       console.log(validationErrors, " <=== error in invitation");
       return; // Prevent form submission if there are errors
     }
 
     await dispatch(HandleInvitation(AllData));
-    setIsLoading(false);
+    setInvitationLoading(false);
     setSystem(true);
   };
   return (
@@ -227,115 +230,78 @@ export default function MarketPlaceModale({
         <Modal
           isOpen={open}
           onRequestClose={closeMessage}
-          className={
-            "bg-[#3760CB] relative w-[360px] rounded-2xl px-4 center-modal"
-          }
+          className=" max-w-[550px] max-h-[700px] mx-auto bg-white overflow-auto fixed rounded-2xl sm:p-[24px] p-[16px] w-[90%]"
           contentLabel="#"
         >
-          <div className="pt-px">
-            <p className="text-[22px] text-[#fff] text-start font-bold px-0 mt-6">
-              Invitation Time Window
-            </p>
-          </div>
+          <p className="text-[20px] font-medium text-[#212B36] text-center mb-[30px]">
+            Invitation Time Window
+          </p>
           <button
             onClick={() => setOpen(false)}
-            className="absolute top-4 right-4"
+            className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
           >
-            <img
-              src="/images/Mask group-close.png"
-              alt=""
-              width="30px"
-              height="30px"
-            />
+            <IoCloseCircleOutline size={26} />
           </button>
           <div className="flex gap-1 justify-between items-center w-full mt-2">
-            <div className="flex flex-row justify-center items-center w-full">
-              <div className="relative w-1/2 bg-[#02227E] rounded-xl">
+            <div className="flex justify-center items-center w-full gap-4">
+              <div className="relative w-full">
                 <SelectBox_
                   onChange={(e) => {
                     setFromTime(e.target.value);
                   }}
                   options={times}
-                  className={
-                    "rounded-r-none bg-inherit pl-2 appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[45px]"
-                  }
+                  className={"bg-transparent min-w-[100px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-black font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-black "}
+
                 />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white mt-1`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-black z-[-1]"><CaretDown size={16} /></div>
+
               </div>
-              <div className="relative w-1/2 bg-[#02227E] rounded-xl">
+              <div className="relative w-full">
                 <SelectBox_
                   onChange={(e) => setFromZone(` ${e.target.value}`)}
                   options={zones}
-                  className={
-                    "border-l-0 rounded-l-none bg-inherit pl-2 appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pr-2 pr-2 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[45px]"
-                  }
+                  className={"bg-transparent min-w-[100px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-black font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-black "}
+
                 />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white mt-1`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-black z-[-1]"><CaretDown size={16} /></div>
+
               </div>
             </div>
             <span className="text-[24px] text-[#fff] font-bold">to</span>
-            <div className="flex flex-row justify-center items-center w-full h-[52px]">
-              <div className="relative w-1/2 bg-[#02227E] rounded-xl">
+            <div className="flex justify-center items-center w-full gap-4">
+              <div className="relative w-full">
                 <SelectBox_
                   onChange={(e) => {
                     setToTime(e.target.value);
                   }}
                   options={times}
-                  className={
-                    "rounded-r-none pl-2 bg-inherit appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[45px]"
-                  }
+                  className={"bg-transparent min-w-[100px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-black font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-black "}
+
                 />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white mt-1`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-black z-[-1]"><CaretDown size={16} /></div>
+
               </div>
 
-              <div className="relative w-1/2 bg-[#02227E] rounded-xl">
+              <div className="relative w-full">
                 <SelectBox_
                   onChange={(e) => setToZone(` ${e.target.value}`)}
                   options={zones}
-                  className={
-                    "border-l-0 rounded-l-none pl-2 bg-inherit appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pr-2 pr-2 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[45px]"
-                  }
+                  className={"bg-transparent min-w-[100px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-black font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-black "}
+
                 />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white mt-1`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-black z-[-1]"><CaretDown size={16} /></div>
+
               </div>
             </div>
           </div>
-          <div className="flex justify-between items-center pb-2 mt-2">
-            <p className="text-[24px] font-bold text-[#fff] pl-0">
+          <div className="flex justify-between items-center pb-2 mt-4 rounded-lg">
+            <p className="text-[20px] font-medium text-black pl-0">
               Price offered
             </p>
-            <p className="text-[24px] font-bold text-[#fff] py-0">
+            <p className="text-[20px] font-medium text-black py-0">
               $
               <input
-                className="w-[75px] placeholder:text-white focus:ring-0 !outline-none border-2  bg-[#3760cb00] ml-2 px-2"
+                className="w-[75px] placeholder:text-black text-black text-[14px] py-[6px] px-[10px] focus:ring-0 !outline-none border-2 rounded-lg bg-transparent ml-2"
                 // placeholder="500"
                 onChange={(e) => setPriceoffered(e.target.value)}
                 value={priceoffered}
@@ -347,79 +313,65 @@ export default function MarketPlaceModale({
           <div>
             <textarea
               size="115px"
-              className="w-full text-[18px] text-[#01195C] h-[115px] bg-[#D9D9D9] rounded-none border-2 px-2 border-white"
+              className="w-full text-[14px] text-black px-[12px] py-[6px] h-[115px] rounded-lg bg-transparent border-2"
               bgColor={"#D9D9D9"}
               onChange={(e) => setSpecialty(e.target.value)}
               value={specialty}
             />
           </div>
           <div className="mt-1 mb-0 flex justify-center items-center">
-            <div className="">
+            <div className="w-full">
               <Button
-                className={
-                  "flex items-center px-[35px] py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[25px]"
-                }
+                className={'secondary-btn'}
                 text={
-                  !isLoading ? (
+                  !invitationLoading ? (
                     "Submit"
                   ) : (
-                    <div className="flex items-center	justify-center pt-[6px]">
+                    <div className="flex items-center	justify-center">
                       <Loading />
                     </div>
                   )
                 }
-                size="44px"
                 onClick={Invitations}
+                disabled={invitationLoading}
               />
             </div>
           </div>
-          <br />
         </Modal>
       </div>
       <Modal
         isOpen={system}
         onRequestClose={closeSyatem}
-        className=" w-[360px] center-modal bg-[#316AFF] relative rounded-2xl px-4 py-3"
+        className=" max-w-[550px] max-h-[700px] mx-auto bg-white overflow-auto fixed rounded-2xl sm:p-[24px] p-[16px] w-[90%]"
       >
         <button
           onClick={() => setSystem(false)}
-          className="absolute top-2 right-2"
+          className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
         >
-          <img
-            src="/images/Mask group-close.png"
-            alt=""
-            width="30px"
-            height="30px"
-          />
+          <IoCloseCircleOutline size={26} />
         </button>
-        <p className="max-w-full text-[24px] font-bold text-center text-[#fff] mt-8">
+        <p className="max-w-full text-[18px] font-normal text-center text-[#212B36] my-8">
           System has found{" "}
-          <span className="text-[#FFC020]">
+          <span>
             {sendInvitations?.result?.length}
           </span>{" "}
           Matching result do you want to send invitation?
         </p>
-        <div className="flex justify-around items-center w-full">
-          <div className="w-[40%]">
+        <div className="flex justify-center gap-4 items-center w-full">
+          <div className="w-full">
             <Button
               onClick={() => {
                 favoriteStatus ? setUpdate(true) : HandleSubmit();
               }}
               className={
-                "flex items-center py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-black text-[23.4px]"
-              }
+                'secondary-btn'}
               text={"Yes"}
-              size="45px"
               disabled={sendInvitations?.result?.length === 0}
             />
           </div>
-          <div className="w-[40%]">
+          <div className="w-full">
             <Button
-              className={
-                "flex items-center py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-black text-[23.4px]"
-              }
               text={"No"}
-              size="45px"
               onClick={() => {
                 setPriceoffered("");
                 setSystem(false);
@@ -436,268 +388,179 @@ export default function MarketPlaceModale({
         isOpen={searchOpen}
         onRequestClose={closeFavorites}
         style={{ zIndex: "1000" }}
-        className=" w-[360px] bg-[#3760CB] overflow-auto relative center-modal rounded-2xl"
+        className=" max-w-[550px] max-h-[700px] mx-auto bg-white overflow-auto fixed rounded-2xl sm:p-[24px] p-[16px] w-[90%]"
       >
         <button
           onClick={() => setsearchOpen(false)}
-          className="absolute top-3 right-3"
+          className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
         >
-          <img
-            src="/images/Mask group-close.png"
-            alt=""
-            width="30px"
-            height="30px"
-          />
+          <IoCloseCircleOutline size={26} />
         </button>
-        <div className="flex items-center justify-start py-2 px-10">
-          <p className="text-[12px] font-bold bg-[#D9D9D9] rounded-full h-[75px] w-[75px] flex justify-center items-center text-center leading-normal">
-            Marketplace Icon
-          </p>
-          <p className="text-[30px] font-semibold text-[#fff] ml-3">
-            {AllData.service}
-          </p>
-        </div>
-        <div className="bg-[#01195C] h-[11px] w-full"></div>
-        <div className="px-10 grid grid-cols-2">
-          <div className="w-fit pt-5">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Mask group-3.png"
-                alt=""
-                width="16px"
-                height="17.1px"
-              />
-              <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
-                Type
-              </p>
-            </div>
-            <p className="text-[16px] font-bold text-[#fff] pt-px pl-0">
+        <p className="text-[20px] font-medium text-[#212B36] text-center">
+          {AllData.service}
+        </p>
+        <div className="grid grid-cols-1 mt-[24px] sm:gap-[24px] gap-[16px]">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+              Type
+            </p>
+            <p className="text-[14px] font-normal text-[#212B36]">
               {AllData.type}
             </p>
           </div>
-          <div className="w-fit pt-5">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Mask group-3.png"
-                alt=""
-                width="16px"
-                height="17.1px"
-              />
-              <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
-                Location
-              </p>
-            </div>
-            <p className="text-[16px] font-bold text-[#fff] pt-px pl-0">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+              Location
+            </p>
+            <p className="text-[14px] font-normal text-[#212B36]">
               {AllData.location}
             </p>
           </div>
-          <div className="w-fit pt-5">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Mask group-3.png"
-                alt=""
-                width="16px"
-                height="17.1px"
-              />
-              <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
-                Sex
-              </p>
-            </div>
-            <p className="text-[16px] font-bold text-[#fff] pt-px pl-0">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+              Sex
+            </p>
+            <p className="text-[14px] font-normal text-[#212B36]">
               {AllData.gender}
             </p>
           </div>
-          <div className="w-fit pt-5">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Mask group-3.png"
-                alt=""
-                width="16px"
-                height="17.1px"
-              />
-              <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
-                Orientation
-              </p>
-            </div>
-            <p className="text-[16px] font-bold text-[#fff] pt-px pl-0">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+              Orientation
+            </p>
+            <p className="text-[14px] font-normal text-[#212B36]">
               {AllData.orientation}
             </p>
           </div>
-          <div className="w-fit pt-5">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Mask group-3.png"
-                alt=""
-                width="16px"
-                height="17.1px"
-              />
-              <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
-                Venue
-              </p>
-            </div>
-            <p className="text-[16px] font-bold text-[#fff] pt-px pl-0">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+              Venue
+            </p>
+            <p className="text-[14px] font-normal text-[#212B36]">
               {AllData.venue}
             </p>
           </div>
-          <div className="w-fit pt-5">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Mask group-3.png"
-                alt=""
-                width="16px"
-                height="17.1px"
-              />
-              <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
-                Inquiry
-              </p>
-            </div>
-            <p className="text-[16px] font-bold text-[#fff] pt-px pl-0">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+              Inquiry
+            </p>
+            <p className="text-[14px] font-normal text-[#212B36]">
               {AllData.inquiry}
             </p>
           </div>
-          <div className="w-fit pt-5">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Mask group-3.png"
-                alt=""
-                width="16px"
-                height="17.1px"
-              />
-              <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
-                Service
-              </p>
-            </div>
-            <p className="text-[16px] font-bold text-[#fff] pt-px pl-0">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+              Service
+            </p>
+            <p className="text-[14px] font-normal text-[#212B36]">
               {AllData.service}
             </p>
           </div>
-        </div>
-        <div className="w-fit pt-5 px-10">
-          <div className="flex items-center gap-3">
-            <img
-              src="/images/Mask group-3.png"
-              alt=""
-              width="16px"
-              height="17.1px"
-            />
-            <p className="text-[16px] font-semibold text-[#CFCFCF] py-1 pl-0">
+          <div className="flex items-center">
+            <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
               Sensual Services
             </p>
-          </div>
-          <p className="text-[16px] font-black text-[#fff] pt-px pl-0">
-            {AllData?.advancedservices
-              ? AllData.advancedservices.join(", ")
-              : ""}
-          </p>
-        </div>
-        {AllData.favoriteStatus && AllData.inquiry !== "Invitation" && (
-          <div className="flex flex-col items-center px-10 pt-7">
-            <p className="text-[20px] text-[#fff] font-bold mb-1 pl-0 w-max-none">
-              Name the Search/invitation
+            <p className="text-[14px] font-normal text-[#212B36]">
+              {AllData?.advancedservices
+                ? AllData.advancedservices.join(", ")
+                : ""}
             </p>
-            <InputText
-              size="39px"
-              className="text-[24px] font-semibold text-[#01195C] h-[39px] bg-[#D9D9D9] rounded-xl border-0 border-[#D9D9D9]"
-              border={"#D9D9D9"}
-              bgColor={"#D9D9D9"}
-              onChange={(e) => setSearchname(e.target.value)}
-              value={searchname}
-            />
-            {error.name && (
-              <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[2px]">
-                {error.name}
-              </label>
-            )}
           </div>
-        )}
-        <div className="mt-1 pb-3 flex justify-center items-center w-full">
-          <div className="">
-            <Button
-              className={
-                "flex items-center px-[35px] py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[20px] shadow-[0px_5px_10px_rgba(0,0,0,0.5)]"
-              }
-              text={
-                !isLoading ? (
-                  AllData.favoriteStatus && AllData.inquiry !== "Invitation" ? (
-                    "Save To Favorites"
-                  ) : (
-                    "Submit"
-                  )
+
+          {AllData.favoriteStatus && AllData.inquiry !== "Invitation" && (
+            <div className="flex items-center">
+              <p className="text-[14px] font-medium text-[#212B36] min-w-[140px]">
+                Name the Search/invitation
+              </p>
+              <InputText
+                className="text-[14px] font-normal !text-[#212B36]  bg-[#919EAB14] rounded-lg border-0"
+                border={"#D9D9D9"}
+                bgColor={"#919EAB14"}
+                onChange={(e) => setSearchname(e.target.value)}
+                value={searchname}
+              />
+              {error.name && (
+                <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[2px]">
+                  {error.name}
+                </label>
+              )}
+            </div>
+          )}
+        </div>
+
+
+        <div className="mt-[24PX] flex justify-center items-center w-full">
+          <Button
+            className={'secondary-btn'}
+            disabled={addInvitationLoading}
+            text={
+              !addInvitationLoading ? (
+                AllData.favoriteStatus && AllData.inquiry !== "Invitation" ? (
+                  "Save To Favorites"
                 ) : (
-                  <div className="flex items-center	justify-center pt-[6px]">
-                    <Loading />
-                  </div>
+                  "Submit"
                 )
-              }
-              size="40px"
-              onClick={() =>
-                // setUpdate(true)
-                SubmitData()
-              }
-            />
-          </div>
+              ) : (
+                <div className="flex items-center	justify-center">
+                  <Loading />
+                </div>
+              )
+            }
+            onClick={() =>
+              // setUpdate(true)
+              SubmitData()
+            }
+          />
         </div>
       </Modal>
 
       <Modal
         isOpen={update}
         onRequestClose={closeUpdate}
-        className=" w-[360px] h-[199px] bg-[#3760CB] relative center-modal rounded-2xl px-4"
+        className=" max-w-[550px] max-h-[700px] mx-auto bg-white overflow-auto fixed rounded-2xl sm:p-[24px] p-[16px] w-[90%]"
       >
         <button
           onClick={() => setUpdate(false)}
-          className="absolute top-2 right-2"
+          className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
         >
-          <img
-            src="/images/Mask group-close.png"
-            alt=""
-            width="30px"
-            height="30px"
-          />
+          <IoCloseCircleOutline size={26} />
         </button>
-        <div className="flex items-center justify-start pt-10 ">
-          <p className="text-[12px] font-bold bg-[#D9D9D9] rounded-full h-[73.59px] w-[75px] flex justify-center items-center text-center">
-            Marketplace Icon
-          </p>
-          <p className="text-[20px] font-bold text-center text-[#fff] leading-5">
-            Save this search/invitation to favorites Name it something you will
-            Remember
-          </p>
+        <p className="sm:text-[20px] text-[16px] sm:w-auto w-[80%] mx-auto font-medium text-center text-[#212B36]">
+          Save this search/invitation to favorites Name it something you will
+          Remember
+        </p>
+        <div className="w-full my-[24px]">
+          <InputText
+            className="text-[14px] font-normal !text-[#212B36] placeholder:!text-black  bg-[#919EAB14] rounded-lg border-0"
+            border={"#D9D9D9"}
+            bgColor={"#919EAB14"}
+            onChange={(e) => setSearchname(e.target.value)}
+            placeholder={'Name'}
+            value={searchname}
+          />
+          {error.name && (
+            <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[2px]">
+              {error.name}
+            </label>
+          )}
         </div>
-        <div className="flex justify-around items-center w-full gap-5">
-          <div className="w-[30%]">
-            <Button
-              className={
-                "flex items-center py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[20px]"
-              }
-              text={
-                !isLoading ? (
-                  "Save"
-                ) : (
-                  <div className="flex items-center	justify-center pt-[6px]">
-                    <Loading />
-                  </div>
-                )
-              }
-              size="60px"
-              onClick={HandleSubmit}
-            />
-          </div>
-          <div className="w-full h-full">
-            <InputText
-              size="60px"
-              className="text-[24px] font-bold text-[#01195C] h-full bg-[#fff] rounded-xl border-2 border-[#02227E] h-[60px]"
-              bgColor={"#fff"}
-              onChange={(e) => setSearchname(e.target.value)}
-              value={searchname}
-            />
-            {error.name && (
-              <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[2px]">
-                {error.name}
-              </label>
-            )}
-          </div>
+        <div>
+          <Button
+            className={'secondary-btn'}
+            text={
+              !loading ? (
+                "Save"
+              ) : (
+                <div className="flex items-center	justify-center">
+                  <Loading />
+                </div>
+              )
+            }
+            onClick={HandleSubmit}
+            disabled={loading}
+          />
         </div>
+
       </Modal>
     </div>
   );

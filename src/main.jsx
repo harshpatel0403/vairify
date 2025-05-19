@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import * as serviceWorker from "./serviceWorker.js";
 import { subscribeUser } from "./subscription.js";
+import "./i18n.js"
 // import './@fake-db'
 
 ReactDOM.createRoot(document.getElementById("root")).render(

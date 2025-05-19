@@ -5,6 +5,7 @@ import Button from "../../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import Selecter from "../../../components/Selecter/Selecter";
 import { useSelector } from "react-redux";
+import PageTitle from "../../../components/PageTitle";
 
 export default function ServiceExtra() {
   const { state: Service } = useLocation();
@@ -15,9 +16,9 @@ export default function ServiceExtra() {
   );
 
 
-  const existingServices = savedServices[0] || {}; 
+  const existingServices = savedServices[0] || {};
 
-   const amountArray = updatedServices
+  const amountArray = updatedServices
     ? (updatedServices?.services?.map((service) => service?.amount) || [])
     : (existingServices?.services?.map((service) => service?.amount) || []);
   const currencyArray = updatedServices
@@ -41,7 +42,7 @@ export default function ServiceExtra() {
   const [currency, setCurrency] = useState("USD");
   const [rows, setRows] = useState(rowsData);
 
-  const currencyOptions = ["Currency", "USD", "EUR", "INR", "FDP"];
+  const currencyOptions = ["INR Currency", "USD", "EUR", "INR", "FDP"];
   const [step, setStep] = useState("first");
 
   useEffect(() => {
@@ -78,56 +79,65 @@ export default function ServiceExtra() {
   };
 
   return (
-    <div className="main-container p-0">
-      <div className="flex flex-col justify-center items-center pt-custom-24 mx-auto">
-        <div className="text-custom-13 text-[#02227E]">
-          <span>Service/Extra’s</span>
-        </div>
-        <div className="w-full px-2 overflow-x-auto">
-          <div className="w-full flex flex-row justify-between items-center mt-4">
-            <div className="w-[100px] flex flex-col justify-center items-left">
-              <span className="text-[14px] font-bold text-[#026EFF]">
+    <div className="container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Service/Extra’s"} />
+      </div>
+      <div className="relative">
+        <div className="">
+          <div className="grid grid-cols-12 sm:gap-[24px] gap-[16px]">
+            <div className=" sm:col-span-4 col-span-3">
+              <span className="text-white items-center mt-4 text-[14px] font-[500]">
                 Service
               </span>
             </div>
-            <div className="w-[160px] flex flex-col justify-center items-left">
-              <span className="text-[14px] font-bold text-[#026EFF]">
-                Included
+            <div className="sm:col-span-4 col-span-5">
+              <span className="text-white items-center mt-5 text-[14px] font-[500]">
+                Included/Extra
               </span>
             </div>
-            <div className="w-[100px] flex flex-col justify-center items-left">
-              <span className="text-[14px] font-bold text-[#026EFF]">
-                Extra
+            <div className="col-span-4">
+              <span className="text-white items-center mt-4 text-[14px] font-[500]">
+                Amount
               </span>
-            </div>
-            <div className="w-[80px] flex flex-col justify-left items-left currency-part">
-              <Selecter
-                options={currencyOptions}
-                value={currency}
-                onChange={(e) => changeCurrency(e)}
-                className="text-[8px] text-right font-bold text-[#026EFF] txt-custom-color-4 shadow-none focus-visible:border-0 focus-visible:border-white px-1 py-2"
-                textSize="8px"
-                textColor="#026EFF"
-              />
             </div>
           </div>
+          <div className="absolute right-0 md:top-[-5px] top-[50px]">
+            <SelectBox
+              options={currencyOptions}
+              value={currency}
+              onChange={(e) => changeCurrency(e)}
+              className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px]"
+              size={"h-[42px]"}
+              textAlign={"text-left"}
+              rounded={"rounded-2xl"}
+              fontWeight={"font-bold"}
+              textColor={"text-white"}
+              textSize={"text-[14px]"}
+            />
+          </div>
 
-          <div className="w-full flex flex-col justify-center items-center data-item">
+
+
+          <div className="sm:w-full w-[calc(100vw-32px)] mx-auto overflow-auto scrollbar-hidden">
             {rows?.map((item, i) => {
               console.log("Checkig itemsss", item);
               return (
-                <div className="w-full flex flex-row justify-between items-center mt-5 gap-[5px]">
-                  <div className="w-[210px] flex flex-col justify-center items-center">
-                    <span className="text-[14px] font-medium text-center">
+                <div className="w-full grid grid-cols-12 mt-5 sm:gap-[24px] gap-[16px]">
+                  <div className="sm:col-span-4 col-span-3">
+                    <span className="text-[14px] font-normal text-white">
                       {item?.servicesName}
                     </span>
                   </div>
-                  <div className="w-[160px] flex flex-col justify-center items-center input-select-box">
+                  <div className="w-full flex flex-col justify-center items-center input-select-box sm:col-span-4 col-span-5">
                     <SelectBox
                       options={item?.options}
-                      className="font-bold h-[33px] w-5/6"
-                      borderNone={true}
+                      className1="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
                       value={item?.service}
+                      size={"h-[49px]"}
+                      textAlign={"text-left"}
+                      fontWeight={"font-bold"}
+                      textColor={"text-[#ffffff]"}
                       textSize={"text-[14px]"}
                       onChange={(e) => {
                         const updatedRows = [...rows];
@@ -136,12 +146,12 @@ export default function ServiceExtra() {
                       }}
                     />
                   </div>
-                  <div className="w-[100px] flex flex-col justify-center items-center">
+                  <div className="w-full flex justify-center items-center gap-2 col-span-4">
                     <InputText
                       value={item?.amount}
-                      className="w-full text-[12px] font-bold"
-                      size="35px"
+                      className="w-full text-[12px] border text-white border-[#919EAB33] rounded-[10px] py-2 px-2"
                       disabled={item?.service === "Included"}
+                      placeholder="Enter amount"
                       onChange={(e) => {
                         const updatedRows = [...rows];
                         updatedRows[i].amount = e.target.value;
@@ -149,21 +159,18 @@ export default function ServiceExtra() {
                       }}
                       border={errors[i] && `#ef4444`}
                     />
-                  </div>
-                  <div className="w-[80px] flex flex-col justify-center items-center">
-                    <span className="text-[12px] font-bold">{currency}</span>
+                    <div className="w-[80px] flex flex-col justify-center items-center">
+                      <span className="text-[14px] font-medium text-white">{currency}</span>
+                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
         </div>
-        <div className="flex w-full items-center justify-center w-full max-w-[420px] my-5">
+        <div className="flex items-center justify-center w-full max-w-[500px] mx-auto sm:my-[48px] my-[24px]">
           <Button
-            className={
-              "flex items-center w-[249px] py-2 my-2 w-fit max-w-[270px] justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] py-2 rounded-xl"
-            }
-            text={"Submit>>"}
+            text={"Submit"}
             size="42px"
             onClick={handleSubmit}
           />

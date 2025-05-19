@@ -5,7 +5,7 @@ import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import Button from "../../../components/Button";
 import Modal from "react-modal";
@@ -26,7 +26,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment/moment";
 import DateGuardService from "../../../services/DateGuardService";
-
+import Header from "../../../components/Header/Header";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import PageTitle from "../../../components/PageTitle";
 const locales = {
   "en-US": enUSLocale,
 };
@@ -61,29 +63,29 @@ const myEventsList = [
   },
 ];
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    backgroundColor: "#3760CB",
-    width: "90vw",
-    // height: "421px",
-    zIndex: 20,
-    borderRadius: "30px",
-    border: "2px solid black",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "start",
-    padding: "20px 15px",
-    overflow: "auto",
-    maxWidth: "500px",
-  },
-};
+// const customStyles = {
+//   content: {
+//     top: "50%",
+//     left: "50%",
+//     right: "auto",
+//     bottom: "auto",
+//     marginRight: "-50%",
+//     transform: "translate(-50%, -50%)",
+//     backgroundColor: "#3760CB",
+//     width: "90vw",
+//     // height: "421px",
+//     zIndex: 20,
+//     borderRadius: "30px",
+//     border: "2px solid black",
+//     display: "flex",
+//     flexDirection: "column",
+//     alignItems: "center",
+//     justifyContent: "start",
+//     padding: "20px 15px",
+//     overflow: "auto",
+//     maxWidth: "500px",
+//   },
+// };
 
 // const localizer = momentLocalizer(moment);
 // const DnDCalendar = withDragAndDrop(Calendar);
@@ -103,7 +105,6 @@ export default function CalendarSchedules() {
   const navigate = useNavigate();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const userType = UserDetails?.user_type; //'companion-provider'
-
   const getschedule = useSelector((state) => state?.Calendar?.getschedule);
 
   const [selectEvent, setSelectEvent] = useState();
@@ -291,14 +292,14 @@ export default function CalendarSchedules() {
       <div className="input-group">
         <input
           type="text"
-          className="form-control"
+          className="form-control text-black"
           onClick={props.onClick}
           value={props.value}
           onChange={props.onChange}
         />
         <div className="input-group-append">
           <span className="input-group-text">
-            <FontAwesomeIcon icon={faCalendar} />
+            <FontAwesomeIcon icon={faCalendar} className="!text-[#060C4D]" />
           </span>
         </div>
       </div>
@@ -362,8 +363,8 @@ export default function CalendarSchedules() {
     return (
       <div className="my-custom-toolbar flex w-full">
         <button
-          className={`border-2 w-full min-w-fit border-[#000000] pl-3 pr-3 h-[48px] font-bold text-[23.4px] text-[#000000]
-          ${view === views.MONTH && "bg-[#D9D9D9]"}`}
+          className={` w-full min-w-fit border border-[#919EAB33]  pl-3 pr-3 h-[48px] font-bold text-base text-white
+          ${view === views.MONTH && "bg-[linear-gradient(161.64deg,_rgba(255,_255,_255,_0.24)_0%,_rgba(255,_255,_255,_0.24)_98.85%)]"}`}
           onClick={() => {
             onView(views.MONTH);
             setStartDate(new Date()); // Reset to current month
@@ -373,8 +374,8 @@ export default function CalendarSchedules() {
           Month
         </button>
         <button
-          className={`border-2 w-full min-w-fit border-[#000000] pl-3 pr-3 h-[48px] font-bold text-[23.4px] text-[#000000]
-          ${view === views.WEEK && "bg-[#D9D9D9]"}`}
+          className={` w-full min-w-fit border border-[#919EAB33]  pl-3 pr-3 h-[48px] font-bold text-base text-white
+          ${view === views.WEEK && "bg-[linear-gradient(161.64deg,_rgba(255,_255,_255,_0.24)_0%,_rgba(255,_255,_255,_0.24)_98.85%)]"}`}
           onClick={() => {
             goToWeekView();
           }}
@@ -383,16 +384,16 @@ export default function CalendarSchedules() {
           Week
         </button>
         <button
-          className={`border-2 w-full min-w-fit border-[#000000] pl-3 pr-3 h-[48px] font-bold text-[23.4px] text-[#000000]'
-          ${view === views.DAY && "bg-[#D9D9D9]"}`}
+          className={` w-full min-w-fit border border-[#919EAB33]  pl-3 pr-3 h-[48px] font-bold text-base text-white
+          ${view === views.DAY && "bg-[linear-gradient(161.64deg,_rgba(255,_255,_255,_0.24)_0%,_rgba(255,_255,_255,_0.24)_98.85%)]"}`}
           onClick={goToDayView}
           disabled={view === views.DAY}
         >
           Day
         </button>
         <button
-          className={`border-2 w-full min-w-fit border-[#000000] pl-3 pr-3 h-[48px] font-bold text-[23.4px] text-[#000000]
-          ${view === views.AGENDA && "bg-[#D9D9D9]"}`}
+          className={` w-full min-w-fit border border-[#919EAB33]  pl-3 pr-3 h-[48px] font-bold text-base text-white
+          ${view === views.AGENDA && "bg-[linear-gradient(161.64deg,_rgba(255,_255,_255,_0.24)_0%,_rgba(255,_255,_255,_0.24)_98.85%)]"}`}
           onClick={() => {
             const startOfMonth = new Date(startDate);
             startOfMonth.setDate(1); // Start of the current month
@@ -446,101 +447,93 @@ export default function CalendarSchedules() {
   };
 
   return (
-    <div className="main- px-0">
-      <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="w-full mx-auto flex flex-row p-2 justify-between items-center">
-          <div
-            className="w-[30px] cursor-default text-white text-lg rounded-md font-[700] grid place-items-center border-2 border-white"
-            onClick={() => changeMonth("prev")}
-          >
-            &lt;
-          </div>
-          <div className="flex items-center">
-            <div>
-              <div className="font-[700] text-white text-[24px]">
-                {format(startDate, "MMMM")}
+    <div className="min-h-[calc(100vh-[282px)]">
+      <div className="container">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={"Calendar"} />
+        </div>
+        <div className="w-full mx-auto flex flex-col justify-center items-center sm:my-[48px] my-[24px]">
+          <div className="w-full mx-auto flex flex-row p-2 justify-center items-center gap-[24px] bg-[#FFFFFF14] border border-[#919EAB33] border-b-0">
+            <div
+              className="w-[30px] cursor-pointer text-white text-lg rounded-md font-[700] flex justify-center  "
+              onClick={() => changeMonth("prev")}
+            >
+              <img src="/images/setup/prev-icon.svg" alt="prev" />
+            </div>
+            <div className="flex items-center py-[10px]">
+              <div>
+                <div className="font-semibold text-white text-xl">
+                  {format(startDate, "MMMM")} {format(startDate, "yyyy")}
+                </div>
               </div>
-              <div className="font-[700] text-white text-[24px]">
-                {format(startDate, "yyyy")}
+              <div className="cursor-pointer" onClick={() => navigate("/schedule")}>
+                <FontAwesomeIcon
+                  icon={faPenToSquare}
+                  color="#fff"
+                  className="text-lg pl-2"
+                />
               </div>
             </div>
-            <Link to={"/schedule"}>
-              <FontAwesomeIcon
-                icon={faPenToSquare}
-                color="#fff"
-                className="text-3xl pl-2"
-              />
-            </Link>
-          </div>
-          <div
-            className="w-[30px] cursor-default text-white text-lg rounded-md font-[700] grid place-items-center border-2 border-white"
-            onClick={() => changeMonth("next")}
-          >
-            &gt;
-          </div>
-        </div>
-        <div className="bg-[#3760CB] px-4 max-[500px]:px-0 w-full">
-          <div className="bg-white w-full">
-            <Calendar
-              components={{
-                dateCellWrapper: (props) => (
-                  <TouchCellWrapper {...props} onSelectSlot={onSelectSlot} />
-                ),
-                toolbar: CustomToolbar,
-              }}
-              localizer={localizer}
-              eventPropGetter={eventStyleGetter}
-              events={monday}
-              startAccessor="start"
-              endAccessor="end"
-              style={{
-                height: 650,
-                width: "100%",
-                backgroundColor: "white",
-              }}
-              resizable
-              selectable
-              // onSelectSlot={onSelectSlot}
-              onShowMore={(events, date) => setStartDate(date)}
-              onSelectEvent={handleSelectEvent}
-              views={["month", "week", "day", "agenda"]}
-              defaultDate={moment().toDate()}
-              defaultView="month"
-              date={startDate}
-            />
-
-            <Modal
-              isOpen={isOpen}
-              onRequestClose={closeModal}
-              style={customStyles}
-              contentLabel="Example Modal"
+            <div
+              className="w-[30px] cursor-pointer text-white text-lg rounded-md font-[700] flex justify-center  "
+              onClick={() => changeMonth("next")}
             >
-              <button
-                onClick={() => setIsOpen(false)}
-                className="absolute top-2 right-2"
+              <img src="/images/setup/next-icon.svg" alt="next" />
+            </div>
+          </div>
+          <div className=" max-[500px]:px-0 w-full">
+            <div className=" w-full">
+              <Calendar
+                components={{
+                  dateCellWrapper: (props) => (
+                    <TouchCellWrapper {...props} onSelectSlot={onSelectSlot} />
+                  ),
+                  toolbar: CustomToolbar,
+                }}
+                localizer={localizer}
+                eventPropGetter={eventStyleGetter}
+                events={monday}
+                startAccessor="start"
+                endAccessor="end"
+                style={{
+                  height: 600,
+                  width: "100%",
+                  backgroundColor: "#FFFFFF14",
+                }}
+                resizable
+                selectable
+                // onSelectSlot={onSelectSlot}
+                onShowMore={(events, date) => setStartDate(date)}
+                onSelectEvent={handleSelectEvent}
+                views={["month", "week", "day", "agenda"]}
+                defaultDate={moment().toDate()}
+                defaultView="month"
+                date={startDate}
+              />
+
+              <Modal
+                isOpen={isOpen}
+                onRequestClose={closeModal}
+                contentLabel="Example Modal"
+                className={
+                  "bg-[#FFFFFF] relative mx-auto  rounded-[16px] sm:p-[24px] p-[16px] w-[90%] max-w-[600px] overflow-y-auto "
+                }
               >
-                <img
-                  src="/images/Mask group-close.png"
-                  alt=""
-                  width="30px"
-                  height="30px"
-                />
-              </button>
-              <div className="w-full mx-auto flex flex-col justify-start items-center">
-                <div className="w-full mx-auto flex flex-row justify-between items-center px-8 gap-[7px]">
-                  <div className="flex flex-col justify-center items-start">
-                    <div>
-                      <span className="font-bold text-[18px] text-white">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                >
+                  <IoCloseCircleOutline size={26} />
+                </button>
+                <div className="w-full h-[100%] flex flex-col justify-between">
+                  <div>
+                    <div className="mb-[50px]">
+                      <h3 className="font-bold text-center sm:text-[18px] text-[14px] sm:w-[90%] w-[70%] mx-auto text-black break-all text-wrap">
                         Appt ID# {selectEvent?.id}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-[18px] text-white">
                         {UserDetails?.user_type}
-                      </span>
-                    </div>
-                  </div>
-                  {/*
+                      </h3>
+
+                      {/*
                    <div className="w-[100px]">
                     <Select
                       value={status}
@@ -595,94 +588,98 @@ export default function CalendarSchedules() {
                       
                   </div>
                  */}
-                </div>
-                <div className="w-full mx-auto h-[3px] bg-[#F5F6F7] mt-6"></div>
-                <div className="w-full mx-auto flex flex-row justify-start items-center px-8 py-4">
-                  <button>
-                    <div className="flex justify-start items-center">
-                      <img
-                        src={"/images/CalendarModalLocation.png"}
-                        alt="Calendar Modal Location"
-                      />
                     </div>
-                  </button>
-                  <div className="ml-6">
-                    <span className="font-bold text-[16px] text-white">
-                      {selectEvent?.type}
-                    </span>
+                    <div className="flex items-center gap-5 w-full mb-[12px]">
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">Location</p>
+                      <h6 className="font-normal text-[14px] text-black">
+                        {selectEvent?.type}
+                      </h6>
+                    </div>
+                    <div className="flex items-center gap-5 w-full mb-[12px]">
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">Client Name & ID</p>
+                      <h6 className="font-normal text-[14px] text-black">
+                        {
+                          selectEvent?.[
+                            userType === "client-hobbyist"
+                              ? "companionId"
+                              : "clientId"
+                          ]?.name
+                        }{" "}
+                        <span className="uppercase">
+                          (
+                          {
+                            selectEvent?.[
+                              userType === "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.vaiID
+                          }
+                          )
+                        </span>
+                      </h6>
+                    </div>
+                    <div className="flex items-center gap-5 w-full mb-[8px]">
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">Descriptions </p>
+                      <h6 className="font-normal text-[14px] text-black">
+                        {selectEvent?.title}
+                      </h6>
+                    </div>
+                    <div className="flex items-center gap-5 w-full mb-[8px]">
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">start time </p>
+                      <h6 className="font-normal text-[14px] text-black">
+                        {new Date(selectEvent.startDateTime).toLocaleString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: false,
+                          timeZone: 'UTC'
+                        }).replace(',', ' -')}
+                      </h6>
+                    </div>
+                    <div className="flex items-center gap-5 w-full mb-[8px]">
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">end time </p>
+                      <h6 className="font-normal text-[14px] text-black">
+                        {new Date(selectEvent.endDateTime).toLocaleString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: false,
+                          timeZone: 'UTC'
+                        }).replace(',', ' -')}
+                      </h6>
+                    </div>c
+                    {/* <div className="w-full mx-auto flex flex-row justify-between items-center gap-2 relative py-2 calendar-picker ">
+                      <DatePicker
+                        showIcon
+                        showTimeSelect
+                        dateFormat="P"
+                        selected={selectEvent?.start}
+                        // onChange={(date) => setStartDate(date)}
+                        customInput={<CustomInput />}
+                      />
+                      <div className="calendar-picker-divider"></div>
+                      <DatePicker
+                        showIcon
+                        showTimeSelect
+                        dateFormat="p"
+                        selected={selectEvent?.start}
+                        // onChange={(date) => setStartDate(date)}
+                        customInput={<CustomInput />}
+                      />
+                    </div> */}
                   </div>
+                  <Button text={'View'} onClick={() => navigateToviewall(selectEvent)} className={'secondary-btn !mt-[24px] sm:mt-auto'} />
                 </div>
-                <div className="w-full mx-auto h-[3px] bg-[#F5F6F7]"></div>
-                <div className="w-full mx-auto flex flex-row justify-between items-center relative px-7 py-2">
-                  <DatePicker
-                    showIcon
-                    showTimeSelect
-                    dateFormat="P"
-                    selected={selectEvent?.start}
-                    // onChange={(date) => setStartDate(date)}
-                    customInput={<CustomInput />}
-                  />
-                  <div className="calendar-picker-divider"></div>
-                  <DatePicker
-                    showIcon
-                    showTimeSelect
-                    dateFormat="p"
-                    selected={selectEvent?.start}
-                    // onChange={(date) => setStartDate(date)}
-                    customInput={<CustomInput />}
-                  />
-                </div>
-                <div className="w-full mx-auto h-[3px] bg-[#F5F6F7]"></div>
-                <div className="w-full mx-auto flex flex-row justify-start items-center relative px-7 py-2">
-                  <img
-                    src={"/images/CalendarPersons.png"}
-                    alt="Calendar Persons"
-                  />
-                  <span className="ml-6 font-bold text-[16px] text-white">
-                    {
-                      selectEvent?.[
-                        userType === "client-hobbyist"
-                          ? "companionId"
-                          : "clientId"
-                      ]?.name
-                    }{" "}
-                    <span className="uppercase">
-                      (
-                      {
-                        selectEvent?.[
-                          userType === "client-hobbyist"
-                            ? "companionId"
-                            : "clientId"
-                        ]?.vaiID
-                      }
-                      )
-                    </span>
-                  </span>
-                </div>
-                <div className="w-full mx-auto h-[3px] bg-[#F5F6F7]"></div>
-                <div className="w-full mx-auto flex flex-row justify-start items-center relative px-7 py-3">
-                  <img
-                    src={"/images/CalendarEditIcon.png"}
-                    alt="Calendar Edit Icons"
-                  />
-                  <span className="ml-6 font-bold text-[16px] text-white">
-                    {selectEvent?.title}
-                  </span>
-                </div>
-                <div className="w-full mx-auto flex flex-row justify-around items-center mt-2">
-                  <button
-                    onClick={() => navigateToviewall(selectEvent)}
-                    className="w-[144px] bg-gradient-to-t from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[18px] text-[#040C50] py-1 border-gray-100 border-2"
-                  >
-                    Edit
-                  </button>
-                </div>
-              </div>
-            </Modal>
-          </div>
-          {/* <div className="mt-6 w-[218px]">
+              </Modal>
+            </div>
+            {/* <div className="mt-6 w-[218px]">
                     <Button text="Calendar" className='font-bold text-[23.4px] text-[#040C50]'/>
                 </div> */}
+          </div>
         </div>
       </div>
     </div>

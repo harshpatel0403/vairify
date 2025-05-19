@@ -57,7 +57,7 @@ export default function SearchBox({
           />
           <button
             type="submit"
-            className="absolute  right-[30px]  top-3 extra-small-search"
+            className="absolute  right-[50px]  top-3 extra-small-search"
           >
             <FontAwesomeIcon
               icon={faSearch}

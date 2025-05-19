@@ -9,8 +9,8 @@ export function generateTimeSlots(durationMinutes, startHour, endHour, bufferMin
     const blackoutDate = moment();
     const blackoutDay = blackoutDate.date();
     const blackoutMonth = blackoutDate.month();
-    
-    
+
+
     if (blackOutPeriod?.selectedDate) {
         const selectedDate = moment(blackOutPeriod?.selectedDate);
         const selectedDay = selectedDate.date();
@@ -21,7 +21,6 @@ export function generateTimeSlots(durationMinutes, startHour, endHour, bufferMin
         end.set('month', selectedMonth)
     }
 
-    console.log(start, end, start.isBefore(end), "Slot date")
     while (start.isBefore(end)) {
         const slotStartDate = moment(start);
         const slotStart = start.format('h:mma');
@@ -29,7 +28,7 @@ export function generateTimeSlots(durationMinutes, startHour, endHour, bufferMin
         if (slotEndDate.isAfter(end)) {
             break;
         }
-        
+
         const currentTime = moment();
         const slotEnd = slotEndDate.format('h:mma');
 
@@ -39,9 +38,8 @@ export function generateTimeSlots(durationMinutes, startHour, endHour, bufferMin
             .set('month', blackoutMonth)
             .set('hours', currentTime.hours())
             .set('minutes', currentTime.minutes())
-            .add(parseInt(blackOutPeriod?.hr) || 0, 'hour')
-            .add(parseInt(blackOutPeriod?.min) || 0, 'minute');
-
+        // .add(parseInt(blackOutPeriod?.hr) || 0, 'hour')
+        // .add(parseInt(blackOutPeriod?.min) || 0, 'minute');
 
         let isBooked = false;
 
@@ -70,6 +68,7 @@ export function generateTimeSlots(durationMinutes, startHour, endHour, bufferMin
 
     return timeSlots;
 }
+
 
 export function addMinutesToTime(inputTime, minutesToAdd) {
     const inputMoment = moment(inputTime, 'h:mma');

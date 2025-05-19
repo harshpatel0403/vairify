@@ -3,10 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { useSelector } from "react-redux";
 import PlansServices from "../../services/PlansServices";
+import BackButton from "../../components/BackButton/backArrowButton";
+import { useTranslation } from "react-i18next";
 // import toast from 'react-toastify'
 
 const Migration = () => {
   const { state: PlansData } = useLocation();
+  const { t } = useTranslation();
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const UserType = UserData?.user_type;
   const [migrationData, setMigrationData] = useState([]);
@@ -99,132 +102,82 @@ const Migration = () => {
   // };
 
   return (
-    <div className="w-full mx-auto bg-[#B9BBCB] flex justify-center items-center rounded-3xl mx-auto">
-      <div className="flex flex-col justify-center max-w-[420px]">
-        <div className="grid grid-cols-1 grid-flow-col gap-4">
-          <div className="relative flex flex-col justify-start items-center">
-            {/* <div className="relative top-6">
-            <img
-              src={import.meta.env.BASE_URL + "images/VectorLogo1.png"}
-              alt="Vector Logo 1"
-            />
+    <div className="signup-backgound-design">
+      <div className="signup-container container">
+        <div className="signup-content relative">
+          <div className="backnavigation"><BackButton /></div>
+          <div className="logo-img-container">
+            <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+            <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
           </div>
-          <div className="relative bottom-2 left-4">
-            <img
-              src={import.meta.env.BASE_URL + "images/VectorLogo2.png"}
-              alt="Vector Logo 2"
-            />
-          </div> */}
 
-            <div className="relative flex flex-col justify-start items-center my-7">
-              <div className="relative">
-                <img
-                  width={"250px"}
-                  src={"/images/chainpass_id_logo.png"}
-                  alt="asdf"
-                />
-              </div>
+          <div className="sm:mt-[64px] mt-[32px] mb-[24px]">
+            <div className="flex flex-col items-center justify-center gap-[20px]">
+              <img src='/images/face-verification/shope.svg' alt='img' />
+              <img src={"/images/face-verification/chainpass.svg"} alt="asdf" />
             </div>
 
-            <div className="relative mb-3">
-              <span className="font-black text-[21.6px] text-[#4E4B95]">
-                Migration Special
-              </span>
-            </div>
-          </div>
-        </div>
 
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-2">
-          <span className="font-medium text-[22.5px] leading-6 text-[#000000]">
-          Exclusive limited-time offer: Unlock the TruRevu special at sign-up – one-time eligibility only!
-          </span>
-        </div>
+            <h4 className='sm:text-[28px] text-[24px] font-semibold text-white text-center mb-[8px]'>{t("migration.title")}</h4>
+            <h5 className='sm:text-[18px] text-[16px] font-normal text-white opacity-70 text-center mb-[8px]'> {t("migration.tagline")}</h5>
+            <h4 className='sm:text-[28px] text-[24px] font-semibold text-white text-center mb-[8px]'>{t("migration.offerTitle")}</h4>
+            <h5 className='sm:text-[18px] text-[16px] font-normal text-white opacity-70 text-center mb-[8px]'>{t("migration.description1")}</h5>
+            <h5 className='sm:text-[18px] text-[16px] font-normal text-white opacity-70 text-center mb-[8px]'> {t("migration.description2")}</h5>
+            <h5 className='sm:text-[18px] text-[16px] font-normal text-white opacity-70 text-center mb-[8px]'><span className="line-through">$50.00</span> $25.00</h5>
 
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-2">
-          <span className="text-[28.8px] text-[#0261FF] leading-7 pt-2 pb-2 font-bold">
-            50% off TruRevu Migration
-            Special
-          </span>
-        </div>
 
-        <div className="mx-auto flex flex-col justify-center max-w-[340px] items-center mt-2 text-left text-justify-width">
-          <span className="text-[16px] text-center text-[#000000]">
-            We will assign an agent to gather your reviews on the web and assign
-            them to your TruRevu. This
-            grand opening special will only be available 60 days from our
-            opening
-          </span>
-        </div>
 
-        <div className="mx-auto max-w-[340px] mt-5 mb-5 flex flex-col justify-start items-center  text-justify-width">
-          <span className="text-[16px] text-center text-[#000000]">
-            “Its your reputation{" "}
-            <span className="text-[20px] font-bold text-left">TruRevu</span> will help you
-            take control of it”
-          </span>
-        </div>
-
-        {migrationData &&
-          migrationData?.map((item, index) => {
-            return (
-              <>
-                <div className="flex items-center justify-center mb-4">
-                  <label className="ml-4 block text-gray-700 font-medium text-sm text-left">
-                    <div className="flex flex-row justify-center items-center">
-                      <div className="w-[70px] h-[60px] p-0 m-0 relative flex items-center justify-center">
-                        <span className="font-bold text-[18px] text-[#000000]">
-                          {`${item?.currency}${item?.amount}.00`}
-                        </span>
-                        <div
-                          className="w-[70px] h-[42px] discounted-value absolute"
-                          style={{ borderBottom: "1px solid black" }}
-                        ></div>
-                      </div>
-                      <div className="w-[90px] h-[50px] p-0 m-0 flex items-center justify-center">
-                        <span className="font-bold text-[18px] text-[#000000]">
-                          {`${item?.currency}${item?.finalAmount}.00`}
-                        </span>
-                      </div>
+            {migrationData &&
+              migrationData?.map((item, index) => {
+                return (
+                  <>
+                    <div className="flex items-center justify-center mb-4">
+                      <label className="ml-4 block text-gray-700 font-medium text-sm text-left">
+                        <div className="flex flex-row justify-center items-center">
+                          <div className="w-[70px] h-[60px] p-0 m-0 relative flex items-center justify-center">
+                            <span className="font-bold text-[18px] text-[#000000]">
+                              {`${item?.currency}${item?.amount}.00`}
+                            </span>
+                            <div
+                              className="w-[70px] h-[42px] discounted-value absolute"
+                              style={{ borderBottom: "1px solid black" }}
+                            ></div>
+                          </div>
+                          <div className="w-[90px] h-[50px] p-0 m-0 flex items-center justify-center">
+                            <span className="font-bold text-[18px] text-white">
+                              {`${item?.currency}${item?.finalAmount}.00`}
+                            </span>
+                          </div>
+                        </div>
+                      </label>
                     </div>
-                  </label>
-                </div>
 
-                <div className="w-full mx-auto flex flex-row justify-around gap-7 items-center mb-5">
-                  <button
-                    className="w-full rounded-[12px] flex items-center justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)] max-w-[120px]"
-                    onClick={() => HandleClick(true, item)}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    className="w-full rounded-[12px] flex items-center justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)] max-w-[120px]"
-                    onClick={() => HandleClick(false, item)}
-                  >
-                    No
-                  </button>
-                  {/* <Button
-          className={
-            "flex items-center justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)] max-w-[120px] "
-          }
-          text={"Yes"}
-          size="45px"
-          onClick={HandleClick}
-        />
-        <Button
-          className={
-            "flex items-center justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)] max-w-[120px] "
-          }
-          text={"No"}
-          size="45px"
-          onClick={HandleOnClick}
-        /> */}
-                </div>
-              </>
-            );
-          })}
+                    <div className="w-full mx-auto flex flex-row justify-around gap-7 items-center mb-8">
+                      <button
+                        className="w-full bg-[#E8EBF0] text-[#0247FF] hover:text-white hover:bg-[#0247FF] font-semibold text-[15px] p-[12px] rounded-[8px] transition-all duration-300 ease-in-out"
+                        onClick={() => HandleClick(true, item)}
+                      >
+                        {t("migration.buttonYes")}
+                      </button>
+                      <button
+                        className="w-full bg-[#FFFFFF29] font-semibold text-[15px] text-white hover:bg-[#0247FF] p-[12px] rounded-[8px] transition-all duration-300 ease-in-out"
+                        onClick={() => HandleClick(false, item)}
+                      >
+                        {t("migration.buttonNo")}
+                      </button>
+                    </div>
+                  </>
+                );
+              })}
+          </div>
+        </div>
       </div>
     </div>
+
   );
 };
 
 export default Migration;
+
+
+

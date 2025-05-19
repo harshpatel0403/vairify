@@ -1,4 +1,7 @@
 import { instance as axios } from "../../services/httpService";
+import KycService from "../../services/KycService";
+import PaySubscriptionServices from "../../services/PaySubscriptionServices";
+import UserService from "../../services/userServices";
 
 export const HandleSignUp = (data) => {
   return async (dispatch) => {
@@ -26,10 +29,11 @@ export const HandleLogIn = (data) => {
         type: "LOGIN",
         payload: response,
       });
+
     } catch (err) {
       return dispatch({
         type: "SET_LOADING",
-        payload: err.message,
+        payload: err,
       });
     }
   };
@@ -106,6 +110,61 @@ export const HandleUser = (data) => {
   };
 };
 
+export const uploadFaceVerificationImage = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await UserService.uploadFaceVerificationImage(data);
+      dispatch({
+        type: "UPDATE_FACE_VERIFICATION_IMAGE",
+        payload: res?.faceVerificationImage,
+      });
+
+      return res;
+    } catch (err) {
+      dispatch({
+        type: "SET_LOADING",
+        payload: err.response,
+      });
+    }
+  };
+};
+
+export const membershipSubscribe = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await PaySubscriptionServices.subscribeMembership(data);
+      dispatch({
+        type: "PURCHASE_MEMBERSHIP",
+        payload: res,
+      });
+
+      return res;
+    } catch (err) {
+      dispatch({
+        type: "SET_LOADING",
+        payload: err.response,
+      });
+    }
+  };
+};
+
+export const isKycCompletedStatus = (data) => {
+  return async (dispatch) => {
+    try {
+      const res = await KycService.checkResult(data);
+      dispatch({
+        type: "IS_KYC_COMPLETED_STATUS",
+        payload: res?.data?.isKycCompleted,
+      });
+      return res;
+    } catch (err) {
+      dispatch({
+        type: "SET_LOADING",
+        payload: err.response,
+      });
+    }
+  };
+};
 export const SendOTP = (data) => {
   console.log("🚀 ~ file: Auth.jsx:43 ~ SendOTP ~ data:", data);
   return async (dispatch) => {
@@ -116,6 +175,24 @@ export const SendOTP = (data) => {
       response.email = data;
       return dispatch({
         type: "SEND_OTP",
+        payload: response,
+      });
+    } catch (err) {
+      return dispatch({
+        type: "SET_LOADING",
+        payload: err.response,
+      });
+    }
+  };
+};
+
+export const ResendOTP = (data) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(`/users/resendOtpCode`, data);
+      response.email = data;
+      return dispatch({
+        type: "RESEND_OTP",
         payload: response,
       });
     } catch (err) {

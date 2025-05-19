@@ -4,8 +4,12 @@ export default {
   theme: {
     extend: {
       screens: {
-        xs: "375px", //Added For Extra Small Screen
+        xs: "375px",
+        'max-sm': { 'max': '640px' },
       },
+      colors: {
+        blue:'#060C4D'
+      }
     },
   },
   plugins: [],

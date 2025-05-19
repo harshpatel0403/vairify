@@ -7,6 +7,7 @@ const initialState = {
   language: "",
   country: [],
   savedLocations: [],
+  loading: true,
 };
 
 export const HandleAuth = (state = initialState, action) => {
@@ -29,6 +30,7 @@ export const HandleAuth = (state = initialState, action) => {
     case "UPDATE_USER":
       return {
         ...state,
+        loading: false,
         Auth: {
           ...state?.Auth,
           data: {
@@ -37,6 +39,56 @@ export const HandleAuth = (state = initialState, action) => {
           },
         },
       };
+
+    case "UPDATE_FACE_VERIFICATION_IMAGE":
+      return {
+        ...state,
+        loading: false,
+        Auth: {
+          ...state?.Auth,
+          data: {
+            ...state?.Auth?.data,
+            user: {
+              ...state?.Auth?.data?.user,
+              faceVerificationImage: action.payload,
+            },
+          },
+        },
+      };
+
+    case "PURCHASE_MEMBERSHIP":
+      return {
+        ...state,
+        loading: false,
+        Auth: {
+          ...state?.Auth,
+          data: {
+            ...state?.Auth?.data,
+            user: {
+              ...state?.Auth?.data?.user,
+              subscription: action?.payload?.subscription,
+              kyc: action?.payload?.kyc
+            },
+          },
+        },
+      };
+
+      case "IS_KYC_COMPLETED_STATUS":
+      return {
+        ...state,
+        loading: false,
+        Auth: {
+          ...state?.Auth,
+          data: {
+            ...state?.Auth?.data,
+            user: {
+              ...state?.Auth?.data?.user,
+              isKycCompleted: action.payload,
+            },
+          },
+        },
+      };
+
     case "GET_MY_FOLLOWERS":
       return {
         ...state,
@@ -69,6 +121,11 @@ export const HandleAuth = (state = initialState, action) => {
       return {
         ...state,
         OTPEmail: action.payload?.email,
+      };
+    case "RESEND_OTP":
+      return {
+        ...state,
+        OTPEmail: action.payload,
       };
     case "RESET_PASSWORD":
       return {
@@ -107,8 +164,7 @@ export const HandleAuth = (state = initialState, action) => {
       };
 
     case "SET_LOADING":
-      return { ...state, error: action?.payload?.response };
-
+      return { ...state, loading: false, error: action?.payload?.response };
     default:
       return state;
       break;

@@ -8,6 +8,8 @@ import DetectRTC from "detectrtc";
 import { useSelector } from "react-redux";
 import VaridateService from "../../../services/VaridateServices";
 import { BrowserQRCodeReader } from "@zxing/library";
+import Loading from "../../../components/Loading/Index";
+import PageTitle from "../../../components/PageTitle";
 
 const videoConstraints = {
   width: 400,
@@ -248,35 +250,32 @@ export default function ScanQR() {
 
   if (!hasCamara) {
     return (
-      <div className="main-container">
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-          <div className="w-full mx-auto flex items-center justify-center gap-3">
-            <div className="bg-[#ff0000] rounded-full w-[50px]">
-              <img src="/images/close-btn.svg" className="w-full" />
-            </div>
-            <span className="font-bold text-[30px] text-[#05B7FD] change-font-family">
-              Camara not found
-            </span>
-          </div>
+      <div className="container py-[48px]">
+        <div className="w-full mx-auto flex flex-col justify-center items-center sm:gap-[48px] gap-[24px]">
+          <h6 className="text-[28px] text-center font-semibold text-white ">Camera not found</h6>
+          <img src="/images/face-verification/camera-not-found.svg" alt="camera not found" />
+          {/* <button onClick={handleSendRequest}>accept</button> */}
+          <p className="text-[18px] max-w-[90%] md:max-w-[70%] text-center font-medium text-[#E43530]">
+            You can not use face verification feature on this device, please
+            retry in your mobile or a device which has working camara.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="main-container">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
+    <div className="container mb-[48px]">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle isSmall={true} title={"Scan Vai Now QR"} />
+      </div>
+      <div className="w-full mx-auto flex flex-col justify-center items-center ">
         <div className="w-full mx-auto flex items-center justify-center">
-          <span className="font-bold text-[30px] text-[#05B7FD] change-font-family">
-            Scan Vai Now QR
-          </span>
-        </div>
-        <div className="w-full mx-auto flex items-center justify-center mt-2">
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-cente max-w-[400px]">
             {imgSrc ? (
               <img src={imgSrc} alt="Date Guard Success Changed Code" />
             ) : (
-              <>
+              <div className="relative">
                 <Webcam
                   audio={false}
                   height={400}
@@ -284,8 +283,14 @@ export default function ScanQR() {
                   width={400}
                   screenshotFormat="image/jpeg"
                   videoConstraints={videoConstraints}
+                  className="rounded-[16px] w-full max-w-[400]"
+                  style={{ transform: "scaleX(-1)" }}
                 />
-              </>
+                <img src="/images/face-verification/camera-vector.svg" className="left-[5%] top-[5%] absolute z-[100]" />
+                <img src="/images/face-verification/camera-vector.svg" className="right-[5%] top-[5%] absolute z-[100] rotate-[90deg]" />
+                <img src="/images/face-verification/camera-vector.svg" className="left-[5%] bottom-[5%] absolute z-[100] rotate-[-90deg]" />
+                <img src="/images/face-verification/camera-vector.svg" className="right-[5%] bottom-[5%] absolute z-[100]  rotate-[-180deg]" />
+              </div>
             )}
           </div>
         </div>
@@ -293,34 +298,24 @@ export default function ScanQR() {
           <button
             disabled={faceCompareLoading}
             onClick={capture}
-            className="w-full mx-auto flex items-center justify-center mt-10"
+            className="mx-auto flex items-center justify-center mt-[-34px] relative z-[100] h-[64px] w-[64px] p-2 rounded-full bg-white"
           >
-            <div className="flex-1 flex items-center justify-center">
-              <div className="bg-[#2096f3] items-center justify-center flex rounded-full w-[80px] h-[80px]">
-                <img
-                  src={"/images/DateGuardCamera.png"}
-                  className="w-[50px]"
-                  alt="Verification Success Mark Icon"
-                />
-              </div>
-            </div>
+            <img src="/images/face-verification/camera.svg" alt="camera img" />
           </button>
         )}
-        {faceCompareLoading && <p className="">Please wait...</p>}
+        {faceCompareLoading && <p className="text-white text-base text-center">Please wait...</p>}
         {false && imgSrc && (
-          <div className="mt-3 flex gap-3">
+          <div className="mt-[24px] flex gap-3 w-full">
             <Button
               disabled={loading}
-              text={loading ? "Loading..." : "Approve"}
-              className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
-              size="41px"
+              text={loading ? <div className="flex items-center	justify-center">
+                <Loading />
+              </div> : "Approve"}
               onClick={handleApprove}
             />
             <Button
-              disabled={loading}
               text={"Reject"}
-              className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
-              size="41px"
+              className={'secondary-btn !bg-[#FFFFFF29]'}
               onClick={handleReject}
             />
           </div>
@@ -329,33 +324,31 @@ export default function ScanQR() {
         <div className="w-full mt-3">
           {isApproved === true && (
             <div className="flex flex-col items-center">
-              <img src="/images/CheckMark.png" className="w-[70px] mb-3" />
-              <button
+              <img src="/images/marketplace/verified.svg" className="w-[30px] mb-3" />
+              <Button
                 onClick={handleSendRequest}
-                className="bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-              >
-                Send Request
-              </button>
+                className={'max-w-[500px] mx-auto w-full'}
+                text={'Send Request'}
+              />
+
             </div>
           )}
 
           {isApproved === false && (
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center mt-[24px]">
               <div className="bg-[#ff0000] rounded-full mb-3">
-                <img src="/images/close-btn.svg" className="w-[70px]" />
+                <img src="/images/close-btn.svg" className="w-[30px]" />
               </div>
-              <button
+              <Button
                 onClick={handleRetry}
-                className="bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-              >
-                Retry
-              </button>
-              <button
+                text={'Retry'}
+                className={'max-w-[500px] px-4 w-full mx-auto'}
+              />
+              <Button
                 onClick={handleManualSelfie}
-                className="mt-3 bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-              >
-                Send as Manual
-              </button>
+                text='Send as Manual'
+                className={'max-w-[500px] px-4 w-full mx-auto mt-3 !bg-[#FFFFFF29] secondary-btn'}
+              />
             </div>
           )}
         </div>

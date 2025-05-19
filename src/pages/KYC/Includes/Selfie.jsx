@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import DateGuardService from "../../../services/DateGuardService";
 import DetectRTC from "detectrtc";
+import Button from "../../../components/Button";
 
 const videoConstraints = {
-  width: 400,
-  height: 400,
+  width: 720,
+  height: 960,
   facingMode: "user",
 };
 const Selfie = ({
@@ -38,7 +39,7 @@ const Selfie = ({
   const capture = useCallback(async () => {
     try {
       setFaceCompareLoading(true);
-      const imageSrc = webcamRef.current.getScreenshot();
+      const imageSrc = webcamRef?.current?.getScreenshot();
       setImgSrc(imageSrc);
 
       const userFile = await DateGuardService.dataURLtoFile(
@@ -52,6 +53,7 @@ const Selfie = ({
             clientId: clientId,
             data: base64.data.split(",")[1],
             userId: UserData?._id,
+            performLivenessCheck: false
           };
           KycService.uploadSelfie(body)
             .then((response) => {
@@ -103,16 +105,15 @@ const Selfie = ({
 
   if (!hasCamara) {
     return (
-      <div className="main-container">
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-          <div className="w-full mx-auto flex items-center justify-center gap-3">
-            <div className="bg-[#ff0000] rounded-full w-[50px]">
-              <img src="/images/close-btn.svg" className="w-full" />
-            </div>
-            <span className="font-bold text-[30px] text-[#05B7FD] change-font-family">
-              Camara not found
-            </span>
-          </div>
+      <div className="container py-[48px]">
+        <div className="w-full mx-auto flex flex-col justify-center items-center sm:gap-[48px] gap-[24px]">
+          <h6 className="text-[28px] text-center font-semibold text-white ">Camera not found</h6>
+          <img src="/images/face-verification/camera-not-found.svg" alt="camera not found" />
+          {/* <button onClick={handleSendRequest}>accept</button> */}
+          <p className="text-[18px] max-w-[90%] md:max-w-[70%] text-center font-medium text-[#E43530]">
+            You can not use face verification feature on this device, please
+            retry in your mobile or a device which has working camara.
+          </p>
         </div>
       </div>
     );
@@ -121,23 +122,33 @@ const Selfie = ({
   return (
     <>
       <div>
-        <div className="inner-content-part mt-4">
+        <div className="mt-4">
           <div className="w-full mx-auto flex flex-col justify-center items-center pt-2 px-4">
             <div className="w-full mx-auto flex items-center justify-center mt-2">
               <div className="flex-1 flex items-center justify-center">
                 {imgSrc ? (
-                  <img src={imgSrc} alt="Date Guard Success Changed Code" />
+                  <img src={imgSrc} alt="Date Guard Success Changed Code" className="max-w-[400px] rounded-[16px]" />
                 ) : (
                   <>
-                    <Webcam
-                      audio={false}
-                      height={300}
-                      ref={webcamRef}
-                      width={300}
-                      screenshotFormat="image/jpeg"
-                      videoConstraints={videoConstraints}
-                      screenshotQuality={1}
-                    />
+                    <div className="relative max-w-[400px] w-full">
+                      <Webcam
+                        audio={false}
+                        ref={webcamRef}
+                        width={400}
+                        height={400}
+                        screenshotFormat="image/png"
+                        videoConstraints={videoConstraints}
+                        screenshotQuality={1}
+                        minScreenshotWidth={400}
+                        minScreenshotHeight={400}
+                        style={{ transform: "scaleX(-1)" }}
+                        className="rounded-[16px]"
+                      />
+                      <img src="/images/face-verification/camera-vector.svg" className="left-[5%] top-[5%] absolute z-[100]" />
+                      <img src="/images/face-verification/camera-vector.svg" className="right-[5%] top-[5%] absolute z-[100] rotate-[90deg]" />
+                      <img src="/images/face-verification/camera-vector.svg" className="left-[5%] bottom-[5%] absolute z-[100] rotate-[-90deg]" />
+                      <img src="/images/face-verification/camera-vector.svg" className="right-[5%] bottom-[5%] absolute z-[100]  rotate-[-180deg]" />
+                    </div>
                   </>
                 )}
               </div>
@@ -146,22 +157,21 @@ const Selfie = ({
         </div>
 
         {!faceCompareLoading ? (
-          <div className="w-full px-4 justify-center mt-4 mb-6 gap-4">
+          <div className="w-full px-4 justify-center mt-4 gap-4">
             <div
-              className="w-[100%] leading-[50px] text-[#fff] font-semibold bg-[#3760cb] rounded-[10px] mb-4 cursor-pointer"
+              className="mx-auto flex items-center justify-center mt-[-40px] relative z-[100] h-[64px] w-[64px] p-2 rounded-full bg-white cursor-pointer"
               onClick={handleCapture}
             >
-              Take Photo
+              <img src="/images/face-verification/camera.svg" alt="camera img" />
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center py-[20px] px-[10px] ">
-            <button
+            <Button
               onClick={handleRetry}
-              className="flex w-full items-center justify-center bg-gradient-to-b from-[#202973] to-[#040b47] text-[#fff] font-bold text-[20px] py-2 rounded-[10px]"
-            >
-              Retry
-            </button>
+              text='Retry'
+            />
+
           </div>
         )}
       </div>

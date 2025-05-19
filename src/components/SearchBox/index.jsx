@@ -14,11 +14,11 @@ export default function SearchBox({onSearch,name, placeholder, classname, bgColo
             {
                 language === 'true' &&
                 <div className='relative w-full mx-auto flex flex-row justify-center items-center'>
-                    <button type="submit" className="absolute left-12 top-3">
-                        <FontAwesomeIcon icon={faSearch} className="services-search-icon"/>
+                    <button type="submit" className="absolute left-[16px] top-[16px]">
+                        <FontAwesomeIcon icon={faSearch} className="text-white"/>
                     </button>
                     <input 
-                        className={`w-full border-2 border-gray-300 h-10 pl-10 pr-8 text-md focus:outline-none ${classname?classname:''} ${bgColor?`bg-${bgColor}`:'bg-white'} ${rounded?`rounded-${rounded}`:'rounded-lg'}`}
+                        className={`placeholder-white w-[100%] p-[16px] bg-transparent rounded-lg border max-h-[54px] border-[#919EAB33] text-[16px] font-noemal !text-white ${classname} ${bgColor?`bg-${bgColor}`:''} ${rounded?`rounded-${rounded}`:'rounded-lg'}`}
                         type="search"
                         name={name}
                         value={searchTerm}
@@ -31,15 +31,15 @@ export default function SearchBox({onSearch,name, placeholder, classname, bgColo
                 language !== 'true' &&
                 <div className='w-full mx-auto flex flex-row justify-center items-center'>
                     <input 
-                        className={`w-full border-2 border-gray-300 h-10 pr-8 text-md focus:outline-none ${classname?classname:''} ${bgColor?`bg-${bgColor}`:'bg-white'} ${rounded?`rounded-${rounded}`:'rounded-lg'}`}
+                        className={`placeholder-white w-[100%] p-[16px] bg-transparent rounded-lg border max-h-[54px] border-[#919EAB33] text-[16px] font-noemal !text-white ${classname?classname:''} ${bgColor?`bg-${bgColor}`:''} ${rounded?`rounded-${rounded}`:'rounded-lg'}`}
                         type="search"
                         name={name}
                         value={searchTerm}
                         onChange={handleSearch}
                         placeholder={placeholder}
                     />
-                    <button type="submit" className="absolute right-0 top-3">
-                        <FontAwesomeIcon icon={faSearch} className="services-search-icon"/>
+                    <button type="submit" className="absolute right-[20px] top-[16px]">
+                        <FontAwesomeIcon icon={faSearch} />
                     </button>
                 </div>
             }

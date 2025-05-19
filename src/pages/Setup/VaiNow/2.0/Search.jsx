@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import VaridateService from "../../../../services/VaridateServices";
+import Loading from "../../../../components/Loading/Index";
+import PageTitle from "../../../../components/PageTitle";
 
 const Radius = [
   "Within 15 mi (25 km)",
@@ -92,7 +94,8 @@ export default function VairifySearchNew() {
         trurevu: selectedTruRevuStart,
         userId: UserData?._id,
       });
-      toast(data.message);
+
+      data?.result?.length > 0 ? toast.success(data.message) : toast.warning(data.message);
       if (data?.result?.length > 0) {
         navigate(`/vairify-results`, { state: data.result });
       }
@@ -107,180 +110,125 @@ export default function VairifySearchNew() {
   return (
     <div
       id="schedule_rules"
-      className="main-container px-0 min-h-[calc(100vh-150px)]"
+      className="container pb-[48px]"
     >
-      <div className="w-full mx-auto flex flex-col justify-center items-center p-2">
-        <span className="text-[27px] change-font-family font-extrabold">
-          Vai<span className="logoSetupweight">rify-now</span>
-        </span>
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"VAIRIFY - NOW"} isSmall={true}/>
       </div>
-      <div className="w-full h-[30px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] appearance-none"></div>
-      <div className="align-items-center md:max-w-[500px] max-w-[400px] mx-auto px-6 min-h-[calc(100vh-290px)] flex flex-col py-6 justify-between">
-        <div className="w-full mx-auto items-center gap-2">
-          <div className="flex flex-grow justify-between items-center gap-4">
-            <div className="flex flex-col items-center w-[50%] w-full rounded-[10px] mt-3">
-              <div className="relative w-full">
-                <select
-                  className="text-center w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[10px] appearance-none pl-3 pr-8 text-[20px] text-[#fff] font-semibold"
-                  name="savedSchedules"
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option selected={category === "Escort"} value={"Escort"}>
-                    Escort
-                  </option>
-                  <option selected={category === "Massage"} value={"Massage"}>
-                    Massage
-                  </option>
-                  <option selected={category === "Dance"} value={"Dance"}>
-                    Dance
-                  </option>
-                </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
+      <div className="w-full">
+        <div className="flex flex-col sm:gap-[24px] gap-[16px] ">
+          <div className="flex items-center sm:gap-[24px] gap-[16px] sm:flex-nowrap flex-wrap">
+            <div className="relative select-arrow w-full">
+              <select
+                className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                name="savedSchedules"
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option selected={category === "Escort"} value={"Escort"} className="text-black">
+                  Escort
+                </option>
+                <option selected={category === "Massage"} value={"Massage"} className="text-black">
+                  Massage
+                </option>
+                <option selected={category === "Dance"} value={"Dance"} className="text-black">
+                  Dance
+                </option>
+              </select>
             </div>
-            <div className="flex flex-col items-center w-[50%] w-full rounded-[10px] mt-3">
-              <div className="relative w-full">
-                <select
-                  className="text-center w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[10px] appearance-none pl-3 pr-8 text-[20px] text-[#fff] font-semibold "
-                  name="savedSchedules"
-                  onChange={(e) => setSelectedRadius(e.target.value)}
-                >
-                  <option selected={selectedRadius === null} value={null}>
-                    Radius
-                  </option>
-                  {Radius.map((item) => (
-                    <option
-                      key={item}
-                      selected={selectedRadius === item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
+            <div className="relative select-arrow w-full">
+              <select
+                className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                name="savedSchedules"
+                onChange={(e) => setSelectedRadius(e.target.value)}
+              >
+                <option selected={selectedRadius === null} value={null} className="text-black">
+                  Radius
+                </option>
+                {Radius.map((item) => (
+                  <option
+                    key={item}
+                    selected={selectedRadius === item}
+                    value={item}
+                    className="text-black"
                   >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
+                    {item}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
-          <div className="flex flex-grow justify-between items-center gap-4 mt-5">
-            <div className="flex flex-col items-start w-[50%] ">
-              <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pb-0">
-                Sex
-              </p>
-              <div className="relative flex flex-wrap items-center justify-between w-full gap-4 sm:gap-5   rounded-2xl">
-                <select
-                  className="text-center w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[10px] appearance-none pl-3 pr-8 text-[20px] text-[#fff] font-semibold "
-                  onChange={handleGenderChange}
-                  name="gender"
-                  value={selectedGender}
-                  size="35px"
-                >
-                  {genderOptions.map((selectedGender) => (
-                    <option key={selectedGender} value={selectedGender}>
-                      {selectedGender}
-                    </option>
-                  ))}
-                </select>
-                <img
-                  src="images/Mask group (1).png"
-                  alt=""
-                  className="absolute pl-1 top-1 left-1 z-10"
-                />
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
+          <div className="flex items-center sm:gap-[24px] gap-[16px] sm:flex-nowrap flex-wrap">
+            <div className="relative select-arrow w-full">
+              <select
+                className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                onChange={handleGenderChange}
+                name="gender"
+                value={selectedGender}
+                size="35px"
+              >
+                {genderOptions.map((selectedGender) => (
+                  <option key={selectedGender} value={selectedGender} className="text-black">
+                    {selectedGender}
+                  </option>
+                ))}
+              </select>
+              {/* <img
+                src="images/Mask group (1).png"
+                alt=""
+                className="absolute pl-1 top-1 left-1 z-10"
+              /> */}
             </div>
-
-            <div className="flex flex-col items-center w-[50%] rounded-[10px]">
-              <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pb-0">
-                Orientation
-              </p>
-              <div className="relative w-full">
-                <select
-                  className="text-center w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[10px] appearance-none pl-3 pr-8 text-[20px] text-[#fff] font-semibold "
-                  name="savedSchedules"
-                  value={selectedOrientation}
-                  onChange={handleOrientationChange}
-                >
-                  {orientationOptions.map((orientation) => (
-                    <option key={orientation} value={orientation}>
-                      {orientation}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
+            <div className="relative select-arrow w-full">
+              <select
+                className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                name="savedSchedules"
+                value={selectedOrientation}
+                onChange={handleOrientationChange}
+              >
+                {orientationOptions.map((orientation) => (
+                  <option key={orientation} value={orientation} className="text-black">
+                    {orientation}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
-          <div className="flex flex-grow justify-between items-center gap-4 mt-5">
-            <div className="flex flex-col items-center w-[50%] rounded-[10px]">
-              <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pb-0">
+          <div className="flex flex-grow justify-between items-center sm:gap-[24px] gap-[16px] sm:flex-nowrap flex-wrap">
+            <div className="flex flex-col items-center sm:w-[50%] w-full rounded-[10px]">
+              <p className="text-[18px] text-white text-start font-bold w-full">
                 Venue
               </p>
-              <div className="relative w-full">
+              <div className="relative select-arrow w-full">
                 <select
-                  className="text-center w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[10px] appearance-none pl-3 pr-8 text-[20px] text-[#fff] font-semibold "
+                  className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                   name="savedSchedules"
                   onChange={(e) => setSelectedVenue(e.target.value)}
                 >
-                  <option selected={selectedVenue === "Incall"} value="Incall">
+                  <option selected={selectedVenue === "Incall"} value="Incall" className="text-black">
                     Incall
                   </option>
                   <option
                     selected={selectedVenue === "Outcall"}
                     value="Outcall"
+                    className="text-black"
                   >
                     Outcall
                   </option>
-                  <option selected={selectedVenue === "Mobile"} value="Mobile">
+                  <option selected={selectedVenue === "Mobile"} value="Mobile" className="text-black">
                     Mobile
                   </option>
                 </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+
               </div>
             </div>
-            <div className="flex flex-col items-start w-[50%]">
-              <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pb-0">
+            <div className="flex flex-col items-start sm:w-[50%] w-full">
+              <p className="text-[18px] text-white text-start font-bold w-full">
                 TruRevu
               </p>
-              <div className="w-full flex justify-center items-center gap-2 ">
-                <div className="flex relative flex-wrap items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
+              <div className="w-full flex justify-center items-center sm:gap-[24px] gap-[16px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[10px] appearance-none pl-1 text-left text-[20px] text-[#fff] font-semibold "
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     onChange={(e) =>
                       setSelectedTruRevuStart({
                         ...selectedTruRevuStart,
@@ -290,30 +238,22 @@ export default function VairifySearchNew() {
                     value={selectedTruRevuStart.from}
                     size="35px"
                   >
-                    <option value="0.0">0.0</option>
-                    <option value="1.0">1.0</option>
-                    <option value="1.5">1.5</option>
-                    <option value="2.0">2.0</option>
-                    <option value="2.5">2.5</option>
-                    <option value="3.0">3.0</option>
-                    <option value="3.5">3.5</option>
-                    <option value="4.0">4.0</option>
-                    <option value="4.5">4.5</option>
-                    <option value="5.0">5.0</option>
+                    <option value="0.0" className="text-black">0.0</option>
+                    <option value="1.0" className="text-black">1.0</option>
+                    <option value="1.5" className="text-black">1.5</option>
+                    <option value="2.0" className="text-black">2.0</option>
+                    <option value="2.5" className="text-black">2.5</option>
+                    <option value="3.0" className="text-black">3.0</option>
+                    <option value="3.5" className="text-black">3.5</option>
+                    <option value="4.0" className="text-black">4.0</option>
+                    <option value="4.5" className="text-black">4.5</option>
+                    <option value="5.0" className="text-black">5.0</option>
                   </select>
-                  <div className="absolute top-2 right-1">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
+
                 </div>
-                <p className="text-[14px] font-bold text-[#01195C] px-0">to</p>
-                <div className="relative flex flex-wrap items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
+                <div className="relative select-arrow w-full">
                   <select
-                    className=" w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[10px] appearance-none pl-1 text-left text-[20px] text-[#fff] font-semibold "
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     onChange={(e) =>
                       setSelectedTruRevuStart({
                         ...selectedTruRevuStart,
@@ -323,41 +263,27 @@ export default function VairifySearchNew() {
                     value={selectedTruRevuStart.to}
                     size="35px"
                   >
-                    <option value="1.0">1.0</option>
-                    <option value="1.5">1.5</option>
-                    <option value="2.0">2.0</option>
-                    <option value="2.5">2.5</option>
-                    <option value="3.0">3.0</option>
-                    <option value="3.5">3.5</option>
-                    <option value="4.0">4.0</option>
-                    <option value="4.5">4.5</option>
-                    <option value="5.0">5.0</option>
+                    <option value="1.0" className="text-black">1.0</option>
+                    <option value="1.5" className="text-black">1.5</option>
+                    <option value="2.0" className="text-black">2.0</option>
+                    <option value="2.5" className="text-black">2.5</option>
+                    <option value="3.0" className="text-black">3.0</option>
+                    <option value="3.5" className="text-black">3.5</option>
+                    <option value="4.0" className="text-black">4.0</option>
+                    <option value="4.5" className="text-black">4.5</option>
+                    <option value="5.0" className="text-black">5.0</option>
                   </select>
-                  <div className="absolute top-2 right-1">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="w-full mx-auto flex flex-row justify-center items-center mb-2 mt-5 ">
+        <div className="flex sm:gap-[24px] gap-[16px] mt-[24px]">
           <Button
             onClick={HandleSearch}
             disabled={loading}
-            text={loading ? "Loading.." : "Search"}
-            className={
-              "max-w-[200px] font-black text-[22px] from-0% to-65% from-[#0CA36C] to-[#08FA5A] bg-gradient-to-b text-[#040C50] rounded-[10px]"
-            }
-            size={"40px"}
+            text={loading ? <Loading /> : "Search"}
           />
-        </div>
-        <div className="w-full mx-auto flex flex-row justify-center items-center mb-2 mt-5 ">
           <Button
             onClick={() => {
               navigate("/vairify-advance-search", {
@@ -376,11 +302,10 @@ export default function VairifySearchNew() {
               });
             }}
             text="Advance Search"
-            className={
-              "max-w-[200px] font-black text-[20px] from-0% to-65% from-[#02227E] to-[#0247FF] bg-gradient-to-b text-[#FFFFFF] rounded-[10px] button-border"
-            }
+            className='!bg-[#FFFFFF29] secondary-btn'
           />
         </div>
+
       </div>
     </div>
   );

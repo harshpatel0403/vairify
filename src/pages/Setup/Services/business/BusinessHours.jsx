@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import Loading from "../../../../components/Loading/Index";
 import { useEffect } from "react";
+import SelectBox from "../../../../components/SelectBox";
+import PageTitle from "../../../../components/PageTitle";
 
 const times = [
   "01:00",
@@ -129,7 +131,7 @@ export default function BusinessHours() {
       .catch((err) => {
         setIsLoading(false);
         console.error(err, "Error");
-        navigate(-2)        
+        navigate(-2)
       });
   };
 
@@ -140,125 +142,110 @@ export default function BusinessHours() {
   }, [state?.EditData]);
 
   return (
-    <div id="schedule_rules" className="main-container pb-4">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-4 pb-5">
-        <div className="w-full mx-auto flex flex-col justify-center items-center">
-          <span className="font-extrabold text-[27px] text-black">
-            Business Hours
-          </span>
-        </div>
+    <div id="schedule_rules" className="container pb-[48px]">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Business Hours"} />
       </div>
-      <div className="form-field-container">
-      {daysOfWeek.map((day) => (
-        <div
-          key={day}
-          className="w-full mx-auto flex flex-col justify-center items-center relative"
-        >
-          <div className="w-full mx-auto flex flex-col justify-center items-start pl-2 pb-2">
-            <span className="font-extrabold text-[18px]">{day}</span>
-          </div>
-          <div className="w-full mx-auto flex flex-row justify-start items-center">
-            <div className="mb-3 flex flex-row justify-center items-center">
-              <div className="relative w-[82px] rounded-xl">
-                <SelectBox_
-                  options={times}
-                  value={selectedHours[day]?.fromTime}
-                  onChange={(event) =>
-                    updateSelectedHours(day, "fromTime", event.target.value)
-                  }
-                  className="rounded-r-none bg-inherit pl-2 appearance-none rounded-2xl text-[18px] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#fff] focus:border-[#000] h-[40px]"
-                />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="relative w-[75px] rounded-xl">
-                <SelectBox_
-                  options={zones}
-                  value={selectedHours[day]?.fromZone}
-                  onChange={(event) =>
-                    updateSelectedHours(day, "fromZone", event.target.value)
-                  }
-                  className="rounded-l-none bg-inherit pl-2 appearance-none rounded-2xl text-[18px] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#fff] focus:border-[#000] h-[40px]"
-                />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
+      <div className="w-full">
+        {daysOfWeek.map((day) => (
+          <div
+            key={day}
+            className="w-full mx-auto flex flex-col justify-center items-center relative"
+          >
+            <div className="text-white font-medium text-lg text-left mb-[8px] w-full">
+              {day}
             </div>
-            <div className="mx-2 mb-3">
-              <span className="text-[16px] font-medium">To</span>
-            </div>
-            <div className="mb-3 flex flex-row justify-center items-center">
-              <div className="mr-3 flex flex-row justify-center items-center">
-                <div className="relative w-[83px] rounded-xl">
-                  <SelectBox_
+            <div className="w-full mx-auto flex flex-row justify-start items-center sm:flex-nowrap flex-wrap">
+              <div className="mb-3 flex flex-row justify-center items-center w-full gap-[8px]">
+                <div className="relative w-full rounded-xl">
+                  <SelectBox
                     options={times}
-                    value={selectedHours[day]?.toTime}
+                    value={selectedHours[day]?.fromTime}
                     onChange={(event) =>
-                      updateSelectedHours(day, "toTime", event.target.value)
+                      updateSelectedHours(day, "fromTime", event.target.value)
                     }
-                    className="rounded-r-none bg-inherit pl-2 appearance-none rounded-2xl text-[18px] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#fff] focus:border-[#000] h-[40px]"
+                    className1="text-[14px] font-normal  border border-[#919EAB33] w-[100%] rounded-[8px]"
+                    size={"h-[47px]"}
+                    textAlign={"text-left"}
+                    rounded={"rounded-2xl"}
+                    fontWeight={"font-bold"}
+                    textColor={"text-white"}
+                    textSize={"text-[14px]"}
                   />
-                  <div className="absolute top-2 right-1">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative w-[75px] rounded-xl">
-                  <SelectBox_
+                <div className="relative  w-full rounded-xl">
+                  <SelectBox
                     options={zones}
-                    value={selectedHours[day]?.toZone}
+                    value={selectedHours[day]?.fromZone}
                     onChange={(event) =>
-                      updateSelectedHours(day, "toZone", event.target.value)
+                      updateSelectedHours(day, "fromZone", event.target.value)
                     }
-                    className="rounded-l-none bg-inherit pl-2 appearance-none rounded-2xl text-[18px] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#fff] focus:border-[#000] h-[40px]"
+                    className1="text-[14px] font-normal  border border-[#919EAB33] w-[100%] rounded-[8px]"
+                    size={"h-[47px]"}
+                    textAlign={"text-left"}
+                    rounded={"rounded-2xl"}
+                    fontWeight={"font-bold"}
+                    textColor={"text-white"}
+                    textSize={"text-[14px]"}
                   />
-                  <div className="absolute top-2 right-1">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
+                </div>
+              </div>
+              <div className="mx-3 mb-3">
+                <span className="text-[16px] font-medium text-white">To</span>
+              </div>
+              <div className="mb-3 flex flex-row justify-center items-center w-full">
+                <div className="flex flex-row justify-center items-center w-full gap-[8px]">
+                  <div className="relative  w-full rounded-xl">
+                    <SelectBox
+                      options={times}
+                      value={selectedHours[day]?.toTime}
+                      onChange={(event) =>
+                        updateSelectedHours(day, "toTime", event.target.value)
+                      }
+                      className1="text-[14px] font-normal  border border-[#919EAB33] w-[100%] rounded-[8px]"
+                      size={"h-[47px]"}
+                      textAlign={"text-left"}
+                      rounded={"rounded-2xl"}
+                      fontWeight={"font-bold"}
+                      textColor={"text-white"}
+                      textSize={"text-[14px]"}
+                    />
+                  </div>
+                  <div className="relative  w-full rounded-xl">
+                    <SelectBox
+                      options={zones}
+                      value={selectedHours[day]?.toZone}
+                      onChange={(event) =>
+                        updateSelectedHours(day, "toZone", event.target.value)
+                      }
+                      className1="text-[14px] font-normal  border border-[#919EAB33] w-[100%] rounded-[8px]"
+                      size={"h-[47px]"}
+                      textAlign={"text-left"}
+                      rounded={"rounded-2xl"}
+                      fontWeight={"font-bold"}
+                      textColor={"text-white"}
+                      textSize={"text-[14px]"}
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
       </div>
-      <div className="flex items-center justify-center px-5">
-        <div className="flex items-center justify-center w-full max-w-[420px]">
+      <div className="flex items-center justify-center ">
+        <div className="flex items-center justify-center w-full max-w-[500px] mt-[24px]">
           <Button
-            className={
-              "flex items-center w-[249px] mt-[20px] px-[40px] py-2 my-2 w-fit max-w-[270px] justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] rounded-xl"
-            }
             text={
               !isLoading ? (
                 "Finished"
               ) : (
-                <div className="flex items-center	justify-center pt-[6px]">
+                <div className="flex items-center	justify-center">
                   <Loading />
                 </div>
               )
             }
-            size="42px"
+            disabled={isLoading}
             onClick={HandelButton}
           />
         </div>

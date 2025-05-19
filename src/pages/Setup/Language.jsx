@@ -9,6 +9,12 @@ import { UpdateProfile } from "../../redux/action/Profile";
 import { toast } from "react-toastify";
 import VaridateService from '../../services/VaridateServices'
 import Loading from "../../components/Loading/Index";
+import BackButton from "../../components/BackButton/backArrowButton";
+import LayoutHeader from "../layout/Header";
+import Footer from "../layout/Footer";
+import Header from "../../components/Header/Header";
+import PageTitle from "../../components/PageTitle";
+
 const Language = () => {
   const [languages, setLanguages] = useState([]);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
@@ -19,25 +25,34 @@ const Language = () => {
   const navigate = useNavigate();
   const [language, setLanguage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingLanguages, setLoadingLanguages] = useState(false);
 
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
-  const { from } = location.state || {};
+  const { from, showLayoutHeader } = location.state || {};
 
-  const getLanguages = () => {
-    SetupService.allLanguages()
+  const getLanguages = async () => {
+    setLoadingLanguages(true);
+    await SetupService.allLanguages()
       .then((res) => {
         setLanguages(res);
         setFilteredLanguages(res);
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() =>
+        setLoadingLanguages(false)
+      )
+
   };
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const UserData = await VaridateService?.fetchUserDetails(UserDetails?._id)
-      setUserData(UserData);
+      if (UserDetails?._id) {
+
+        const UserData = await VaridateService?.fetchUserDetails(UserDetails?._id)
+        setUserData(UserData);
+      }
     }
     getLanguages();
     fetchUserDetails();
@@ -92,181 +107,170 @@ const Language = () => {
 
   };
 
-  return (
-    <div className="language-main-container main-container pt-5 form-field-container h-[100%]">
-      <div className="w-full mx-auto flex flex-col justify-between items-center h-[100%]">
-        <div className="h-fit">
-          <span className="text-[30px] font-bold">Select Language...</span>
-        </div>
-        <div className="mt-3 w-full mx-auto h-fit">
-          <SearchBox
-            onSearch={handleSearch}
-            placeholder="Search Languages"
-            classname="rounded-xl !pr-2"
-            language="true"
-          />
-        </div>
-        <div className="flex flex-col justify-start items-center mt-4 h-[100%] max-h-[100%] w-[100%] overflow-scroll">
-          {filteredLanguages.map((language, i) => (
-            <div
-              key={i}
-              className={`w-full mx-auto flex items-center justify-center cursor-pointer px-4 ${i === selectedLang
-                ? "bg-[#040B47] text-white"
-                : "hover:bg-[#D9D9D9] hover:border-[#D9D9D9]"
-                }`}
-            >
-              <div
-                className="w-full flex items-center justify-between py-4"
-                onClick={() => HandleValue(language, i)}
-              >
-                <div className="w-[88px] flex-1">
-                  <img
-                    className="shadow-2xl w-[85px]"
-                    src={
-                      import.meta.env.VITE_APP_API_LANGUAGES_IMAGE_URL +
-                      `/${language.image}`
-                    }
-                    alt={language.name}
-                  />
-                </div>
-                <span className=" text-[21px] font-medium flex-1 text-left">
-                  {language.name}
-                </span>
-                {UserData?.language === language.name && (
-                  <img
-                    className="shadow-2xl w-[35px]"
-                    src={
-                      '/images/VerifiedMarkIcon.png'
-                    }
-                    alt={language.name}
-                  />
-                )}
-              </div>
-            </div>
-          ))}
-          {/* 
-
-
-{filteredLanguages.map((language, i) => (
-            <div
-              key={i}
-              className="w-full mx-auto flex items-center justify-center hover:bg-[#D9D9D9] hover:border-[#D9D9D9]"
-            >
-              <div
-                className="w-[250px] flex items-center justify-between py-4"
-                onClick={() => HandleValue(language)}
-              >
-                <div className="w-[88px]">
-                  <img
-                    className="w-full shadow-2xl"
-                    src={
-                      import.meta.env.VITE_APP_API_LANGUAGES_IMAGE_URL +
-                      `/${language.image}`
-                    }
-                    alt={language.name}
-                  />
-                </div>
-                <span className=" text-[21px] font-medium">
-                  {language.name}
-                </span>
-              </div>
-            </div>
-          ))}
-
-
-
-{filteredLanguages.map((language, i) => (
-            <div
-              key={i}
-              className="w-full mx-auto flex items-center justify-center hover:bg-[#D9D9D9] hover:border-[#D9D9D9]"
-            >
-              <div
-                className="w-[250px] flex items-center justify-between py-4"
-                onClick={() => HandleValue(language)}
-              >
-                <div className="w-[88px]">
-                  <img
-                    className="w-full shadow-2xl"
-                    src={
-                      import.meta.env.VITE_APP_API_LANGUAGES_IMAGE_URL +
-                      `/${language.image}`
-                    }
-                    alt={language.name}
-                  />
-                </div>
-                <span className=" text-[21px] font-medium">
-                  {language.name}
-                </span>
-              </div>
-            </div>
-          ))}
-
-
-
-{filteredLanguages.map((language, i) => (
-            <div
-              key={i}
-              className="w-full mx-auto flex items-center justify-center hover:bg-[#D9D9D9] hover:border-[#D9D9D9]"
-            >
-              <div
-                className="w-[250px] flex items-center justify-between py-4"
-                onClick={() => HandleValue(language)}
-              >
-                <div className="w-[88px]">
-                  <img
-                    className="w-full shadow-2xl"
-                    src={
-                      import.meta.env.VITE_APP_API_LANGUAGES_IMAGE_URL +
-                      `/${language.image}`
-                    }
-                    alt={language.name}
-                  />
-                </div>
-                <span className=" text-[21px] font-medium">
-                  {language.name}
-                </span>
-              </div>
-            </div>
-          ))}
-
-{filteredLanguages.map((language, i) => (
-            <div
-              key={i}
-              className="w-full mx-auto flex items-center justify-center hover:bg-[#D9D9D9] hover:border-[#D9D9D9]"
-            >
-              <div
-                className="w-[250px] flex items-center justify-between py-4"
-                onClick={() => HandleValue(language)}
-              >
-                <div className="w-[88px]">
-                  <img
-                    className="w-full shadow-2xl"
-                    src={
-                      import.meta.env.VITE_APP_API_LANGUAGES_IMAGE_URL +
-                      `/${language.image}`
-                    }
-                    alt={language.name}
-                  />
-                </div>
-                <span className=" text-[21px] font-medium">
-                  {language.name}
-                </span>
-              </div>
-            </div>
-          ))} */}
-        </div>
-        <div className="flex-1 w-full mt-10 mb-10 h-fit">
-          <Button
-            className={
-              "flex items-center justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-            }
-            text={isLoading ? (<Loading />) : from ? "Save" : "Next"}
-            size="45px"
-            onClick={handleNext}
-          />
-        </div>
+  if (loadingLanguages) {
+    return (
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
       </div>
-    </div>
+    )
+  }
+  return (
+    <>
+      {from?.includes("settings") || from?.includes("setup") ? (
+        <>
+          {showLayoutHeader ? (
+            <div className=""><LayoutHeader /></div>
+          ) : (
+            <div className=""><Header /></div>
+          )}
+          <div className="container mt-[50px]">
+            <div className="mx-auto">
+              <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+                <PageTitle title={"Select Your Language"} isSmall={true} />
+              </div>
+              <div className="sm:mt-[64px] mt-[30px] flex flex-col items-center justify-center sm:gap-[32px] gap-[24px]">
+                <div className="w-full">
+                  <SearchBox
+                    onSearch={handleSearch}
+                    placeholder="Search"
+                    classname="border-[2px] border-[#919EAB33] !rounded-[8px] !pl-[46px] !px-[14px] !py-[16px] !input-text !bg-transparent !w-[100%] !text-white"
+                    language="true"
+                  />
+                </div>
+                <div className=" w-[100%] grid sm:grid-cols-3 grid-cols-1 justify-center sm:gap-[20px] gap-[10px] items-center overflow-scroll ">
+
+                  {filteredLanguages.map((language, i) => (
+                    <div
+                      key={i}
+                      className={`w-full mx-auto flex h-full justify-center cursor-pointer`}
+                    >
+                      <div
+                        className={`w-full flex sm:flex-col items-center sm:justify-start justify-center sm:py-[16px] py-[12px] gap-[8px] bg-[#2F3BA4] rounded-[8px] border border-transparent hover:border hover:border-white transition-all duration-500 ${i === selectedLang
+                          ? "border border-white"
+                          : ""
+                          }`}
+                        onClick={() => HandleValue(language, i)}
+                      >
+                        <div>
+                          <img
+                            className="sm:w-[60px] sm:h-[60px] w-[30px] h-[30px] rounded-full object-cover"
+                            src={
+                              import.meta.env.VITE_APP_API_LANGUAGES_IMAGE_URL +
+                              `/${language.image}`
+                            }
+                            alt={language.name}
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[15px] font-medium text-white leading-[26px]">
+                            {language.name}
+                          </span>
+                          {UserData?.language === language.name && (
+                            <img
+                              className="shadow-2xl w-[20px]"
+                              src={
+                                '/images/VerifiedMarkIcon.png'
+                              }
+                              alt={language.name}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="max-w-[500px] w-full md:mt-[100px] mt-0 h-fit">
+                  <Button
+                    text={isLoading ? (<Loading />) : from ? "Save" : "Select Language"}
+                    disabled={isLoading}
+                    onClick={handleNext}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <Footer from={from} />
+        </>
+      ) : (
+        <div className="signup-backgound-design">
+          <div className="signup-container container">
+            <div className="signup-content relative">
+              <div className="backnavigation"><BackButton /></div>
+              <div className="max-w-[500px] mx-auto">
+                <div className="logo-img-container">
+                  <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+                  <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
+                </div>
+                <div className="sm:mt-[64px] mt-[30px] flex flex-col items-center justify-center sm:gap-[32px] gap-[24px]">
+                  <h3 className="primary-heading text-center">Select Your Language</h3>
+                  <div className="w-full">
+                    <SearchBox
+                      onSearch={handleSearch}
+                      placeholder="Search Languages"
+                      classname="border-[2px] border-[#919EAB33] !rounded-[8px] !pl-[46px] !px-[14px] !py-[16px] !input-text !bg-transparent !w-[100%] !text-white"
+                      language="true"
+                    />
+                  </div>
+                  <div className="sm:w-[500px] w-[100%] grid sm:grid-cols-3 grid-cols-1 justify-center sm:gap-[20px] gap-[10px] items-center overflow-scroll ">
+                    {loadingLanguages && (
+                      <Loading />
+                    )}
+                    {filteredLanguages.map((language, i) => (
+                      <div
+                        key={i}
+                        className={`w-full mx-auto flex h-full justify-center cursor-pointer`}
+                      >
+                        <div
+                          className={`w-full flex sm:flex-col items-center sm:justify-start justify-center sm:py-[16px] py-[12px] gap-[8px] bg-[#2F3BA4] rounded-[8px] border border-transparent hover:border hover:border-white transition-all duration-500 ${i === selectedLang
+                            ? "border border-white"
+                            : ""
+                            }`}
+                          onClick={() => HandleValue(language, i)}
+                        >
+                          <div>
+                            <img
+                              className="sm:w-[60px] sm:h-[60px] w-[30px] h-[30px] rounded-full object-cover"
+                              src={
+                                import.meta.env.VITE_APP_API_LANGUAGES_IMAGE_URL +
+                                `/${language.image}`
+                              }
+                              alt={language.name}
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[15px] font-medium text-white leading-[26px]">
+                              {language.name}
+                            </span>
+                            {UserData?.language === language.name && (
+                              <img
+                                className="shadow-2xl w-[20px]"
+                                src={
+                                  '/images/VerifiedMarkIcon.png'
+                                }
+                                alt={language.name}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex-1 w-full h-fit">
+                    <Button
+                      text={isLoading ? (<Loading />) : from ? "Save" : "Select Language"}
+                      disabled={isLoading}
+                      onClick={handleNext}
+                    />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+    </>
   );
 };
 

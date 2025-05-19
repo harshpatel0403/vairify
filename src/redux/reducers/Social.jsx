@@ -1,7 +1,7 @@
 const initialState = {
   error: {},
   socialData: [],
-  loading: false,
+  loading: true,
 };
 
 export const HandleSocial = (state = initialState, action) => {
@@ -15,7 +15,7 @@ export const HandleSocial = (state = initialState, action) => {
     case "GET_SOCIAL_LINKS_SUCCESS":
       return {
         ...state,
-        loading: true,
+        loading: false,
         socialData: action.payload,
         error: null,
       };
@@ -23,7 +23,7 @@ export const HandleSocial = (state = initialState, action) => {
     case "GET_SOCIAL_LINKS_FAILURE":
       return {
         ...state,
-        loading: true,
+        loading: false,
         error: action.payload,
       };
 

@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DateGuardService from '../../../services/DateGuardService';
 import Webcam from 'react-webcam';
 import DetectRTC from 'detectrtc';
+import Loading from '../../../components/Loading/Index';
+import PageTitle from '../../../components/PageTitle';
 
 export default function DateGuardPhotoTake() {
 
@@ -98,42 +100,40 @@ export default function DateGuardPhotoTake() {
 
     if (!hasCamara) {
         return (
-            <div className="main-container">
-                <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-                    <div className="w-full mx-auto flex items-center justify-center gap-3">
-                        <div className="bg-[#ff0000] rounded-full w-[50px]">
-                            <img src="/images/close-btn.svg" className="w-full" />
-                        </div>
-                        <span className="font-bold text-[30px] text-[#05B7FD] change-font-family">
-                            Camara not found
-                        </span>
-                    </div>
+            <div className="container py-[48px]">
+                <div className="w-full mx-auto flex flex-col justify-center items-center sm:gap-[48px] gap-[24px]">
+                    <h6 className="text-[28px] text-center font-semibold text-white ">Camera not found</h6>
+                    <img src="/images/face-verification/camera-not-found.svg" alt="camera not found" />
+                    {/* <button onClick={handleSendRequest}>accept</button> */}
+                    <p className="text-[18px] max-w-[90%] md:max-w-[70%] text-center font-medium text-[#E43530]">
+                        You can not use face verification feature on this device, please
+                        retry in your mobile or a device which has working camara.
+                    </p>
                 </div>
             </div>
         )
     }
-    
+
 
     return (
-        <div className='main-container form-field-container'>
-            <div className='w-full mx-auto flex flex-col justify-center items-center pt-2'>
-                <div className='w-full mx-auto flex flex-row justify-center items-center'>
-                    <div className='mr-4'><span className='font-bold text-[30px] text-[#4200FF] change-font-family'>Date Guard</span></div>
-                    <div className='w-[28px] h-[33px]'><img src={'/images/Mask2.png'} alt="Mark Second Logo" /></div>
-                </div>
-                <div className='w-full mx-auto flex items-center justify-center mt-9'><span className='font-bold text-[14.4px] change-font-family text-white'>Take a photo</span></div>
+        <div className='container '>
+            <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+                <PageTitle title={"Date Guard"} />
+            </div>
+            <div className='w-full mx-auto flex flex-col justify-center items-center '>
+
                 {/* <div className="w-full flex flex-col justify-center items-center mt-5">
                     <div className="w-[178px] h-[160px] flex flex-col justify-start items-center border-[#0247FF] border-2 rounded-lg">
                         <img id="imagePreview" style={{ overflow: 'hidden', width: '100%' }} className="rounded-t-lg" src={"/images/DateGuardPhotoIcon.png"} alt="Date Guard Camera" />
                     </div>
                 </div> */}
 
-                <div className="w-full mx-auto flex items-center justify-center mt-2">
+                <div className="w-full mx-auto flex items-center justify-center mt-2 max-w-[400px]">
                     <div className="flex-1 flex items-center justify-center">
                         {imgSrc ? (
-                            <img src={imgSrc} alt="Date Guard Success Changed Code" />
+                            <img src={imgSrc} alt="Date Guard Success Changed Code" className="rounded-[16px]" />
                         ) : (
-                            <>
+                            <div className='relative'>
                                 <Webcam
                                     audio={false}
                                     height={400}
@@ -141,8 +141,14 @@ export default function DateGuardPhotoTake() {
                                     width={400}
                                     screenshotFormat="image/jpeg"
                                     videoConstraints={videoConstraints}
+                                    className="rounded-[16px] w-full max-w-[400]"
+                                    style={{ transform: "scaleX(-1)" }}
                                 />
-                            </>
+                                <img src="/images/face-verification/camera-vector.svg" className="left-[5%] top-[5%] absolute z-[100]" />
+                                <img src="/images/face-verification/camera-vector.svg" className="right-[5%] top-[5%] absolute z-[100] rotate-[90deg]" />
+                                <img src="/images/face-verification/camera-vector.svg" className="left-[5%] bottom-[5%] absolute z-[100] rotate-[-90deg]" />
+                                <img src="/images/face-verification/camera-vector.svg" className="right-[5%] bottom-[5%] absolute z-[100]  rotate-[-180deg]" />
+                            </div>
                         )}
                     </div>
                 </div>
@@ -151,17 +157,9 @@ export default function DateGuardPhotoTake() {
                     <button
                         disabled={faceCompareLoading}
                         onClick={capture}
-                        className="w-full mx-auto flex items-center justify-center mt-10"
+                        className="mx-auto flex items-center justify-center mt-[-34px] relative z-[100] h-[64px] w-[64px] p-2 rounded-full bg-white"
                     >
-                        <div className="flex-1 flex items-center justify-center">
-                            <div className="bg-[#2096f3] items-center justify-center flex rounded-full w-[80px] h-[80px]">
-                                <img
-                                    src={"/images/DateGuardCamera.png"}
-                                    className="w-[50px]"
-                                    alt="Verification Success Mark Icon"
-                                />
-                            </div>
-                        </div>
+                        <img src="/images/face-verification/camera.svg" alt="camera img" />
                     </button>
                 )}
 
@@ -170,11 +168,11 @@ export default function DateGuardPhotoTake() {
                         {/* <div className="bg-[#ff0000] rounded-full mb-3">
                             <img src="/images/close-btn.svg" className="w-[70px]" />
                         </div> */}
-                        <button
+                        <Button
                             onClick={handleRetry}
-                            className="bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]">
-                            Retry
-                        </button>
+                            text={'Retry'}
+                            className='max-w-[500px] px-4 w-full'
+                        />
                     </div>
                 )}
 
@@ -192,14 +190,14 @@ export default function DateGuardPhotoTake() {
                         onChange={handleChange}
                     />
                 </div> */}
-                <div className='w-full mx-auto flex flex-col justify-center items-start mt-12 mb-20'>
-                    <div className='px-2'><span className='font-bold text-[18px] text-[#D9D9D9] change-font-family'>Message</span></div>
+                <div className='w-full mx-auto flex flex-col justify-center items-start mt-10 mb-10'>
+                    <label className='text-white font-normal text-base mb-1'>Message</label>
                     <div className='w-full mx-auto flex flex-row justify-center items-center'>
                         <textarea
                             value={message}
                             onChange={e => setMessage(e.target.value)}
                             rows="3"
-                            className="block p-2.5 w-full text-[15px] text-gray-900 rounded-md border-0 focus:ring-blue-500 dark:placeholder-gray-400 bg-[#E2E2E2] focus-visible:border-0 mt-2"
+                            className="border-[2px] border-[#919EAB33] rounded-lg p-[14px] w-full bg-transparent !text-white text-[14px] font-normal !placeholder-white"
                             placeholder="">
                             {message}
                         </textarea>
@@ -207,7 +205,10 @@ export default function DateGuardPhotoTake() {
                 </div>
                 <Button
                     disabled={loading || (!imgSrc)}
-                    onClick={handleSubmit} text={loading ? 'Loading..' : 'Save'} className={'bg-[#05B7FD] rounded-[10px] text-[20px] font-bold change-font-family'} size="34px"
+                    onClick={handleSubmit} text={loading ? <div className="flex items-center	justify-center">
+                        <Loading />
+                    </div> : 'Save'}
+                    className={'max-w-[500px] px-4 mx-auto mb-[48px]'}
                 />
             </div>
         </div>

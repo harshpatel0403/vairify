@@ -3,7 +3,7 @@ import Button from "../../components/Button";
 import Selecter from "../../components/Selecter/Selecter";
 import { useNavigate } from "react-router-dom";
 
-const RatesTab = ({ availableHours, selectedHours }) => {
+const RatesTab = ({ availableHours, selectedHours, setHours }) => {
   const [currencySelcted, setCurrencySelcted] = useState("");
   const [currency, setCurrency] = useState(["EUR", "AUD", "ARS", "AFN"]);
   const navigate = useNavigate();
@@ -82,10 +82,10 @@ const RatesTab = ({ availableHours, selectedHours }) => {
   return (
     <div>
       <div className="grid items-center grid-cols-4 py-4">
-        <span className="font-bold text-[#0247FF]">Time</span>
+        {/* <span className="font-bold text-[#0247FF]">Time</span>
         <span className="font-bold text-[#0247FF]">Incall</span>
         <span className="font-bold text-[#0247FF]">Outcall</span>
-        <span className="font-bold text-[#0247FF]">Currency</span>
+        <span className="font-bold text-[#0247FF]">Currency</span> */}
         {/* <div>
                     <Selecter
                         options={currency}
@@ -98,28 +98,41 @@ const RatesTab = ({ availableHours, selectedHours }) => {
                 </div> */}
       </div>
 
-      {availableHours.map((item) => (
-        <div
-          key={item._id}
-          className="grid items-center grid-cols-4 m-4 my-8 mx-2"
-        >
-          <div className="flex flex-row p-1 w-full min-w-[105px] max-w-[130px] mx-auto rounded-full  items-center bg-gradient-to-b from-[#02227E] to-[#0247FF]">
-            <div
-              className={`bg-[${
-                selectedHours?._id === item?._id ? "#08FA5A" : "#fff"
-              }] md:h-[30px] md:w-[30px] h-[20px] w-[20px] min-w-[20px] rounded-full`}
-            />
-            <span className="px-1 font-bold text-white whitespace-nowrap">
-              {item.value}
-            </span>
+      <div className="grid md:grid-cols-2 gap-[24px]">
+        {availableHours.map((item) => (
+          <div
+            key={item._id}
+            onClick={() => setHours(item)}
+            className={`grid items-center grid-cols-4 p-[16px] rounded-[8px] border  hover:bg-[#1A2378] hover:border-[#FFFFFF29] ${selectedHours?._id === item?._id ? "bg-[#1A2378]" : "bg-[#1A1F5B]"} ${selectedHours?._id === item?._id ? "border-[#FFFFFF29]" : "border-transparent"}`}
+          >
+            <div className="flex flex-row ">
+              {/* <div
+                className={`bg-[${selectedHours?._id === item?._id ? "#08FA5A" : "#fff"}] md:h-[30px] md:w-[30px] h-[20px] w-[20px] min-w-[20px] rounded-full`}
+              /> */}
+              <div>
+                <p className="text-sm text-white opacity-[0.6] font-normal">Timing</p>
+                <span className="mt-[4px] font-semibold text-base text-white">
+                  {item.value}
+                </span>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm text-white opacity-[0.6] font-normal">Incall</p>
+              <span className="mt-[4px] font-semibold text-base text-white">{item.incall}</span>
+            </div>
+            <div>
+              <p className="text-sm text-white opacity-[0.6] font-normal">Outcall</p>
+              <span className="mt-[4px] font-semibold text-base text-white">{item.outcall}</span>
+            </div>
+            <div>
+              <p className="text-sm text-white opacity-[0.6] font-normal" s>Currency</p>
+              <span className="mt-[4px] font-semibold text-base text-white">
+                {item?.currency}
+              </span>
+            </div>
           </div>
-          <span className="px-2 font-bold text-black">{item.incall}</span>
-          <span className="px-2 font-bold text-black">{item.outcall}</span>
-          <span className="px-2 font-bold text-[#02227E]">
-            {item?.currency}
-          </span>
-        </div>
-      ))}
+        ))}
+      </div>
       {/* <div className="flex items-center justify-center mx-4 mt-2 mb-3">
                 <Button
                     className={

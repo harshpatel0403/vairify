@@ -12,6 +12,7 @@ const SelectBox_ = ({
   setRules,
   value,
   border,
+  optionClass
 }) => {
   return (
     <select
@@ -21,7 +22,7 @@ const SelectBox_ = ({
       style={{ borderColor: border && border }}
     >
       {options.map((option) => (
-        <option key={option} value={option}>
+        <option key={option} value={option} className={` ${optionClass} text-black`}>
           {option}
         </option>
       ))}

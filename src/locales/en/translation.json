@@ -1,0 +1,195 @@
+{
+  "login": {
+    "joinUs": "Join us Today",
+    "makeFriends": "Let's make new Friends",
+    "welcomeBack": "Welcome back to VAIRIFY!",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot Password?",
+    "dontHaveAccount": "Don’t have an account?",
+    "loginButton": "Login",
+    "otpSent": "OTP sent successfully",
+    "networkError": "Network Error"
+  },
+  "global": {
+    "signUp": "Sign Up",
+    "login": "Login"
+  },
+  "chainpass": {
+    "selectCategory": "Select Your Category",
+    "clientHobbyist": "Client/Hobbyist",
+    "companionProvider": "Companion/Provider",
+    "agencyBusiness": "Agency/Business",
+    "influencerAffiliate": "Influencer/Affiliate"
+  },
+  "otp": {
+    "verifyTitle": "Verify Number!",
+    "verifySubtitle": "Verify an account",
+    "otpSentMsg": "OTP has been sent to your register Email & Number",
+    "incorrectCode": "The code you have entered is incorrect. Please try again or click below to",
+    "resend": "Resend",
+    "otpRequired": "OTP is required",
+    "verifyButton": "Verify now",
+    "otpSuccess": "OTP verify successfully",
+    "otpFailed": "Incorrect OTP!",
+    "otpResentSuccess": "OTP sent successfully",
+    "otpResentError": "Something went wrong!"
+  },
+  "congratulations": {
+    "title": "Your registration was successful.",
+    "paragraph1": "You are now a founding member of the Chainpass ID - VAIRIFY community! We're thrilled to extend an invitation for you to access the full-featured beta versions of our sites, enhanced with V.A.I. Technology. Experience the world's safest and most advanced platforms at no cost while you share your feedback that will make the official launch of the V.A.I. community the safest community in the world even better.",
+    "paragraph2": "Simply check the boxes below, and we will keep you informed",
+    "betaTester": "Yes, want to be a Final stage Beta Tester",
+    "notifyOnRelease": "Notify me when the app is released",
+    "exploreButton": "Explore",
+    "preferencesSaved": "Preference saved!",
+    "preferencesError": "Something went wrong!"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "subtitle": "Add below details for reset password",
+    "emailPlaceholder": "Enter Email",
+    "phonePlaceholder": "Enter Phone",
+    "or": "OR",
+    "sendOtp": "Send OTP",
+    "emailRequired": "Email is required",
+    "emailOrPhoneRequired": "Email OR Number is required",
+    "otpSent": "OTP sent successfully",
+    "error": "Something went wrong!"
+  },
+  "resetPasswordConfirm": {
+    "title": "Create New Password",
+    "subtitle": "Your new password must be different from any of your previous password",
+    "newPasswordPlaceholder": "New password",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "passwordRequired": "Password is required",
+    "passwordsMismatch": "Passwords do not match",
+    "changePasswordButton": "Change Password",
+    "successMessage": "Password changed successfully",
+    "errorMessage": "Something went wrong!"
+  },
+  "resetPasswordOtp": {
+    "title": "Reset Password",
+    "subtitle": "Verify an account",
+    "otpSentMsg": "OTP has been sent to your register Email & Number",
+    "enterOtpPlaceholder": "Enter OTP",
+    "otpRequired": "OTP is required",
+    "submitButton": "Enter OTP",
+    "resendLink": "If you do not receive your code in 60 seconds click this link to resend",
+    "otpSuccess": "OTP verify successfully",
+    "otpError": "Something went wrong!"
+  },
+  "getVai": {
+    "vaiButton": "Get V.A.I",
+    "vaiForBusiness": "For Business"
+  },
+  "terms": {
+    "title": "TERMS AND CONDITIONS",
+    "welcome": "Welcome to Vairify.Date",
+    "para1": "These Terms and Conditions constitute a legally binding agreement made between you, whether personally or on behalf of an entity (“you”) and Vairify.Date (\"Company\", “we”, “us”, or “our”), concerning your access to and use of the Vairify.Date website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto (collectively, the “Site”). You agree that by accessing the Site, you have read, understood, and agreed to be bound by all of these Terms and Conditions.",
+    "para2": "Supplemental terms and conditions or documents that may be posted on the Site from time to time are hereby expressly incorporated herein by reference. We will alert you about any changes by updating the “Last updated” date of these Terms and Conditions, and you waive any right to receive specific notice of each such change. It is your responsibility to periodically review these Terms and Conditions to stay informed of updates. You will be subject to and will be deemed to have been made aware of and to have accepted, the changes in any revised Terms and Conditions by your continued use of the Site after the date such revised Terms and Conditions are posted.",
+    "checkboxLabel": "I have read the terms and conditions, cookie, and privacy policies",
+    "checkboxError": "Terms and conditions is required",
+    "nextButton": "Next"
+  },
+  "subscription": {
+    "totalAmount": "Total amount to pay include all taxes",
+    "couponLabel": "* {{count}} coupons",
+    "couponTotal": "Total {{currency}} {{amount}}",
+    "couponPlaceholder": "Coupon Code",
+    "couponRequired": "Coupon code is required",
+    "applyButton": "Apply",
+    "submitButton": "Submit Payment",
+    "securePaymentNote": "Make payment securely"
+  },
+  "discountCoupon": {
+    "title": "Verified Anonymous Identity",
+    "placeholder": "#1832-9912-7552",
+    "couponRequired": "Coupon code is required",
+    "amountLabel": "${{amount}}.00",
+    "submitButton": "Submit Payment",
+    "successMessage": "Coupon applied successfully",
+    "errorMessage": "Invalid or expired coupon"
+  },
+  "payment": {
+    "cardNumber": "Card Number",
+    "cardHolderName": "Card Holder Name",
+    "cardHolderNamePlaceholder": "Card Holder Name",
+    "expirationDate": "Expiration Date",
+    "cvc": "CVC",
+    "vaiSubscription": "VAI Subscription",
+    "migrationSpecial": "Migration Special",
+    "couponLine": "{{currency}}25.00 * {{count}} coupons:",
+    "couponTotal": "{{currency}}{{amount}}.00",
+    "totalAmount": "Total Amount:",
+    "makePayment": "Make Payment",
+    "secureNote": "Make payment securely",
+    "successToast": "Payment completed successfully",
+    "errorToast": "Something went wrong while processing your payment"
+  },
+  "paymentSuccess": {
+    "title": "Payment success!!",
+    "description": "Your payment has been successfully processed.",
+    "button": "Go to V.A.I."
+  },
+  "migration": {
+    "title": "Migration Special",
+    "tagline": "Exclusive limited-time offer: Unlock the TruRevu special at sign-up - one-time eligibility only!",
+    "offerTitle": "50% off TruRevu Migration Special",
+    "description1": "We will assign an agent to gather your reviews on the web and assign them to your TruRevu. This grand opening special will only be available 60 days from our opening",
+    "description2": "“It's your reputation — TruRevu will help you take control of it”",
+    "price": "$50.00",
+    "discountedPrice": "$25.00",
+    "buttonYes": "Yes",
+    "buttonNo": "No"
+  },
+  "businessVai": {
+    "title": "V.A.I. For Business",
+    "included": "Verification's Included",
+    "selectAdditional": "Select additional V.A.I.’s $25.00 Each",
+    "nextButton": "Next >",
+    "dropdownDefault": "Additional verification’s"
+  },
+  "vaiCodes": {
+    "title": "V.A.I. Codes",
+    "header": "V.A.I.",
+    "subtitle": "Verified Anonymous Identity",
+    "noCodesImageAlt": "No Code",
+    "noCodesMessage": "You have no",
+    "noCodesHighlight": "V.A.I.",
+    "noCodesSuffix": "coupon code"
+  },
+  "agencyBusiness": {
+    "heading": "Agency/Business",
+    "subheading": "Enter your business information",
+    "countryPlaceholder": "Country of Business",
+    "namePlaceholder": "Name of your business",
+    "addressPlaceholder": "Address of business",
+    "phonePlaceholder": "Phone",
+    "whatsappPlaceholder": "Whatsapp",
+    "registerButton": "Register",
+    "validation": {
+      "country": "Country Of Business is required",
+      "name": "Name Of Your Business is required",
+      "address": "Address Of Business is required",
+      "contact": "Contact information is required"
+    }
+  },
+  "vairipay": {
+    "title": "VAIRIPAY",
+    "requestToPay": "You have Request to pay",
+    "view": "View",
+    "viewTransactions": "View Transaction",
+    "yourPaymentMethods": "Your Payment Methods",
+    "modalTitle": "View {{appName}}",
+    "qrCode": "QR Code",
+    "p2pApps": "P2P APPS",
+    "goldenTokens": "Golden Rose Tokens",
+    "paymentSuccess": "Payment completed successfully",
+    "defaultImageAlt": "Default Image",
+    "noWallet": "No Wallet",
+    "goToVairipaySearch": "Go to Vairipay Search",
+    "goToGoldenToken": "Go to Golden Token"
+  }
+}

@@ -5,6 +5,7 @@ import VaridateService from "../../../services/VaridateServices";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import moment from "moment";
+import Loading from "../../../components/Loading/Index";
 
 const VairifyMembershipHistory = () => {
   const navigate = useNavigate();
@@ -39,10 +40,8 @@ const VairifyMembershipHistory = () => {
 
   if (loading) {
     return (
-      <div className="main-container h-full">
-        <div className="h-full flex justify-center items-center">
-          <p>Loading...</p>
-        </div>
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
       </div>
     );
   }
@@ -106,11 +105,6 @@ const VairifyMembershipHistory = () => {
                                   .VITE_APP_S3_IMAGE +
                                 `/${UserDetails?.profilePic}`
                               }
-                              // src={
-                              //   import.meta.env
-                              //     .VITE_APP_API_USERPROFILE_IMAGE_URL +
-                              //   `/${UserDetails?.profilePic}`
-                              // }
                               className="w-[80px] h-[80px]  rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
                               alt="Hot Rod"
                             />

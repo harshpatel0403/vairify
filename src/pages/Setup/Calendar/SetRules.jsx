@@ -12,7 +12,8 @@ import { toast } from "react-toastify";
 import Loading from "../../../components/Loading/Index";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
-
+import Header from "../../../components/Header/Header";
+import PageTitle from "../../../components/PageTitle";
 const customStyles = {
   content: {
     top: "50%",
@@ -160,8 +161,15 @@ export default function SetRules() {
     dispatch(HandleCreateCalendarSetting(AllData))
       .then(async (result) => {
         if (result?.payload?.status === 200) {
-          setIsOpen(true);
+          // setIsOpen(true);
           setIsLoading(false);
+          toast(result?.payload?.data?.message, {
+            hideProgressBar: true,
+            autoClose: 1000,
+            type: "success",
+          });
+
+          navigate("/cal-setting")
         } else {
           setIsLoading(false);
         }
@@ -310,350 +318,327 @@ export default function SetRules() {
   }, [color]);
 
   return (
-    <div className="main-container px-0 pb-2">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-        <div className="w-full mx-auto flex justify-center items-center">
-          <span className="text-[27px] font-bold">Calendar Settings</span>
+    <div className="min-h-[calc(100vh - 282px)]">
+      <div className="container">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={"Calendar Settings"} isSmall={true} />
         </div>
-        <div className="w-full flex justify-center items-center py-2 mt-3 bg-[#3760CB6B] h-[25px]">
-          <span className="w-full font-extrabold text-[20px] text-[#01195C]">
+        <div className="">
+          <div className="sm:text-xl text-lg font-medium text-white">
             Notification Rules
-          </span>
-        </div>
-        <div className="w-full max-w-[420px] mx-auto flex flex-row justify-center items-center mt-3 h-[45.34px]">
-          <div className="max-w-[240px] h-[45.34px]">
-            <SelectBox
-              rounded={"rounded-xl"}
-              className1={
-                "!whitespace-pre !text-[18px] !pr-[40px] rounded-xl max-h-[45.34px] px-2 leading-[20px] py-0 min-h-[44px]"
-              }
-              options={requestOptions}
-              backgroundColor={"bg-[#01195C]"}
-              textSize={"text-[18px]"}
-              textColor={"text-white"}
-              fontWeight={"font-semibold"}
-              size="45.34px"
-              setRules="true"
-              iconColor="text-white"
-              disabledOption="Cancellation Request"
-              onChange={(e) => {
-                setSelectedRequestOptions(e.target.value);
-              }}
-            />
           </div>
-          <div className="mt-1 ml-5 w-[100px] h-[45.34px]">
-            <Select
-              value={status}
-              rounded="rounded-xl"
-              className="rounded-[8px!important] w-[90px] h-[43px] flex justify-center items-center bg-[#01195C]"
-            >
-              <MenuItem
-                onClick={() => {
-                  setColor(null);
-                  setTimeout(() => setColor("red-500"), 0);
-                  setStatus(1);
+          <div className="w-full mx-auto flex flex-row justify-center items-center mt-3 gap-3">
+            <div className="relative w-full">
+              <SelectBox
+                options={requestOptions}
+                setRules="true"
+                disabledOption="Cancellation Request"
+                className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px]"
+                size={"h-[47px]"}
+                textAlign={"text-left"}
+                rounded={"rounded-2xl"}
+                fontWeight={"font-bold"}
+                textColor={"text-white"}
+                textSize={"text-[14px]"}
+                onChange={(e) => {
+                  setSelectedRequestOptions(e.target.value);
                 }}
-                value={1}
+              />
+            </div>
+            <div className="w-fit ">
+              <Select
+                value={status}
+                rounded={"rounded-2xl"}
+                className=" w-[78px] h-[43px] flex justify-center items-center border border-[#919EAB33] border-[2px] h-[47px] !rounded-[8px]"
               >
-                <div className="mx-auto flex justify-center items-center w-[31px] h-[31px] bg-red-500"></div>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setStatus(2);
-                  setColor("green-500");
-                }}
-                value={2}
-              >
-                <div className="mx-auto flex justify-center items-center w-[31px] h-[31px] bg-green-500"></div>
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setStatus(3);
-                  setColor("yellow-500");
-                }}
-                value={3}
-              >
-                <div className="mx-auto flex justify-center items-center w-[31px] h-[31px] bg-yellow-500"></div>
-              </MenuItem>
-            </Select>
+                <MenuItem
+                  onClick={() => {
+                    setColor(null);
+                    setTimeout(() => setColor("red-500"), 0);
+                    setStatus(1);
+                  }}
+                  value={1}
+                >
+                  <div className="mx-auto flex justify-center items-center w-[22px] h-[22px] bg-red-500 rounded-[4px]"></div>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setStatus(2);
+                    setColor("green-500");
+                  }}
+                  value={2}
+                >
+                  <div className="mx-auto flex justify-center items-center w-[22px] h-[22px] bg-green-500 rounded-[4px]"></div>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setStatus(3);
+                    setColor("yellow-500");
+                  }}
+                  value={3}
+                >
+                  <div className="mx-auto flex justify-center items-center w-[22px] h-[22px] bg-yellow-500 rounded-[4px]"></div>
+                </MenuItem>
+              </Select>
+            </div>
           </div>
-        </div>
-        <div className="w-full max-w-[420px] mx-auto flex flex-row justify-center items-center mt-6 gap-5">
-          {colorStatus?.map((item) => {
-            return (
-              <>
-                <div className="flex flex-row justify-center items-center">
-                  <div
-                    className={`w-[18px] h-[18px] border-2 border-black bg-${item?.color}`}
-                  ></div>
-                  <div>
-                    <span className="ml-2 font-extrabold text-[14.4px] text-black">
-                      {item?.title}
-                    </span>
+          <div className="w-full max-w-[420px] mx-auto flex flex-row justify-center items-center mt-6 gap-5">
+            {colorStatus?.map((item) => {
+              return (
+                <>
+                  <div className="flex flex-row justify-center items-center">
+                    <div
+                      className={`w-[16px] h-[16px] rounded-full bg-${item?.color}`}
+                    ></div>
+                    <div>
+                      <span className="ml-2 font-normal text-base text-white">
+                        {item?.title}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </>
-            );
-          })}
-          {
-            // <div className="flex flex-row justify-center items-center">
-            //   <div className="w-[18px] h-[18px] border-2 border-black bg-yellow-500"></div>
-            //   <div>
-            //     <span className="ml-2 font-extrabold text-[14.4px] text-black">
-            //       Pending
-            //     </span>
-            //   </div>
-            // </div>
-            // <div className="flex flex-row justify-center items-center">
-            //   <div className="w-[18px] h-[18px] border-2 border-black bg-green-500"></div>
-            //   <div>
-            //     <span className="ml-2 font-extrabold text-[14.4px] text-black">
-            //       Confirmed
-            //     </span>
-            //   </div>
-            // </div>
-            // <div className="flex flex-row justify-center items-center">
-            //   <div className="w-[18px] h-[18px] border-2 border-black bg-red-500"></div>
-            //   <div>
-            //     <span className="ml-2 font-extrabold text-[14.4px] text-black">
-            //       Cancellation <br />
-            //       Request
-            //     </span>
-            //   </div>
-            // </div>
-          }
-        </div>
-        <div className="w-full flex justify-center items-center py-2 mt-6 bg-[#3760CB6B] h-[25px]">
-          <span className="w-full font-extrabold text-[20px] text-[#01195C]">
+                </>
+              );
+            })}
+            {
+              // <div className="flex flex-row justify-center items-center">
+              //   <div className="w-[18px] h-[18px] border-2 border-black bg-yellow-500"></div>
+              //   <div>
+              //     <span className="ml-2 font-extrabold text-[14.4px] text-black">
+              //       Pending
+              //     </span>
+              //   </div>
+              // </div>
+              // <div className="flex flex-row justify-center items-center">
+              //   <div className="w-[18px] h-[18px] border-2 border-black bg-green-500"></div>
+              //   <div>
+              //     <span className="ml-2 font-extrabold text-[14.4px] text-black">
+              //       Confirmed
+              //     </span>
+              //   </div>
+              // </div>
+              // <div className="flex flex-row justify-center items-center">
+              //   <div className="w-[18px] h-[18px] border-2 border-black bg-red-500"></div>
+              //   <div>
+              //     <span className="ml-2 font-extrabold text-[14.4px] text-black">
+              //       Cancellation <br />
+              //       Request
+              //     </span>
+              //   </div>
+              // </div>
+            }
+          </div>
+          <div className="mt-[24px] sm:text-xl text-lg font-medium text-white">
             Buffer Time
-          </span>
-        </div>
-        <div className="w-full max-w-[420px] mx-auto flex flex-row justify-around items-center mt-4">
-          <div className="flex flex-row justify-around items-end duration-row">
-            <div className="flex flex-col justify-center items-center mr-2">
-              <span className="text-[10.8px] font-extrabold pb-[4px]">Day</span>
-              <div className="bg-[#02227E] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center">
-                <span className="text-[18px] font-extrabold text-white">
+          </div>
+          <div className="w-full max-w-[420px] mx-auto flex flex-row justify-around items-center mt-4">
+            <div className="flex flex-row justify-around items-end duration-row">
+              <div className="flex flex-col justify-center items-center mr-2">
+                <span className="text-[10px] font-normal pb-[4px] text-white">Day</span>
+                <div className="bg-[#919EAB33] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center text-xl font-normal text-white">
                   {bufferDay}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center items-center mr-2">
-              <span className="text-[10.8px] font-extrabold pb-[4px]">Hr</span>
-              <div className="bg-[#02227E] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center">
-                <span className="text-[18px] font-extrabold text-white">
-                  {bufferHr}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center items-center mr-2">
-              <span className="text-[10.8px] font-extrabold pb-[4px]">Min</span>
-              <div className="bg-[#02227E] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center">
-                <span className="text-[18px] font-extrabold text-white">
-                  {bufferMin}
-                </span>
-              </div>
-            </div>
-            {parseInt(bufferDay) == 0 &&
-              parseInt(bufferHr) == 0 &&
-              parseInt(bufferMin) == 0 ? (
-              <div className="flex flex-col justify-center items-center bg-gray-300 w-[45px] h-[45px] rounded-md border-2 border-gray-200 mr-2">
-                <button
-                  disabled
-                  className="w-full h-full flex flex-col justify-center items-center"
-                >
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/VectorDown.png`}
-                    alt="Time Duration Down"
-                  />
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col justify-center items-center bg-white w-[45px] h-[45px] rounded-md border-2 border-gray-200 mr-2">
-                <button
-                  onClick={() => handleDurationDownBuffer()}
-                  className="w-full h-full flex flex-col justify-center items-center"
-                >
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/VectorDown.png`}
-                    alt="Time Duration Down"
-                  />
-                </button>
-              </div>
-            )}
-            <div className="flex flex-col justify-center items-center bg-white w-[45px] h-[45px] rounded-md border-2 border-gray-200">
-              <button
-                onClick={() => handleDurationUpBuffer()}
-                className="w-full h-full flex flex-col justify-center items-center"
-              >
-                <img
-                  src={`${import.meta.env.BASE_URL}images/VectorUp.png`}
-                  alt="Time Duration Up"
-                />
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="w-full flex justify-center items-center py-2 mt-6 bg-[#3760CB6B] h-[25px]">
-          <span className="w-full font-extrabold text-[20px] text-[#01195C]">
-            Black Out Period
-          </span>
-        </div>
-        <div className="w-full max-w-[420px] mx-auto flex flex-col justify-around items-center">
-          <div className="flex flex-row justify-around items-end mt-4">
-            <div className="flex flex-col justify-center items-center mr-2">
-              <span className="text-[10.8px] font-extrabold pb-[4px]">Day</span>
-              <div className="bg-[#02227E] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center">
-                <span className="text-[18px] font-extrabold text-white">
-                  {apptDay}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center items-center mr-2">
-              <span className="text-[10.8px] font-extrabold pb-[4px]">Hr</span>
-              <div className="bg-[#02227E] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center">
-                <span className="text-[18px] font-extrabold text-white">
-                  {apptHr}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center items-center mr-2">
-              <span className="text-[10.8px] font-extrabold pb-[4px]">Min</span>
-              <div className="bg-[#02227E] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center">
-                <span className="text-[18px] font-extrabold text-white">
-                  {apptMin}
-                </span>
-              </div>
-            </div>
-            {parseInt(apptDay) == 0 &&
-              parseInt(apptHr) == 0 &&
-              parseInt(apptMin) == 0 ? (
-              <div className="flex flex-col justify-center items-center bg-gray-300 w-[45px] h-[45px] rounded-md border-2 border-gray-200 mr-2">
-                <button
-                  disabled
-                  className="w-full h-full flex flex-col justify-center items-center"
-                >
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/VectorDown.png`}
-                    alt="Time Duration Down"
-                  />
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col justify-center items-center bg-white w-[45px] h-[45px] rounded-md border-2 border-gray-200 mr-2">
-                <button
-                  onClick={() => handleDurationDownBlackOut()}
-                  className="w-full h-full flex flex-col justify-center items-center"
-                >
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/VectorDown.png`}
-                    alt="Time Duration Down"
-                  />
-                </button>
-              </div>
-            )}
-            <div className="flex flex-col justify-center items-center bg-white w-[45px] h-[45px] rounded-md border-2 border-gray-200">
-              <button
-                onClick={() => handleDurationUpBlackOut()}
-                className="w-full h-full flex flex-col justify-center items-center"
-              >
-                <img
-                  src={`${import.meta.env.BASE_URL}images/VectorUp.png`}
-                  alt="Time Duration Up"
-                />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full flex justify-center items-center py-2 mt-6 bg-[#3760CB6B] h-[25px]">
-          <span className="w-full font-extrabold text-[20px] text-[#01195C]">
-            Member Exemptions
-          </span>
-        </div>
-
-        <div className="max-w-[400px] px-4 w-full mx-auto flex flex-col  justify-around mt-6">
-          <div className="w-full flex items-end text-right">
-            <Button
-              onClick={handleAddExemption}
-              className="ml-auto mr-[10px] mb-3   mb-1  flex items-center rounded-md py-1 justify-center bg-gradient-to-b from-[#02227e] to-[#02227e] text-[#fff] font-bold text-base"
-              text={<><FontAwesomeIcon icon={faPlus} className="pr-3" /> Add </>}
-              size="40px"
-            />
-          </div>
-          <div className="w-full">
-            {exemptions.map((exemption, index) => (
-              <div key={exemption._id} className="w-full flex pr-2 mb-3 last:mb-0">
-                <InputText
-                  className="rounded-md h-[26px] mb-2"
-                  placeholder="Enter Verify ID"
-                  size="35px"
-                  value={exemption.VIAid}
-                  onChange={(e) => handleInputChange(exemption._id, e.target.value)}
-                  ref={index === exemptions.length - 1 ? lastInputRef : null} // Set ref for the last input
-                />
-                <Button
-                  onClick={() => handleRemoveExemption(exemption._id)}
-                  className="ml-2 !w-[57px] flex items-center rounded-md py-1 justify-center bg-gradient-to-b from-[#FF0000] to-[#FF3333] text-[#FFFFFF] font-bold text-base"
-                  size="37px"
-                  text={<FontAwesomeIcon icon={faMinus} />}
-                >
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="max-w-[400px] px-2 w-full mx-auto flex flex-row text-red-500">{error}</div>
-
-        <div className="w-full max-w-[420px] mx-auto flex flex-row justify-center items-center mt-2 gap-5">
-          <Button
-            onClick={() => handleNavigateToCalendar()}
-            className={
-              "flex items-center px-[10px] py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] w-full max-w-[152px]"
-            }
-            text={"Calendar"}
-            size="45px"
-          />
-          <Button
-            className={
-              "flex items-center px-[10px] py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] w-full max-w-[152px]"
-            }
-            text={
-              !isLoading ? (
-                "Save Rules"
-              ) : (
-                <div className="flex items-center	justify-center pt-[6px]">
-                  <Loading />
                 </div>
-              )
-            }
-            onClick={HandleSaveButton}
-            size="45px"
-          />
-        </div>
-      </div>
-      <Modal isOpen={isOpen} onRequestClose={closeModal} style={customStyles}>
-        <div className="w-full mx-auto flex flex-col justify-center items-cener ">
-          <div className="font-bold text-[36px] text-white text-center leading-9">
-            Rules
+              </div>
+              <div className="flex flex-col justify-center items-center mr-2">
+                <span className="text-[10px] font-normal pb-[4px] text-white">Hr</span>
+                <div className="bg-[#919EAB33] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center text-xl font-normal text-white">
+                  {bufferHr}
+                </div>
+              </div>
+              <div className="flex flex-col justify-center items-center mr-2">
+                <span className="text-[10px] font-normal pb-[4px] text-white">Min</span>
+                <div className="bg-[#919EAB33] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center text-xl font-normal text-white">
+                  {bufferMin}
+                </div>
+              </div>
+              {parseInt(bufferDay) == 0 &&
+                parseInt(bufferHr) == 0 &&
+                parseInt(bufferMin) == 0 ? (
+                <div className="flex flex-col justify-center items-center bg-[#919EAB33] opacity-[0.6] w-[45px] h-[45px] rounded-md mr-2">
+                  <button
+                    disabled
+                    className="w-full h-full flex flex-col justify-center items-center"
+                  >
+                    <img
+                      src='/images/setup/vector-down-white.svg'
+                      alt="Time Duration Down"
+                    />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col justify-center items-center bg-[#919EAB33] w-[45px] h-[45px] rounded-md mr-2">
+                  <button
+                    onClick={() => handleDurationDownBuffer()}
+                    className="w-full h-full flex flex-col justify-center items-center"
+                  >
+                    <img
+                      src='/images/setup/vector-down-white.svg'
+                      alt="Time Duration Down"
+                    />
+                  </button>
+                </div>
+              )}
+              <div className="flex flex-col justify-center items-center bg-[#919EAB33] w-[45px] h-[45px] rounded-md">
+                <button
+                  onClick={() => handleDurationUpBuffer()}
+                  className="w-full h-full flex flex-col justify-center items-center"
+                >
+                  <img
+                    src='/images/setup/vector-up-white.svg'
+                    alt="Time Duration Up"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="font-bold text-[36px] text-white text-center leading-9">
-            Saved
+          <div className="mt-[24px] sm:text-xl text-lg font-medium text-white">
+            Black Out Period
           </div>
-          <div className="font-bold text-[36px] text-white text-center leading-9">
-            successfully
+          <div className="w-full max-w-[420px] mx-auto flex flex-col justify-around items-center">
+            <div className="flex flex-row justify-around items-end mt-4">
+              <div className="flex flex-col justify-center items-center mr-2">
+                <span className="text-[10px] font-normal pb-[4px] text-white">Day</span>
+                <div className="bg-[#919EAB33] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center text-xl font-normal text-white">
+                  {apptDay}
+                </div>
+              </div>
+              <div className="flex flex-col justify-center items-center mr-2">
+                <span className="text-[10px] font-normal pb-[4px] text-white">Hr</span>
+                <div className="bg-[#919EAB33] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center text-xl font-normal text-white">
+                  {apptHr}
+                </div>
+              </div>
+              <div className="flex flex-col justify-center items-center mr-2">
+                <span className="text-[10px] font-normal pb-[4px] text-white">Min</span>
+                <div className="bg-[#919EAB33] w-[45px] h-[45px] rounded-md flex flex-col justify-center items-center text-xl font-normal text-white">
+                  {apptMin}
+                </div>
+              </div>
+              {parseInt(apptDay) == 0 &&
+                parseInt(apptHr) == 0 &&
+                parseInt(apptMin) == 0 ? (
+                <div className="flex flex-col justify-center items-center bg-[#919EAB33] opacity-[0.6] w-[45px] h-[45px] rounded-md mr-2">
+                  <button
+                    disabled
+                    className="w-full h-full flex flex-col justify-center items-center"
+                  >
+                    <img
+                      src='/images/setup/vector-down-white.svg'
+                      alt="Time Duration Down"
+                    />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col justify-center items-center bg-[#919EAB33] w-[45px] h-[45px] rounded-md mr-2">
+                  <button
+                    onClick={() => handleDurationDownBlackOut()}
+                    className="w-full h-full flex flex-col justify-center items-center"
+                  >
+                    <img
+                      src='/images/setup/vector-down-white.svg'
+                      alt="Time Duration Down"
+                    />
+                  </button>
+                </div>
+              )}
+              <div className="flex flex-col justify-center items-center bg-[#919EAB33] w-[45px] h-[45px] rounded-md">
+                <button
+                  onClick={() => handleDurationUpBlackOut()}
+                  className="w-full h-full flex flex-col justify-center items-center"
+                >
+                  <img
+                    src='/images/setup/vector-up-white.svg'
+                    alt="Time Duration Up"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
-          <div className=" flex justify-center">
+
+
+          <div className="flex justify-between items-center mt-[24px]">
+            <div className=" sm:text-xl text-lg font-medium text-white">
+              Member Exemptions
+            </div>
+            <div>
+              <Button
+                onClick={handleAddExemption}
+                className="!py-0 !w-fit px-3"
+                text={<><FontAwesomeIcon icon={faPlus} className="pr-1" /> Add </>}
+                size="38px"
+              />
+            </div>
+          </div>
+
+          <div className="w-full mx-auto flex flex-col  justify-around mt-[12px]">
+            <div className="w-full">
+              {exemptions?.map((exemption, index) => (
+                <div key={exemption._id} className="w-full flex items-center mb-2 last:mb-0">
+                  <InputText
+                    className="rounded-md h-[26px] border-[#919EAB33]"
+                    placeholder="Enter Verify ID"
+                    size="48px"
+                    value={exemption.VIAid}
+                    onChange={(e) => handleInputChange(exemption._id, e.target.value)}
+                    ref={index === exemptions.length - 1 ? lastInputRef : null} // Set ref for the last input
+                  />
+                  <Button
+                    onClick={() => handleRemoveExemption(exemption._id)}
+                    className="ml-2 !w-[20px] flex items-center rounded-full !py-0 bg-transparent border border-[#E43530] hover:bg-transparent h-[20px] flex justify-center items-center"
+                    text={<FontAwesomeIcon icon={faMinus} color="#E43530" />}
+                  >
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="w-full mx-auto flex flex-row text-red-500 text-xs mt-1" >{error}</div>
+
+          <div className="w-full mx-auto flex flex-row justify-center items-center mt-[24px] gap-5 mb-[48px]">
             <Button
-              className={
-                "mt-6 text-[#040C50] justify-center max-w-[200px] font-[800] w-full from-0% to-65% from-[#0CA36C] to-[#08FA5A] bg-gradient-to-b text-[24px]"
+              onClick={() => handleNavigateToCalendar()}
+              text={"Calendar"}
+              size="45px"
+            />
+            <Button
+              disabled={isLoading}
+              text={
+                !isLoading ? (
+                  "Save Rules"
+                ) : (
+                  <div className="flex items-center	justify-center pt-[0px]">
+                    <Loading />
+                  </div>
+                )
               }
-              onClick={() => navigate("/cal-setting")}
-              text="Calendar"
+              className='!bg-[#FFFFFF29] secondary-btn hover:brightness-105 hover:!bg-[#3660cb]'
+              onClick={HandleSaveButton}
+              size="45px"
             />
           </div>
         </div>
-      </Modal>
+        <Modal isOpen={isOpen} onRequestClose={closeModal} style={customStyles}>
+          <div className="w-full mx-auto flex flex-col justify-center items-cener ">
+            <div className="font-bold text-[36px] text-white text-center leading-9">
+              Rules
+            </div>
+            <div className="font-bold text-[36px] text-white text-center leading-9">
+              Saved
+            </div>
+            <div className="font-bold text-[36px] text-white text-center leading-9">
+              successfully
+            </div>
+            <div className=" flex justify-center">
+              <Button
+                className={
+                  "mt-6 text-[#040C50] justify-center max-w-[200px] font-[800] w-full from-0% to-65% from-[#0CA36C] to-[#08FA5A] bg-gradient-to-b text-[24px]"
+                }
+                onClick={() => navigate("/cal-setting")}
+                text="Calendar"
+              />
+            </div>
+          </div>
+        </Modal>
+      </div>
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../../../components/Header/Header';
+import PageTitle from '../../../components/PageTitle';
 
 export default function PasswordSuccessChanged() {
 
     const navigate = useNavigate()
-
     useEffect(() => {
         const redirectTimeout = setTimeout(() => {
             navigate('/dateguard-setup');
@@ -14,15 +15,16 @@ export default function PasswordSuccessChanged() {
     }, []);
 
     return (
-        <div className='main-container form-field-container'>
-            <div className='w-full mx-auto flex flex-col justify-center items-cener pt-2' style={{
-                height:'100%'
-            }}>
-                <div className='w-full mx-auto flex items-center justify-center'><span className='font-bold text-[30px] text-[#05B7FD] change-font-family'>Date Guard</span></div>
-                <div className='w-full mx-auto flex items-center justify-center mt-4'><div className='w-[67px] h-[82px]'><img src={'/images/DateGuardMask.png'} alt="Date Guard Mask" /></div></div>
-                <div className='w-full mx-auto flex items-center justify-center mt-9'><span className='font-bold text-[30px] text-[#05B7FD] change-font-family'>Codes Successfully Changed</span></div>
-                <div className='w-full mx-auto flex items-center justify-center mt-12 mb-20'><div className='flex-1 flex items-center justify-center'><img src={'/images/DateGuardSuccessCodeMark.png'} alt="Verification Success Mark Icon" /></div></div>
+        <div className="container pb-[48px]">
+            <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+                <PageTitle title={"Date Guard"} />
             </div>
-        </div>
+            <div className="flex items-center justify-center">
+                <img src="/images/setup/Disarm.svg" alt="guard" />
+            </div>
+            <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white my-[24px]">Codes Successfully <br />
+                Changed</h3>
+            <h4 className="text-[#008F34] sm:text-[24px] text-[20px] font-semibold text-center flex items-center justify-center gap-1">Change Successfully <img src="/images/setup/confirm-check.svg" alt="guard" /></h4>
+        </div >
     );
 }

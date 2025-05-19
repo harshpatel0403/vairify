@@ -11,6 +11,8 @@ import DateGuardService from "../../services/DateGuardService";
 import CalendarService from "../../services/CalendarService";
 import { fetchLocation } from "../../utils";
 import { GoogleApiWrapper } from "google-maps-react";
+import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
 
 const UpcomingAppointmentsList = (props) => {
   const navigate = useNavigate();
@@ -86,15 +88,6 @@ const UpcomingAppointmentsList = (props) => {
     navigate(`/chat/${id}`);
   };
 
-  if (loading) {
-    return (
-      <div className="main-container h-full">
-        <div className="h-full flex justify-center items-center">
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   const navigateToViewPage = (appointment) => {
     if (appointment.manualSelfie) {
@@ -187,293 +180,478 @@ const UpcomingAppointmentsList = (props) => {
     setDisabledButtons(updatedDisabledButtons);
   };
 
-  return (
-    <div
-      className="main-content py-4 rounded-2xl pb-[10px] bg-[#D5D6E0]"
-      style={{ maxHeight: "calc(100vh - 160px)" }}
-    >
-      <div className="flex flex-col justify-between">
-        <div className="mt-2 bg-[#040C50]/[26%] w-full ">
-          <h2 className="font-bold py-2 text-[24px] text-[#02227E] font-inter ">
-            Upcoming Appointments
-          </h2>
+  if (loading) {
+    return (
+      <div className="container">
+        <div className="h-[50vh] w-full flex items-center justify-center">
+          <Loading />
         </div>
-        {!appointments?.length && (
-          <div className="text-[32px] text-[#4b4b4b] font-bold text-center h-[430px] flex flex-col justify-center items-center">
-            <div className="image-not">
-              <img src="/images/notFound.png" alt="logo" />
-            </div>
-            Result not found
+      </div>
+    )
+  }
+  else {
+    return (
+      <div
+        className="container pb-[48px]"
+      >
+        <div className="min-h-[calc(100vh-350px)]">
+          <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+            <PageTitle isSmall={true} title={"Upcoming Appointments"} />
           </div>
-        )}
-        <div className="mt-[20px] px-2">
-          <div className="grid md:grid-cols-2 gap-4">
-            {appointments.map((appointment) => (
-              <div
-                key={appointment._id}
-                className="sm:w-[100%] max-w-[440px] bg-[#3760CB] py-[12px] rounded-[20px] border border-gray-100 h-[auto] min-h-[235px]"
-              >
-                <div className="flex gap-2 sm:gap-4 pl-[10px] pr-[10px]">
-                  <div className="w-[25%] justify-center">
-                    <img
-                      src={
-                        appointment?.[
-                          userType == "client-hobbyist"
-                            ? "companionId"
-                            : "clientId"
-                        ]?.profilePic
-                          ?
-                          `${
-                            import.meta.env.VITE_APP_S3_IMAGE
-                          }/${
-                            appointment?.[
-                              userType == "client-hobbyist"
-                                ? "companionId"
-                                : "clientId"
-                            ]?.profilePic
-                          }`
-                          //  `${
-                          //     import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL
-                          //   }/${
-                          //     appointment?.[
-                          //       userType == "client-hobbyist"
-                          //         ? "companionId"
-                          //         : "clientId"
-                          //     ]?.profilePic
-                          //   }`
-                          : appointment?.[
-                              userType == "client-hobbyist"
-                                ? "companionId"
-                                : "clientId"
-                            ]?.gender === "Male"
-                          ? "/images/male.png"
-                          : "/images/female.png"
-                      }
-                      className="w-[86px] h-[86px] max-w-[86px] max-h-[86px] min-w-[86px] min-h-[86px] rounded-full"
-                      alt=""
-                    />
-                    <div className="mt-1 ">
-                      <h6 className="text-xs text-white font-roboto font-semibold">
-                        TruRevu
-                      </h6>
-                      <h6 className="text-xs text-white font-roboto font-semibold">
-                        {
-                          appointment?.[
-                            userType == "client-hobbyist"
-                              ? "companionId"
-                              : "clientId"
-                          ]?.name
-                        }
-                      </h6>
-                      <h6 className="text-xs text-white font-roboto font-semibold">
-                        ID #
-                        {
-                          appointment?.[
-                            userType == "client-hobbyist"
-                              ? "companionId"
-                              : "clientId"
-                          ]?.vaiID
-                        }
-                      </h6>
-                      <div className="flex gap-1 mt-1 justify-center">
-                        {Array.from(
-                          {
-                            length:
+          <div className="flex flex-col justify-between">
+            {!appointments?.length && (
+              <div className="text-xl text-white font-bold text-center flex flex-col justify-center items-center my-[48px] gap-[24px]">
+                <div className="image-not">
+                  <img src="/images/home/result-not-found.svg" alt="not found" />
+                </div>
+                Result not found
+              </div>
+            )}
+            <div className="mt-[20px]">
+              <div className="grid md:grid-cols-2 gap-4">
+                {appointments.map((appointment) => (
+                  <div
+                    key={appointment._id}
+                    className="w-full p-[16px] bg-[#919EAB33] rounded-[16px] cursor-pointer"
+                    onClick={() => navigateToviewall(appointment)}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex gap-[8px] flex-grow">
+                        <div>
+                          <img
+                            src={
                               appointment?.[
                                 userType == "client-hobbyist"
                                   ? "companionId"
                                   : "clientId"
-                              ]?.avgRating || 0,
-                          },
-                          (_, index) => index
-                        )?.map((rating) => (
-                          <img
-                            src="/images/Star.svg"
-                            className="w-[10px]  h-[10px]"
-                            alt=""
-                          />
-                        ))}
-                        {Array.from(
-                          {
-                            length:
-                              5 -
-                              Math.floor(
-                                appointment?.[
+                              ]?.profilePic
+                                ?
+                                `${import.meta.env.VITE_APP_S3_IMAGE
+                                }/${appointment?.[
                                   userType == "client-hobbyist"
                                     ? "companionId"
                                     : "clientId"
-                                ]?.avgRating || 0
-                              ),
-                          },
-                          (_, index) => index
-                        )?.map((rating) => (
-                          <img
-                            src="/images/StarUnfilled.svg"
-                            className="w-[10px]  h-[10px]"
+                                ]?.profilePic
+                                }`
+                                : appointment?.[
+                                  userType == "client-hobbyist"
+                                    ? "companionId"
+                                    : "clientId"
+                                ]?.gender === "Male"
+                                  ? "/images/male.png"
+                                  : "/images/female.png"
+                            }
+                            className="w-[70px] h-[70px] rounded-full object-cover"
                             alt=""
                           />
-                        ))}
+
+                        </div>
+                        <div>
+                          <div className="sm:text-base text-sm text-white font-medium">
+                            {
+                              appointment?.[
+                                userType == "client-hobbyist"
+                                  ? "companionId"
+                                  : "clientId"
+                              ]?.name
+                            }
+                          </div>
+                          <div className="sm:text-sm text-xs font-normal text-[#919EAB] uppercase">
+                            {
+                              appointment?.[
+                                userType == "client-hobbyist"
+                                  ? "companionId"
+                                  : "clientId"
+                              ]?.vaiID
+                            }
+                          </div>
+                          <div className="flex gap-[4px]">
+                            <p className="sm:text-base text-sm text-white font-semibold">
+                              {
+                                (appointment?.[
+                                  userType === "client-hobbyist" ? "companionId" : "clientId"
+                                ]?.avgRating) ?? 0
+                              }
+                            </p>
+                            <img src="/images/home/star.svg" alt="rating" />
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-white opacity-[0.48] font-normal text-sm">
+                          Price Offered
+                        </div>
+                        <div className="font-semibold text-white text-[28px] text-right">
+                          ${appointment.agreedPrice}
+                        </div>
                       </div>
                     </div>
-                    <div className="max-w-[100%] w-[100%] text-center">
+
+                    <div className="mt-[16px]">
+                      <div className="flex justify-between gap-2">
+                        <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Request Appt/time</div>
+                        <p className="text-white sm:text-sm text-xs font-medium text-right">
+                          {moment(appointment?.startDateTime).format(
+                            "MM/DD/YYYY"
+                          )}{" "}
+                          {moment(appointment?.startDateTime).format("hh:mmA")}-
+                          {moment(appointment?.startDateTime)
+                            .add(appointment?.duration, "minutes")
+                            .format("hh:mmA")}
+                        </p>
+                      </div>
+                      <div className="flex justify-between gap-2 mt-[2px]">
+                        <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Elapsed Time</div>
+                        <p className="text-white sm:text-sm text-xs font-medium text-right">
+                          {appointment?.createdAt
+                            ? moment(appointment?.createdAt).fromNow()
+                            : " - "}
+                        </p>
+                      </div>
+                      <div className="flex justify-between gap-2 mt-[2px]">
+                        <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Status</div>
+                        <p className={`sm:text-sm text-xs font-medium text-right ${(userType === "client-hobbyist" && appointment?.clientStatus !== "Cancel"
+                          ? appointment?.companionStatus
+                          : appointment?.clientStatus) === "Scheduled"
+                          ? "text-[#008F34]"
+                          : (userType === "client-hobbyist" && appointment?.clientStatus !== "Cancel"
+                            ? appointment?.companionStatus
+                            : appointment?.clientStatus) === "Rejected"
+                            ? "text-[#E43530]"
+                            : "text-white"
+                          }`}>
+                          {userType === "client-hobbyist" &&
+                            appointment?.clientStatus !== "Cancel"
+                            ? appointment?.companionStatus
+                            : appointment?.clientStatus}
+                        </p>
+                      </div>
+                      <div className="flex justify-between gap-2 mt-[2px]">
+                        <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Sync with</div>
+                        <div className="flex gap-[4px]">
+                          <button className="py-[5px] px-[12px] rounded-[8px] bg-[#FFFFFF29] font-bold text-white text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectSyncWith("Google", appointment._id);
+                            }}
+                          >
+                            Google
+                          </button>
+                          <button className="py-[5px] px-[12px] rounded-[8px] bg-[#FFFFFF29] font-bold text-white text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectSyncWith("Outlook", appointment._id);
+                            }}
+                          >
+                            Outlook
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-[8px] mt-[16px]">
                       <button
-                        onClick={() =>
+                        className="bg-[#FFFFFF] p-[7px] w-full text-sm font-medium rounded-[8px] text-[#060C4D] flex gap-2 justify-center items-center border border-white"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           navigate("/user/profile", {
                             state: {
                               item: {
                                 userId:
                                   appointment?.[
-                                    userType == "client-hobbyist"
-                                      ? "companionId"
-                                      : "clientId"
+                                  userType == "client-hobbyist"
+                                    ? "companionId"
+                                    : "clientId"
                                   ],
                               },
                               market: true,
                             },
-                          })
-                        }
-                        className="mt-3 font-roboto font-bold text-[12px] text-white px-1 py-[3px]  border rounded-[25px] border-white bg-[#02227E]"
+                          });
+                        }}
                       >
-                        View Profile
+                        <img src="/images/home/profile.svg" alt="profile" />
+                        Profile
                       </button>
-
-                      {/* <div>
-                        <label className="mt-4 font-roboto font-bold text-[12px] text-white px-1 py-[3px]">
-                          Sync With
-                        </label>
-                        <SelectBox_
-                          className={"select-sync-options"}
-                          options={syncOptions}
-                          onChange={(e) => {
-                            onSelectSyncWith(e.target.value, appointment._id);
-                          }}
-                        />
-                      </div> */}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-around items-center">
-                      {/* <button>
-                      <img src="/images/phone-rounded.svg" />
-                    </button> */}
-                      <button
-                        onClick={() =>
+                      <button className="bg-transparent p-[7px] rounded-[8px] flex justify-center items-center gap-2 text-white w-full border border-[#919EAB33] text-sm font-medium"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleChatIcon(
+                            appointment?.[
+                              userType === "client-hobbyist" ? "companionId" : "clientId"
+                            ]?._id
+                          );
+                        }}
+
+                      >
+                        <img src="/images/home/comment.svg" alt="profile" />
+                        Chat
+                      </button>
+                      {Object.keys(disabledButtons).length > 0 &&
+                        !disabledButtons[appointment._id] &&
+                        !locationLoading && (
+                          <button className="bg-[#008F34] p-[7px] rounded-[8px] flex justify-center items-center text-white w-full border border-[#919EAB33] text-sm font-medium"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate("/varidate/last-mile-instruction", {
+                                state: appointment,
+                              });
+                            }}
+                          >
+                            Last Mile
+                          </button>
+                        )}
+                    </div>
+
+
+
+
+
+
+
+
+
+
+                    {/* old */}
+                    {/* <div className="flex gap-2 sm:gap-4 pl-[10px] pr-[10px] mt-4">
+                    <div className="w-[25%] justify-center">
+                      <img
+                        src={
+                          appointment?.[
+                            userType == "client-hobbyist"
+                              ? "companionId"
+                              : "clientId"
+                          ]?.profilePic
+                            ?
+                            `${import.meta.env.VITE_APP_S3_IMAGE
+                            }/${appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.profilePic
+                            }`
+                            //  `${
+                            //     import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL
+                            //   }/${
+                            //     appointment?.[
+                            //       userType == "client-hobbyist"
+                            //         ? "companionId"
+                            //         : "clientId"
+                            //     ]?.profilePic
+                            //   }`
+                            : appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.gender === "Male"
+                              ? "/images/male.png"
+                              : "/images/female.png"
+                        }
+                        className="w-[86px] h-[86px] max-w-[86px] max-h-[86px] min-w-[86px] min-h-[86px] rounded-full"
+                        alt=""
+                      />
+                      <div className="mt-1 ">
+                        <h6 className="text-xs text-white font-roboto font-semibold">
+                          TruRevu
+                        </h6>
+                        <h6 className="text-xs text-white font-roboto font-semibold">
+                          {
                             appointment?.[
                               userType == "client-hobbyist"
                                 ? "companionId"
                                 : "clientId"
-                            ]?._id
-                          )
-                        }
-                        className="usergreydisabled"
-                      >
-                        <img src="/images/massege-rounded.svg" className="" />
-                      </button>
-                      <button
-                        onClick={() => navigateToviewall(appointment)}
-                        className="font-roboto font-extrabold text-[16px] text-white px-2 py-[3px] rounded-[10px] border-white bg-[#02227E]"
-                      >
-                        View VAI<span className='logoSetupweight'>RIDATE</span>
-                      </button>
-                    </div>
-                    <div className="grid gap-[5px] mt-4 grid-cols-3">
-                      <span className="font-roboto text-white text-[10px]">
-                        Requested <br /> Appt/time
-                      </span>
-                      {/* <span className="font-roboto text-white text-[10px]">
-                      Requested <br /> Appt/time
-                    </span> */}
-                      <span className="font-roboto text-white text-[10px]">
-                        Elapsed <br /> Time
-                      </span>
-                      <span className="font-roboto text-white text-[10px]">
-                        Status
-                      </span>
-                    </div>
-                    <div className="grid gap-[5px] mt-4 sm:mt-[14px] grid-cols-3">
-                      <span className="font-roboto text-white text-[10px]">
-                        {moment(appointment?.startDateTime).format(
-                          "MM/DD/YYYY"
-                        )}{" "}
-                        <br />
-                        {moment(appointment?.startDateTime).format("hh:mmA")}-
-                        {moment(appointment?.startDateTime)
-                          .add(appointment?.duration, "minutes")
-                          .format("hh:mmA")}
-                      </span>
-                      {/* <span className="font-roboto text-white text-[10px]">
-                      1/28/23 <br /> 4:28pm
-                    </span> */}
-                      <span className="font-roboto text-white text-[10px]">
-                        {appointment?.createdAt
-                          ? moment(appointment?.createdAt).fromNow()
-                          : " - "}
-                      </span>
-                      <span className="font-roboto text-white text-[10px]">
-                        {userType === "client-hobbyist" &&
-                        appointment?.clientStatus !== "Cancel"
-                          ? appointment?.companionStatus
-                          : appointment?.clientStatus}
-                      </span>
-                    </div>
-                    {Object.keys(disabledButtons).length > 0 &&
-                      !disabledButtons[appointment._id] &&
-                      !locationLoading && (
+                            ]?.name
+                          }
+                        </h6>
+                        <h6 className="text-xs text-white font-roboto font-semibold">
+                          ID #
+                          {
+                            appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.vaiID
+                          }
+                        </h6>
+                        <div className="flex gap-1 mt-1 justify-center">
+                          {Array.from(
+                            {
+                              length:
+                                appointment?.[
+                                  userType == "client-hobbyist"
+                                    ? "companionId"
+                                    : "clientId"
+                                ]?.avgRating || 0,
+                            },
+                            (_, index) => index
+                          )?.map((rating) => (
+                            <img
+                              src="/images/Star.svg"
+                              className="w-[10px]  h-[10px]"
+                              alt=""
+                            />
+                          ))}
+                          {Array.from(
+                            {
+                              length:
+                                5 -
+                                Math.floor(
+                                  appointment?.[
+                                    userType == "client-hobbyist"
+                                      ? "companionId"
+                                      : "clientId"
+                                  ]?.avgRating || 0
+                                ),
+                            },
+                            (_, index) => index
+                          )?.map((rating) => (
+                            <img
+                              src="/images/StarUnfilled.svg"
+                              className="w-[10px]  h-[10px]"
+                              alt=""
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="max-w-[100%] w-[100%] text-center">
                         <button
-                          // disabled={appointment?.lastMileInst}
-                          // disabled={appointment?.[userType === 'client-hobbyist' ? 'clientStatus' : 'companionStatus'] === 'Cancel' || appointment?.companionStatus === 'Rejected' || appointment?.companionStatus === 'Signed'} onClick={() => cancelAppointment(appointment._id)}
-                          onClick={() => {
-                            navigate("/varidate/last-mile-instruction", {
-                              state: appointment,
-                            });
-                          }}
-                          className="mt-3 w-[90%] ms-6 font-roboto font-bold text-[16px]  px-2 py-[3px]  rounded-[10px] bg-[#08FA5A] text-[#02227E]"
+                          onClick={() =>
+                            navigate("/user/profile", {
+                              state: {
+                                item: {
+                                  userId:
+                                    appointment?.[
+                                    userType == "client-hobbyist"
+                                      ? "companionId"
+                                      : "clientId"
+                                    ],
+                                },
+                                market: true,
+                              },
+                            })
+                          }
+                          className="mt-3 font-roboto font-bold text-[12px] text-white px-1 py-[3px]  border rounded-[25px] border-white bg-[#02227E]"
                         >
-                          Last Mile Directions
+                          View Profile
                         </button>
-                      )}
-                    <button
-                      disabled={appointment?.cancellationRequested}
-                      onClick={() => cancelAppointment(appointment._id)}
-                      className="mt-2 w-[90%] ms-6 font-roboto font-bold text-[16px]  px-2 py-[3px]  rounded-[10px]  text-white bg-[#E04A22] "
-                    >
-                      {appointment?.cancellationRequested
-                        ? "Cancellation Requested"
-                        : "Request Cancellation"}
-                    </button>
-                  </div>
-                </div>
-                <div className="sync-data pl-[16px] pr-[10px]">
-                  <p>Sync With</p>
-                  <div className="sync-app">
-                    <div
-                      onClick={() =>
-                        onSelectSyncWith("Google", appointment._id)
-                      }
-                      className={`font-roboto font-bold text-[16px] text-white px-4 py-[3px] rounded-[10px] border-white bg-[${
-                        appointment?.ClientGCalSyncId ? "#555" : "#02227E"
-                      }]`}
-                    >
-                      Google
-                    </div>
-                    <div
-                      onClick={() =>
-                        onSelectSyncWith("Outlook", appointment._id)
-                      }
-                      className={`font-roboto font-bold text-[16px] text-white px-4 py-[3px] rounded-[10px] border-white bg-[${
-                        appointment?.ClientOCalSyncId ? "#555" : "#02227E"
-                      }]`}
-                    >
-                      Outlooks
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
 
-          {/* <div className="sm:w-[100%] max-w-[440px] bg-[#3760CB] shadow-2xl py-[12px] rounded-[20px] border border-gray-100 h-[auto] min-h-[235px]">
+                
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-around items-center">
+                  
+                        <button
+                          onClick={() =>
+                            handleChatIcon(
+                              appointment?.[
+                                userType == "client-hobbyist"
+                                  ? "companionId"
+                                  : "clientId"
+                              ]?._id
+                            )
+                          }
+                          className="usergreydisabled"
+                        >
+                          <img src="/images/massege-rounded.svg" className="" />
+                        </button>
+                        <button
+                          onClick={() => navigateToviewall(appointment)}
+                          className="font-roboto font-extrabold text-[16px] text-white px-2 py-[3px] rounded-[10px] border-white bg-[#02227E]"
+                        >
+                          View VAI<span className='logoSetupweight'>RIDATE</span>
+                        </button>
+                      </div>
+                      <div className="grid gap-[5px] mt-4 grid-cols-3">
+                        <span className="font-roboto text-white text-[10px]">
+                          Requested <br /> Appt/time
+                        </span>
+                   
+                        <span className="font-roboto text-white text-[10px]">
+                          Elapsed <br /> Time
+                        </span>
+                        <span className="font-roboto text-white text-[10px]">
+                          Status
+                        </span>
+                      </div>
+                      <div className="grid gap-[5px] mt-4 sm:mt-[14px] grid-cols-3">
+                        <span className="font-roboto text-white text-[10px]">
+                          {moment(appointment?.startDateTime).format(
+                            "MM/DD/YYYY"
+                          )}{" "}
+                          <br />
+                          {moment(appointment?.startDateTime).format("hh:mmA")}-
+                          {moment(appointment?.startDateTime)
+                            .add(appointment?.duration, "minutes")
+                            .format("hh:mmA")}
+                        </span>
+                    
+                        <span className="font-roboto text-white text-[10px]">
+                          {appointment?.createdAt
+                            ? moment(appointment?.createdAt).fromNow()
+                            : " - "}
+                        </span>
+                        <span className="font-roboto text-white text-[10px]">
+                          {userType === "client-hobbyist" &&
+                            appointment?.clientStatus !== "Cancel"
+                            ? appointment?.companionStatus
+                            : appointment?.clientStatus}
+                        </span>
+                      </div>
+                      {Object.keys(disabledButtons).length > 0 &&
+                        !disabledButtons[appointment._id] &&
+                        !locationLoading && (
+                          <button
+                            // disabled={appointment?.lastMileInst}
+                            // disabled={appointment?.[userType === 'client-hobbyist' ? 'clientStatus' : 'companionStatus'] === 'Cancel' || appointment?.companionStatus === 'Rejected' || appointment?.companionStatus === 'Signed'} onClick={() => cancelAppointment(appointment._id)}
+                            onClick={() => {
+                              navigate("/varidate/last-mile-instruction", {
+                                state: appointment,
+                              });
+                            }}
+                            className="mt-3 w-[90%] ms-6 font-roboto font-bold text-[16px]  px-2 py-[3px]  rounded-[10px] bg-[#08FA5A] text-[#02227E]"
+                          >
+                            Last Mile Directions
+                          </button>
+                        )}
+                      <button
+                        disabled={appointment?.cancellationRequested}
+                        onClick={() => cancelAppointment(appointment._id)}
+                        className="mt-2 w-[90%] ms-6 font-roboto font-bold text-[16px]  px-2 py-[3px]  rounded-[10px]  text-white bg-[#E04A22] "
+                      >
+                        {appointment?.cancellationRequested
+                          ? "Cancellation Requested"
+                          : "Request Cancellation"}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="sync-data pl-[16px] pr-[10px]">
+                    <p>Sync With</p>
+                    <div className="sync-app">
+                      <div
+                        onClick={() =>
+                          onSelectSyncWith("Google", appointment._id)
+                        }
+                        className={`font-roboto font-bold text-[16px] text-white px-4 py-[3px] rounded-[10px] border-white bg-[${appointment?.ClientGCalSyncId ? "#555" : "#02227E"
+                          }]`}
+                      >
+                        Google
+                      </div>
+                      <div
+                        onClick={() =>
+                          onSelectSyncWith("Outlook", appointment._id)
+                        }
+                        className={`font-roboto font-bold text-[16px] text-white px-4 py-[3px] rounded-[10px] border-white bg-[${appointment?.ClientOCalSyncId ? "#555" : "#02227E"
+                          }]`}
+                      >
+                        Outlooks
+                      </div>
+                    </div>
+                  </div> */}
+                  </div>
+                ))}
+              </div>
+
+              {/* <div className="sm:w-[100%] max-w-[440px] bg-[#3760CB] shadow-2xl py-[12px] rounded-[20px] border border-gray-100 h-[auto] min-h-[235px]">
             <div className="flex gap-2 sm:gap-4 pl-[4px] pr-[10px]">
               <div className="w-[25%] justify-center">
                 <img
@@ -567,10 +745,12 @@ const UpcomingAppointmentsList = (props) => {
               </div>
             </div>
           </div> */}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default GoogleApiWrapper({

@@ -30,32 +30,33 @@ const TokenCongratulation = () => {
   };
 
   return (
-    <div className="main-container bg-[#01195C] rounded-xl h-full min-h-[calc(100vh-149px)]">
-      <div className="pt-6 form-field-container">
+    <div className="container py-[48px]">
+      <div className="max-w-[500px] mx-auto">
         <div className="mt-3">
-          <img className="mx-auto" src={`/images/gold 1.png`} alt="" />
+          <img className="mx-auto" src={`/images/setup/gold.svg`} alt="" />
         </div>
-        <div className="mt-10 mb-10 px-4">
-          <h3 className="text-white text-[30px]">
+        <div className="my-[24px]">
+          <h3 className="text-white text-xl font-medium max-w-[345px] mx-auto text-center">
             Congratulations {state?.totalTokens} GRT Tokens have been added to
             your Wallet
           </h3>
+          <p className="text-sm text-white opacity-[72%] text-center mt-[10px]">Your payment has been successfully done.</p>
         </div>
-        <div className="flex justify-between items-center gap-2 mt-5">
-          <img src={`/images/gold waller 1.png`} alt="" className="w-[150px]"/>
+        <div className="flex justify-between items-center gap-[24px] mt-[24px] bg-[#FFFFFF14] p-[16px] rounded-[16px]">
+          <img src={`/images/gold waller 1.png`} alt="" className="w-[60px]"/>
 
-          <h3 className="text-white text-[30px] flex-1 leading-10">
+          <h3 className="text-white text-base flex-1 leading-10">
             {" "}
-            GRT Balance <br />
-            {token}
+            GRT Balance {' '}
+            <span className="font-semibold">{token}</span>
           </h3>
         </div>
-        <div className="mt-12">
+        <div className="mt-[24px]">
           <button
             onClick={(e) => {
               handelNavigation(e);
             }}
-            className="bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] w-[240px] flex justify-center items-center h-[50px] rounded-lg mx-auto"
+            className="bg-[#008F34] text-[#01195C] font-bold text-[26px] w-full flex justify-center items-center h-[50px] rounded-lg mx-auto"
           >
             <img src={`/images/Group 1000005612.png`} />
           </button>

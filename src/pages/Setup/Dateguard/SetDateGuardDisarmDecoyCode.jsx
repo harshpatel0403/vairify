@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/Button';
+import Header from '../../../components/Header/Header';
 
 export default function SetDateGuardDisarmDecoyCode() {
     const navigate = useNavigate();
@@ -8,7 +9,15 @@ export default function SetDateGuardDisarmDecoyCode() {
         navigate('/date-guard/success-code-changed');
     }
     return (
-        <div className='main-container form-field-container'>
+        <div className="container">
+            <div className="sm:block hidden"><Header /></div>
+            <div className="sm:hidden"><Header title="Setup Payment" /></div>
+            <div className="sm:py-[48px] py-[24px]">
+                <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white sm:block hidden">Setup Payment</h3>
+            </div>
+
+
+            {/* <div className='main-container form-field-container'>
             <div className='w-full mx-auto flex flex-col justify-center items-center pt-2 '>
                 <div className='w-full mx-auto flex items-center justify-center'><span className='font-bold text-[30px] text-[#05B7FD] change-font-family'>Date Guard</span></div>
                 <div className='w-full mx-auto flex items-center justify-center mt-4'><div className='w-[67px] h-[82px]'><img src={'/images/DateGuardMask.png'} alt="Date Guard Mask" /></div></div>
@@ -29,6 +38,12 @@ export default function SetDateGuardDisarmDecoyCode() {
                     <div className='w-[132px]'><Button onClick={() => navigateToSuccessChangedCode()} text="Set" className='bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family' size="41px" /></div>
                 </div>
             </div>
+        </div> */}
         </div>
+
+
     )
 }
+
+
+

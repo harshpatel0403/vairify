@@ -1,7 +1,7 @@
 const initialState = {
     error: {},
     userGallary: [],
-    loading: false,
+    loading: true,
 };
 
 export const HandleGallary = (state = initialState, action) => {
@@ -14,13 +14,13 @@ export const HandleGallary = (state = initialState, action) => {
         case "GET_USER_GALLARY_DATA_SUCCESS":
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 userGallary: action.payload
             };
         case "GET_USER_GALLARY_DATA_FAILURE":
             return {
                 ...state,
-                loading: true,
+                loading: false,
                 error: action?.payload?.response
             };
         default:

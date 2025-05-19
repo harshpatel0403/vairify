@@ -1,12 +1,12 @@
 import "./Styles.css";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Button from "../../components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import Loading from "../../components/Loading/Index";
+import moment from "moment";
+import PageTitle from "../../components/PageTitle";
 
 const ChatLogs = () => {
   const socket = io(import.meta.env.VITE_APP_SOCKET_BASE_URL);
@@ -69,10 +69,23 @@ const ChatLogs = () => {
 
   const isSender = currentChat?.senderId?._id === UserDetails?._id;
   const sendMessage = async (chat) => {
-    if (message == "" || message == undefined || message == null){
+    if (message == "" || message == undefined || message == null || message.trim() == "") {
       toast.error("Please Enter Message")
       return
     }
+
+    const newMessage = {
+      message,
+      userId: UserDetails?._id,
+      dateTime: new Date().toISOString(),
+    };
+
+    setCurrentChat((prev) => ({
+      ...prev,
+      messages: [...(prev?.messages || []), newMessage],
+    }));
+
+    setMessage("");
     socket.emit(
       "sendMessage-in-app-chat",
       {
@@ -84,7 +97,6 @@ const ChatLogs = () => {
         console.log(data, " <==  I am data...");
       }
     );
-    setMessage("");
   };
 
   const getUniqueChats = () => {
@@ -103,12 +115,17 @@ const ChatLogs = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-[calc(100vh-149px)] p-0 m-0 bg-white main-container chat-p">
-      {/* <div className="flex flex-row items-start justify-between w-full px-8 mt-2">
+    <div className="container">
+      <div className="max-h-screen">
+        {/* <div className="flex flex-row items-start justify-between w-full px-8 mt-2">
           <div className="flex flex-col items-center justify-center">
             <div className="z-50">
               <span className="text-[18px] text-[#FFF] font-extrabold">
@@ -181,107 +198,64 @@ const ChatLogs = () => {
           </div>
         </div> */}
 
-      <div className="w-[calc(100%-63px)] ml-[63px]">
-        <div className="flex flex-col items-center justify-center bg-[#e7b73b]">
-          {/* <p className="text-[#000] text-[20px] font-bold p-2">
-            Intimate Massage
-          </p> */}
-        </div>
 
-        <div className="">
-          <div className="flex flex-col items-center justify-center">
-            <div ref={chatContainerRef} className="w-full bg-[#b9bbcb] flex flex-col items-center h-[calc(100vh-204px)] overflow-y-auto px-[30px] last-p-space pt-4">
-              {currentChat?.messages?.map((msg) => (
+        {/* <div className="flex flex-col items-center justify-center bg-[#e7b73b]">
+          <p className="text-[#000] text-[20px] font-bold p-2">
+            Intimate Massage
+          </p>
+        </div> */}
+
+        <div className="flex flex-col items-center justify-center md:h-[calc(100vh-80px)] h-[calc(100vh-140px)]">
+          <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+            <PageTitle title={`${currentChat?.[isSender ? 'receiverId' : 'senderId']?.name || "User"}`} />
+          </div>
+          <div ref={chatContainerRef} className="w-full flex flex-col overflow-y-auto scrollbar-hidden last-p-space flex-grow h-full relative" >
+            {currentChat?.messages?.map((msg) => (
+              <>
                 <p
-                  className={`my-2 ${msg?.userId === UserDetails?._id ? "send" : "receive"
+                  className={`my-2 text-white text-base py-[4px] px-[8px] font-normal rounded-[8px] w-fit lg:max-w-[700px] max-w-[84%]  ${msg?.userId === UserDetails?._id ? "send bg-[#405FC4] ml-auto " : "receive bg-[#F4F4F429] mr-auto"
                     }`}
                 >
                   {msg?.message}
+                  <p className="text-right font-[400] text-[12px]">{moment(msg?.dateTime).local().fromNow()}</p>
                 </p>
-              ))}
-            </div>
-            <form
-              className="w-full"
-              onSubmit={(e) => {
-                e.preventDefault();
-                sendMessage(chat);
-              }}
-            >
-              <div className="w-full bg-[#405fc4] p-[2px] flex items-center justify-center">
-                <input
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="border-2 w-full height-[46px] leading-[46px] break-normal pl-2"
-                  placeholder="Type here..."
-                  rows={4}
-                />
-                <div className="w-[75px]">
-                  <button
-                    className={
-                      "w-[75px] bg-gradient-to-b from-[#405fc4] to-[#405fc4] text-[#fff] text-[20px] font-bold shadow-2xl rounded-[0] p-[10px]"
-                    }
-                    //text={'Send'}
-                    // onClick={() => sendMessage(chat)}
-                    type="submit"
-                    size={"45px"}
-                  >
-                    <img
-                      src={"/images/sendicon.png"}
-                      alt="send"
-                      className="mx-auto"
-                      width={"30px"}
-                    />
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div></div>
-        </div>
+              </>
 
-        <div className="absolute rounded-l-2xl left-0 top-0 bottom-0 bg-[#313EB4] w-[63px] flex flex-col items-center justify-center">
-          <div className="h-[290px] overflow-y-scroll no-scrollbar">
-            {getUniqueChats()?.map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  onClick={() => profileSelectedHandler(item)}
-                  className="m-2 relative h-[50px] w-[50px] rounded-full overflow-hidden"
-                  style={
-                    item?._id === params.receiverId
-                      ? { borderColor: "white", borderWidth: 3 }
-                      : {}
-                  }
-                >
-                  {item?._id === params.receiverId && (
-                    <div className="absolute top-4 bottom-0 right-[-14px]">
-                      <img
-                        height={12}
-                        width={12}
-                        src={import.meta.env.BASE_URL + "images/Polygon-2.png"}
-                        alt={"Polygon-2"}
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <img
-                      height={48}
-                      width={48}
-                      src={
-                        import.meta.env.VITE_APP_S3_IMAGE +
-                        `/${item?.profilePic}`
-                      }
-                      // src={
-                      //   import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                      //   `/${item?.profilePic}`
-                      // }
-                      alt={item?.name}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+            ))}
           </div>
+          <form
+            className="w-full pt-[20px]"
+            onSubmit={(e) => {
+              e.preventDefault();
+              sendMessage(chat);
+            }}
+          >
+            <div className="w-full border-2 border-[#919EAB33] rounded-[38px] p-[2px] flex items-center justify-center mb-[20px]">
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="border-0 w-full height-[46px]  break-normal pl-2 bg-transparent ml-4 text-white"
+                placeholder="Write a message"
+                rows={4}
+              />
+              <div className="w-[75px]">
+                <button
+                  className={
+                    "w-[75px] text-[20px] font-bold shadow-2xl rounded-[0] p-[10px]"
+                  }
+                  type="submit"
+                  size={"45px"}
+                >
+                  <img
+                    src={"/images/sendicon.png"}
+                    alt="send"
+                    className="mx-auto"
+                    width={"30px"}
+                  />
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

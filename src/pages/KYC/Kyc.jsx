@@ -8,34 +8,35 @@ import BackID from "./Includes/BackID";
 import Selfie from "./Includes/Selfie";
 import KycService from "../../services/KycService";
 import Loading from "../../components/Loading/Index";
-import { HandleUpdateUser } from "../../redux/action/Auth";
+import { HandleUpdateUser, isKycCompletedStatus } from "../../redux/action/Auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { countries } from "../../db/countries";
+import BackButton from "../../components/BackButton/backArrowButton";
 
 const documentTypes = [
   "Passport",
   "Driving license",
-  "National id cards",
+  "National iddentity card",
   "National insurance number",
-  "Social security cards",
+  "Social security number",
   "Tax identification number",
-  "Visas",
+  "Visa",
   "Polling card",
   "Health cards",
-  "Residence permits",
-  "Birth certificates",
-  "Utility bills",
-  "Bank statements",
+  "Residence permit",
+  "Birth certificate",
+  "Utility bill",
+  "Bank statement",
   "Change of name",
-  "Text document",
+  "Tax document",
   "Company confirmation statement",
   "Company annual accounts",
   "Company statement of capital",
   "Company change of address",
   "Company incorporation",
-  "Change of officers",
-  "Change of beneficial owners",
+  "Company change of officers",
+  "Company change of beneficial owners",
   "Unknown",
   "Other"
 ];
@@ -63,18 +64,15 @@ const Kyc = () => {
 
   const [type, setType] = useState("");
   const [issuingCountry, setIssuingCountry] = useState("");
-  const [idNumber, setIdNumber] = useState("");
   const [classification, setClassification] = useState("");
 
   const [frontImageUploaded, setFrontImageUploaded] = useState(false);
   const [backImageUploaded, setBackImageUploaded] = useState(false);
-  const [verificationAttempts, setVerificationAttempts] = useState(0);
   const maxVerificationAttempts = 3;
 
   const handleLoader = (state) => {
     setIsLoading(state);
   };
-  console.log("kyc", isLoading);
 
   const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -95,7 +93,7 @@ const Kyc = () => {
     }
 
     if (stepKyc === 2) {
-      if (!type || !issuingCountry || !idNumber || !classification) {
+      if (!type || !issuingCountry || !classification) {
         toast.error("Please fill out all fields before proceeding", {
           autoClose: 1000,
         });
@@ -113,7 +111,6 @@ const Kyc = () => {
           type,
           classification,
           issuingCountry,
-          idNumber,
           userId: UserData?._id,
         });
         setDocumentData(response);
@@ -144,22 +141,83 @@ const Kyc = () => {
   };
 
   const pollDocumentStatus = async (documentCheckId) => {
-    const maxAttempts = 200;
-    const interval = 5000;
+    if (!documentCheckId) {
+      throw new Error(`DocumentCheckId Not Found`);
+    }
+    const maxAttempts = 20;
+    const interval = 3000;
 
     for (let attempts = 0; attempts < maxAttempts; attempts++) {
       try {
-        const { status } = await KycService.DocCheckstatus(documentCheckId);
-        if (status === "complete") {
+        const response = await KycService.DocCheckstatus(documentCheckId);
+        const holderDetails = response?.result?.breakdown?.extractedData?.holderDetails;
+
+        if (response?.status === "complete") {
+          const firstName = holderDetails?.firstName;
+          const lastName = holderDetails?.lastName;
+          const dob = holderDetails?.dob;
+          const age = holderDetails?.age;
+          const isFirstNameValid = Array.isArray(firstName) && firstName.length > 0;
+          const isLastNameValid = Array.isArray(lastName) && lastName.length > 0;
+          const isDobValid = dob && dob.day && dob.month && dob.year;
+          const isAgeValid = typeof age === 'number' || (typeof age === 'string' && age !== '');
+          if (!isFirstNameValid || !isLastNameValid || (!isDobValid && !isAgeValid)) {
+            throw new Error(
+              "Incomplete document data: first name, last name, and either date of birth or age must be provided."
+            );
+          }
           return;
+        } else if (response?.status === "failed") {
+          throw new Error("Document Check Failed");
         }
         await new Promise((resolve) => setTimeout(resolve, interval));
       } catch (error) {
-        console.error("Error checking document status:", error);
+        throw new Error("Document Checkstatus Error ", error.message || error);
+        // console.error("Error checking document status:", error);
       }
     }
-
     throw new Error("Document validation timed out. Please try again.");
+  };
+
+  const pollCheckResult = async (checkId, userId) => {
+    if (!checkId || !userId) {
+      throw new Error(`CheckId and UserId Not Found`);
+    }
+    const maxAttempts = 10;
+    const interval = 3000;
+
+    for (let attempts = 0; attempts < maxAttempts; attempts++) {
+      try {
+        const data = {
+          checkId: checkId,
+          userId: userId,
+        }
+
+        const response = await dispatch(isKycCompletedStatus(data));
+        const livenessCheckScore = response?.kycStatus?.result?.breakdown?.authenticityAnalysis?.breakdown?.livenessCheckScore
+        if (typeof livenessCheckScore === "number" && livenessCheckScore < 30) {
+          throw new Error("Liveness check score too low");
+        }
+
+        if (response?.kycStatus?.status === "complete") {
+          if (response?.kycStatus?.result?.outcome === "clear") {
+            return;
+          }
+        } else if (response?.kycStatus?.status === "failed") {
+          throw new Error("Identity Check Failed");
+        }
+        else if (response?.kycStatus?.status === "pending") {
+          await new Promise((resolve) => setTimeout(resolve, interval));
+        }
+        else {
+          throw new Error("Identity Check Failed");
+        }
+
+      } catch (error) {
+        throw new Error(`CheckResult Error: ${error.message || error}`);
+      }
+    }
+    throw new Error("Polling check result timed out after maximum attempts.");
   };
 
   const KycResults = async () => {
@@ -168,7 +226,8 @@ const Kyc = () => {
       return;
     }
 
-    if (verificationAttempts >= maxVerificationAttempts) {
+    if (UserDetails?.checkCount >= maxVerificationAttempts) {
+      setKycStatus(true)
       toast.error(
         "You've reached the maximum number of attempts. Please restart verification.",
         { autoClose: 2000 }
@@ -182,7 +241,6 @@ const Kyc = () => {
         documentType: type,
         clientId: UserData.complyUserId,
         documentId: documentData.id,
-        idNumber,
         userId: UserData?._id,
       });
 
@@ -190,27 +248,22 @@ const Kyc = () => {
         throw new Error("Document validation failed. Please try again.");
       }
 
-      const [_, checkResponse] = await Promise.all([
-        pollDocumentStatus(validationResponse.id),
-        KycService.runCheck({
-          clientId: UserData.complyUserId,
-          documentId: documentData.id,
-          livePhotoId: LivePhotoData.id,
-          type: "identity_check",
-          userId: UserData?._id,
-        }),
-      ]);
+      await pollDocumentStatus(validationResponse.id);
 
-      await KycService.checkResult({
-        checkId: checkResponse.id,
+      const checkResponse = await KycService.runCheck({
+        clientId: UserData.complyUserId,
+        documentId: documentData.id,
+        livePhotoId: LivePhotoData.id,
+        type: "identity_check",
         userId: UserData?._id,
       });
 
-      dispatch(HandleUpdateUser(UserData?._id));
+      await pollCheckResult(checkResponse.id, UserData?._id);
+
       toast.success("Verification completed successfully", { autoClose: 2000 });
+      navigate('/self-verification-completed')
     } catch (error) {
       console.error("Error in KYC process:", error);
-      setVerificationAttempts((prev) => prev + 1);
       toast.error(
         `Error in verification process: ${error.message || error.response?.data
         }. Please click 'Restart Verification' to try again.`,
@@ -221,12 +274,12 @@ const Kyc = () => {
         .getElementById("verification-button")
         ?.scrollIntoView({ behavior: "smooth" });
     } finally {
+      //   dispatch(HandleUpdateUser(UserData?._id));
       setIsLoading(false);
     }
   };
 
   const RestartVerification = () => {
-    setVerificationAttempts(0);
     setStepKyc(1);
     setIsFileUploaded(true);
     setKycStatus(false);
@@ -234,294 +287,302 @@ const Kyc = () => {
     setTokenGenerated(false);
     setDocumentData(null);
     setLivePhotoData(null);
+    setType("")
+    setIssuingCountry("")
+    setClassification("")
   };
 
   return (
     <>
-      <div
-        className="main-content py-4 rounded-2xl pb-[0px] pt-6 px-4"
-        style={{ maxHeight: "calc(100vh - 150px)" }}
-      >
-        <div className="flex flex-col justify-between max-w-[350px] mx-auto">
-          <div>
-            {stepKyc === 1 && (
-              <div className="relative flex flex-col justify-start items-center">
-                <h2 className="text-[21px] mt-3 font-bold">
-                  Verified Anonymous Identity
-                </h2>
+      <div className="">
+        <div className="container">
+          <div className="relative">
+            <div className="backnavigation"><BackButton /></div>
+            <div className="logo-img-container mt-[20px]">
+              <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+              <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
+            </div>
 
-                <p className="max-w-[400px]">
-                  We'll guide you through a simple process to verify your
-                  identity.
-                </p>
+            <div>
+              <div className="flex flex-col justify-between sm:mt-[64px] mt-[32px]">
+                <div>
+                  {stepKyc === 1 && (
+                    <div className="flex items-center justify-center sm:flex-nowrap flex-wrap gap-[64px]">
+                      <div>
+                        <img
+                          className="sm:w-[100%] w-[80%] mx-auto"
+                          src={"/images/face-verification/verification.svg"}
+                          alt="asdf"
+                        />
+                      </div>
 
-                <div className="relative">
-                  <img
-                    width={"90%"}
-                    className="m-auto"
-                    src={"/images/kyc-main.png"}
-                    alt="asdf"
-                  />
-                </div>
-              </div>
-            )}
+                      <div>
+                        <div className="flex items-center justify-center pb-[24px]">
+                          <img
+                            src={"/images/face-verification/VAI.svg"}
+                            alt="asdf"
+                          />
+                        </div>
+                        <h2 className="sm:text-[24px] text-[18px] text-white font-semibold text-center">
+                          Verified Anonymous Identity
+                        </h2>
 
-            {stepKyc === 2 && (
-              <div className="mx-auto p-4 border-none">
-                <form className="space-y-6">
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="type"
-                      className="block text-sm font-medium text-left"
-                    >
-                      TYPE*
-                    </label>
-                    <select
-                      id="type"
-                      className="w-full border rounded-lg p-2"
-                      required
-                      value={type}
-                      onChange={(e) => setType(e.target.value)}
-                    >
-                      <option value="">Select Type</option>
-                      {documentTypes.map((type) => (
-                        <option
-                          key={type}
-                          value={type.replace(/\s+/g, "_").toLowerCase()}
-                        >
-                          {type}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="country"
-                      className="block text-sm font-medium text-left"
-                    >
-                      ISSUING COUNTRY
-                    </label>
-                    <select
-                      id="country"
-                      className="w-full border rounded-lg p-2"
-                      required
-                      value={issuingCountry}
-                      onChange={(e) => setIssuingCountry(e.target.value)}
-                    >
-                      <option value="">Select Country</option>
-                      {countries.map((country) => (
-                        <option key={country.code} value={country.code}>
-                          {country.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="id-number"
-                      className="block text-sm font-medium text-left"
-                    >
-                      ID NUMBER
-                    </label>
-                    <input
-                      id="id-number"
-                      type="text"
-                      placeholder="Document number"
-                      className="w-full border rounded-lg p-2"
-                      required
-                      value={idNumber}
-                      onChange={(e) => setIdNumber(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="purpose"
-                      className="block text-sm font-medium text-left"
-                    >
-                      PURPOSE
-                    </label>
-                    <select
-                      id="purpose"
-                      className="w-full border rounded-lg p-2"
-                      required
-                      value={classification}
-                      onChange={(e) => setClassification(e.target.value)}
-                    >
-                      <option value="">Select Classification</option>
-                      {purposes.map((purpose) => (
-                        <option
-                          key={purpose}
-                          value={purpose.replace(/\s+/g, "_").toLowerCase()}
-                        >
-                          {purpose}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {stepKyc === 3 && (
-              <div className="overflow-hidden max-w-[350px] mx-auto mb-[30px]">
-                <div className="px-4 relative flex flex-col justify-start items-center">
-                  <h2 className="text-[21px] font-bold">
-                    Upload Frontside of card Photo
-                  </h2>
-                  <div className="bg-[#abadc3] border-2 border-dashed border-[#888ba9] mt-4">
-                    <FrontID
-                      documentID={documentData?.id}
-                      // setIsFrontDocUploaded={setIsFrontDocUploaded}
-                      setIsFileUploaded={setIsFileUploaded}
-                      handleLoader={handleLoader}
-                      required
-                      setFrontImageUploaded={setFrontImageUploaded}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {stepKyc === 4 && (
-              <div className="overflow-hidden">
-                <div className="px-4 relative flex flex-col justify-start items-center">
-                  <h2 className="text-[21px] mt-3 font-bold">
-                    Upload backside of card Photo
-                  </h2>
-                  <div className="bg-[#abadc3] border-2 border-dashed border-[#888ba9] mt-4">
-                    <BackID
-                      documentID={documentData?.id}
-                      setIsFileUploaded={setIsFileUploaded}
-                      required
-                      handleLoader={handleLoader}
-                      setBackImageUploaded={setBackImageUploaded}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {stepKyc === 5 && (
-              <div className="bg-[ ] p-4 overflow-hidden">
-                <div className="px-4 relative flex flex-col justify-start items-center">
-                  <h2 className="text-[21px] mt-3 font-bold">Upload Selfie</h2>
-                  <div className=" bg-[#abadc3] border-2 border-dashed border-[#888ba9] mt-4">
-                    <Selfie
-                      // setIsSelfieUplaoded={setIsSelfieUplaoded}
-                      clientId={UserData.complyUserId}
-                      handleLoader={handleLoader}
-                      setLivePhotoData={setLivePhotoData}
-                      setIsFileUploaded={setIsFileUploaded}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {stepKyc === 6 && (
-              <div>
-                <div className="px-4 relative flex flex-col justify-start items-center">
-                  <h2 className="text-[21px] mt-3 font-bold">
-                    Thanks for providing your details
-                  </h2>
-                  <p className="pl-0">Please submit your verification now</p>
-                </div>
-
-                <div className="px-4 relative mb-5">
-                  <div className="flex justify-start items-center mb-2">
-                    <div className="py-2">
-                      <img
-                        width={"50px"}
-                        src={"/images/kyc-done.gif"}
-                        alt="asdf"
-                      />
+                        <p className="text-[14px] text-white font-normal opacity-80 text-center">
+                          We&apos;ll guide you through a simple process to verify your
+                          identity.
+                        </p>
+                      </div>
                     </div>
-                    <p className="py-2 px-2">Document uploaded</p>
-                  </div>
-                  <div className="flex justify-start items-center mb-2">
-                    <div className="py-2">
-                      <img
-                        width={"50px"}
-                        src={"/images/kyc-done.gif"}
-                        alt="asdf"
-                      />
-                    </div>
-                    <p className="py-2 px-2">Selfie uploaded</p>
-                  </div>
-                </div>
+                  )}
 
-                <div id="verification-button" className="pb-2 mx-auto w-full">
-                  {verificationAttempts >= maxVerificationAttempts ? (
-                    <p className="text-red-500 text-center font-bold">
-                      You've reached the maximum number of attempts. Please
-                      restart verification.
-                    </p>
-                  ) : (
-                    <Button
-                      onClick={kycstatus ? RestartVerification : KycResults}
-                      className={
-                        "flex items-center justify-center bg-gradient-to-b from-[#202973] to-[#040b47] text-[#fff] font-bold text-[20px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-                      }
-                      text={
-                        !isLoading ? (
-                          kycstatus ? (
-                            "Restart Verification"
-                          ) : (
-                            "Submit Verification"
-                          )
-                        ) : (
-                          <div className="flex items-center justify-center pt-[6px]">
-                            <Loading />
+                  {stepKyc === 2 && (
+                    <div className="mx-auto p-4 border-none">
+                      <h2 className="sm:text-[24px] text-[18px] text-white font-semibold mb-2">
+                        Select Document
+                      </h2>
+                      <p className="sm:text-[18px] text-[16px] text-white font-normal opacity-70 sm:w-[80%] w-[100%]">
+                        To proceed with your application, we need to verify your information. Please choose and submit the required document to continue.
+                      </p>
+                      <form className="grid sm:grid-cols-2 grid-cols-1 gap-[20px] mt-[24px]">
+                        <div className=" relative">
+                          <select
+                            id="type"
+                            className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[16px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                            required
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                          >
+                            <option value="" className="text-black">Select Type</option>
+                            {documentTypes.map((type) => (
+                              <option
+                                className="text-black"
+                                key={type}
+                                value={type.replace(/\s+/g, "_").toLowerCase()}
+                              >
+                                {type}
+                              </option>
+                            ))}
+                          </select>
+                          <div
+                            style={{ top: "2px" }}
+                            className={` border-[#CFCFCF] border-t-0 border-r-0 border-b-0 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 bg-transparent`}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M10.0004 12.9177C9.8057 12.9181 9.61701 12.8503 9.46708 12.726L4.46708 8.55938C4.1127 8.26482 4.06419 7.73876 4.35874 7.38438C4.6533 7.02999 5.17936 6.98149 5.53374 7.27604L10.0004 11.0094L14.4671 7.40938C14.6392 7.26957 14.86 7.20415 15.0806 7.22761C15.3011 7.25107 15.5032 7.36148 15.6421 7.53438C15.7964 7.70759 15.8715 7.93727 15.8493 8.16817C15.8272 8.39908 15.7098 8.6103 15.5254 8.75104L10.5254 12.776C10.3712 12.8806 10.1863 12.9305 10.0004 12.9177Z" fill="#919EAB" />
+                            </svg>
+
                           </div>
-                        )
+                        </div>
+
+                        <div className=" relative">
+                          <select
+                            id="country"
+                            className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[16px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                            required
+                            value={issuingCountry}
+                            onChange={(e) => setIssuingCountry(e.target.value)}
+                          >
+                            <option value="" className="text-black">Select Country</option>
+                            {countries.map((country) => (
+                              <option className="text-black" key={country.code} value={country.code}>
+                                {country.name}
+                              </option>
+                            ))}
+                          </select>
+                          <div
+                            style={{ top: "2px" }}
+                            className={` border-[#CFCFCF] border-t-0 border-r-0 border-b-0 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 bg-transparent`}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M10.0004 12.9177C9.8057 12.9181 9.61701 12.8503 9.46708 12.726L4.46708 8.55938C4.1127 8.26482 4.06419 7.73876 4.35874 7.38438C4.6533 7.02999 5.17936 6.98149 5.53374 7.27604L10.0004 11.0094L14.4671 7.40938C14.6392 7.26957 14.86 7.20415 15.0806 7.22761C15.3011 7.25107 15.5032 7.36148 15.6421 7.53438C15.7964 7.70759 15.8715 7.93727 15.8493 8.16817C15.8272 8.39908 15.7098 8.6103 15.5254 8.75104L10.5254 12.776C10.3712 12.8806 10.1863 12.9305 10.0004 12.9177Z" fill="#919EAB" />
+                            </svg>
+
+                          </div>
+                        </div>
+
+                        <div className=" relative">
+                          <select
+                            id="purpose"
+                            className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[16px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                            required
+                            value={classification}
+                            onChange={(e) => setClassification(e.target.value)}
+                          >
+                            <option className="text-black" value="">Select Classification</option>
+                            {purposes.map((purpose) => (
+                              <option
+                                className="text-black"
+                                key={purpose}
+                                value={purpose.replace(/\s+/g, "_").toLowerCase()}
+                              >
+                                {purpose}
+                              </option>
+                            ))}
+                          </select>
+                          <div
+                            style={{ top: "2px" }}
+                            className={` border-[#CFCFCF] border-t-0 border-r-0 border-b-0 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 bg-transparent`}
+                          >
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M10.0004 12.9177C9.8057 12.9181 9.61701 12.8503 9.46708 12.726L4.46708 8.55938C4.1127 8.26482 4.06419 7.73876 4.35874 7.38438C4.6533 7.02999 5.17936 6.98149 5.53374 7.27604L10.0004 11.0094L14.4671 7.40938C14.6392 7.26957 14.86 7.20415 15.0806 7.22761C15.3011 7.25107 15.5032 7.36148 15.6421 7.53438C15.7964 7.70759 15.8715 7.93727 15.8493 8.16817C15.8272 8.39908 15.7098 8.6103 15.5254 8.75104L10.5254 12.776C10.3712 12.8806 10.1863 12.9305 10.0004 12.9177Z" fill="#919EAB" />
+                            </svg>
+
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+
+                  {stepKyc === 3 && (
+                    <div className="overflow-hidden mx-auto mb-[30px]">
+                      <div className="px-4 relative flex flex-col justify-start items-center">
+                        <h2 className="lg:text-[28px] sm:text-2xl text-xl font-bold text-white lg:text-left text-center">
+                          Upload Frontside of card Photo
+                        </h2>
+                        <div className="mt-4">
+                          <FrontID
+                            documentID={documentData?.id}
+                            // setIsFrontDocUploaded={setIsFrontDocUploaded}
+                            setIsFileUploaded={setIsFileUploaded}
+                            handleLoader={handleLoader}
+                            required
+                            setFrontImageUploaded={setFrontImageUploaded}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {stepKyc === 4 && (
+                    <div className="overflow-hidden">
+                      <div className="px-4 relative flex flex-col justify-start items-center">
+                        <h2 className="lg:text-[28px] sm:text-2xl text-xl font-bold text-white lg:text-left text-center">
+                          Upload backside of card Photo
+                        </h2>
+                        <div className="mt-4">
+                          <BackID
+                            documentID={documentData?.id}
+                            setIsFileUploaded={setIsFileUploaded}
+                            required
+                            handleLoader={handleLoader}
+                            setBackImageUploaded={setBackImageUploaded}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {stepKyc === 5 && (
+                    <div className="">
+                      <div className="px-4 relative flex flex-col justify-start items-center">
+                        <h2 className="lg:text-[28px] sm:text-2xl text-xl font-bold text-white lg:text-left text-center">Upload Selfie</h2>
+                        <div className="">
+                          <Selfie
+                            // setIsSelfieUplaoded={setIsSelfieUplaoded}
+                            clientId={UserData.complyUserId}
+                            handleLoader={handleLoader}
+                            setLivePhotoData={setLivePhotoData}
+                            setIsFileUploaded={setIsFileUploaded}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {stepKyc === 6 && (
+                    <div>
+                      <div>
+                        <h2 className="sm:text-[24px] text-[18px] mt-3 font-semibold text-white">
+                          Submit Document
+                        </h2>
+                        <p className="text-white sm:text-[16px] text-[14px] font-normal opacity-80">Thanks for providing your details. Please submit your verification now</p>
+                      </div>
+
+                      <div className="bg-[#FFFFFF14] sm:py-[6px] py-[4px] sm:px-[14px] px-[12px] rounded-[8px] mt-[24px] flex items-center justify-between">
+                        <div className="flex items-center gap-2"><img src={"/images/face-verification/user-face.svg"} alt="asdf" /><p className="font-normal text-[14px] text-white">User Photo</p> </div>
+                        <div className="py-2">
+                          <img
+                            width={"41px"}
+                            src={"/images/kyc-done.gif"}
+                            alt="asdf"
+                          />
+                        </div>
+                      </div>
+                      <div className="bg-[#FFFFFF14] sm:py-[6px] py-[4px] sm:px-[14px] px-[12px] rounded-[8px] mt-[24px] flex items-center justify-between">
+                        <div className="flex items-center gap-2"><img src={"/images/face-verification/card.svg"} alt="asdf" /><p className="font-normal text-[14px] text-white">ID</p></div>
+                        <div className="py-2">
+                          <img
+                            width={"41px"}
+                            src={"/images/kyc-done.gif"}
+                            alt="asdf"
+                          />
+                        </div>
+                      </div>
+
+                      <div id="verification-button" className="max-w-[500px] flex items-center justify-center mx-auto w-full mt-[24px]">
+                        <Button
+                          onClick={kycstatus ? RestartVerification : KycResults}
+                          disabled={isLoading}
+                          text={
+                            !isLoading ? (
+                              kycstatus ? (
+                                "Restart Verification"
+                              ) : (
+                                "Submit Verification"
+                              )
+                            ) : (
+                              <div className="flex items-center justify-center">
+                                <Loading />
+                              </div>
+                            )
+                          }
+                          size="55px"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {stepKyc !== 6 && (
+                    <div className="max-w-[500px] flex items-center justify-center mx-auto mt-[32px]">
+                      <Button
+                        onClick={UserDetails?.checkCount < maxVerificationAttempts ? stepKyc === 2 ? NextStep : NextStep : ""}
+                        disabled={isLoading}
+                        text={
+                          !isLoading ? (
+                            (stepKyc === 1 && "Start Verification" || "Next Step")
+                          ) : (
+                            <div className="flex items-center	justify-center">
+                              <Loading />
+                            </div>
+                          )
+                        }
+                        size="55px"
+                      />
+                      {UserDetails?.checkCount >= maxVerificationAttempts ? (
+                        <p className="text-red-500 text-center font-bold">
+                          You&apos;ve reached the maximum number of attempts. Please
+                          Contact us.
+                        </p>) :
+                        ("")
                       }
-                      size="55px"
-                    />
+                    </div>
+                  )}
+
+                  {stepKyc !== 1 && stepKyc !== 2 && (
+                    <div
+                      className={`max-w-[500px] flex items-center justify-center mx-auto mt-[24px] mb-[50px] ${stepKyc === 6 ? "mt-5" : ""
+                        }`}
+                    >
+                      <Button
+                        onClick={() => setStepKyc(stepKyc - 1)}
+                        text="Back"
+                      />
+                    </div>
                   )}
                 </div>
               </div>
-            )}
-
-            {stepKyc !== 6 && (
-              <div className="pb-2 mx-auto w-full pb-6 px-4 py-5">
-                <Button
-                  onClick={stepKyc === 2 ? NextStep : NextStep}
-                  className={
-                    "flex items-center justify-center bg-gradient-to-b from-[#202973] to-[#040b47] text-[#fff] font-bold text-[20px] py-2"
-                  }
-                  text={
-                    !isLoading ? (
-                      (stepKyc === 1 && "Start Verification") || "Next Step"
-                    ) : (
-                      <div className="flex items-center	justify-center pt-[6px]">
-                        <Loading />
-                      </div>
-                    )
-                  }
-                  size="55px"
-                />
-              </div>
-            )}
-
-            {stepKyc !== 1 && stepKyc !== 3 && (
-              <div
-                className={`pb-2 mx-auto w-full ${stepKyc === 6 ? "mt-5" : "pb-6 px-4"
-                  }`}
-              >
-                <Button
-                  onClick={() => setStepKyc(stepKyc - 1)}
-                  className={
-                    "flex items-center justify-center bg-gradient-to-b from-[#202973] to-[#040b47] text-[#fff] font-bold text-[20px] py-2"
-                  }
-                  text="Back"
-                  size="55px"
-                />
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

@@ -11,30 +11,31 @@ export default function InputPassword({
   onChange,
   showPassword,
   border,
+  inputClass
 }) {
   return (
     <div
-      className={`flex items-center rounded-2xl border-2 border-[${
-        border ? border : `#3760CB`
-      }] hover:border-gray-800 h-[50px] py-2 ${className}`}
+      className={`flex items-center rounded-[8px] border-none  relative border-[${
+        border ? border : `#919EAB33`
+      }] hover:border-gray-800 h-[50px] p-0 ${className}`}
       style={{ borderColor: border ? `${border}` : "" }}
     >
       <input
         type={type}
-        className={`bg-transparent border-none w-full text-black mr-3 ml-2 py-1 px-6 pl-2 leading-tight focus:outline-none focus:ring-0 text-[${textSize}px]`}
+        className={`bg-transparent !text-[14x] !font-normal border-[#919EAB33] border-2 focus-visible:border-1 focus-visible:border-[#0247ff] w-full h-[50px] rounded-[8px] text-white py-1 px-6 pl-2 leading-tight focus:outline-none focus:ring-0 text-[${textSize}px] ${inputClass}`}
         placeholder={placeholder}
         name={name}
         value={value}
         onChange={onChange}
       />
-      <div className="mr-3" onClick={showPassword}>
+      <div className="mr-3 absolute right-[8px] cursor-pointer" onClick={showPassword}>
         {type === "password" ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
+            stroke="#FFFFFF"
             className="w-6 h-6"
           >
             <path
@@ -54,7 +55,7 @@ export default function InputPassword({
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
+             stroke="#FFFFFF"
             className="w-6 h-6"
           >
             <path

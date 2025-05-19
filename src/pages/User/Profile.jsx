@@ -13,6 +13,13 @@ import { toast } from "react-toastify";
 import MyVairifyService from "../../services/MyVairifyService";
 import { HandleUpdateFollowers } from "../../redux/action/Auth";
 import { HandleGetServices } from "../../redux/action/Services";
+import AboutMe from "../Settings/AboutMe";
+import UserGallery from "./UserGallery";
+import Reviews from "../varidate/Reviews";
+import SocialLinks from "../socialLinks";
+import { HandleGetProfile } from "../../redux/action/Profile";
+import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -21,6 +28,11 @@ export default function Profile() {
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   let TargetUserId = userDetails?.item?.userId?._id || userDetails?.item?._id;
 
+  const userData = userDetails?.market || userDetails?.vairipay
+    ? userDetails?.item?.userId || userDetails?.item
+    : UserData
+  const isMarket = userDetails?.market || userDetails?.vairipay;
+
   const [messageOpen, setMessageOpen] = useState(false);
   const [ammount, setAmount] = useState("");
   const [amountError, setAmountError] = useState("");
@@ -28,6 +40,34 @@ export default function Profile() {
   const [qrOpen, setQrOpen] = useState(false);
   const [paymentRequestLoading, setPaymentRequestLoading] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [userProfileData, setUserProfileData] = useState();
+  const [activeTab, setActiveTab] = useState(1);
+
+  useEffect(() => {
+    if (userData?._id) {
+      dispatch(HandleGetProfile(userData._id))
+        .then((response) => {
+          setUserProfileData(response?.payload);
+        })
+        .catch((error) => console.log(error));
+      dispatch(HandleUpdateFollowers(UserData?._id))
+    }
+  }, []);
+
+  const isFollowed = useCallback(
+    (id) => {
+      let result = UserData?.followers?.find(
+        (item) => item?.userId === id || item?._id === id
+      );
+      if (result) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [UserData]
+  );
+
   const userType =
     userDetails?.market || userDetails?.vairipay
       ? userDetails?.item?.userId?.user_type ||
@@ -69,7 +109,6 @@ export default function Profile() {
 
     VaripayService.createUserVaripayRequest(body)
       .then((res) => {
-        console.log("res: ", res);
         setMessageOpen(false);
       })
       .catch((err) => {
@@ -77,6 +116,8 @@ export default function Profile() {
         toast.error(err?.response?.data?.error || err.message);
       })
       .finally(() => {
+        setAmount("");
+        setMessage("")
         setPaymentRequestLoading(false);
       });
   };
@@ -165,7 +206,7 @@ export default function Profile() {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Unable to follow!");
+      toast.error(error?.response?.data?.message || "Unable to follow!");
     } finally {
       setFollowLoading(false);
     }
@@ -178,24 +219,8 @@ export default function Profile() {
       userDetails?.item?.averageRating
       : UserData?.averageRating;
 
-  const isFollowed = useCallback(
-    (id) => {
-      let result = UserData?.followers?.find(
-        (item) => item?.userId === id || item?._id === id
-      );
-      if (result) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    [UserData]
-  );
 
-  console.log(userDetails ,
-  userDetails?.market || userDetails?.vairipay
-    ? userDetails?.item?.userId?.user_type || userDetails?.item?.user_type
-    : UserData?.userType, userDetails, userDetails, "user id and type")
+
   useEffect(() => {
     dispatch(
       HandleGetServices(
@@ -209,40 +234,71 @@ export default function Profile() {
     );
   }, []);
 
+  const tabs = [
+    {
+      id: 1, label: "Gallery", component: <UserGallery userId={userDetails?.market || userDetails?.vairipay
+        ? userDetails?.item?.userId?._id || userDetails?.item?._id
+        : UserData?._id} user={userDetails?.market || userDetails?.vairipay
+          ? userDetails?.item?.userId || userDetails?.item
+          : UserData} />
+    },
+    {
+      id: 2, label: "TruRevu", component: <Reviews
+
+        location={{
+          state: {
+            vaiID:
+              userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?.vaiID || userDetails?.item?.vaiID
+                : UserData?.vaiID,
+            averageRating:
+              userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?.averageRating ||
+                userDetails?.item?.averageRating
+                : UserData?.averageRating,
+            name:
+              userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?.name || userDetails?.item?.name
+                : UserData?.name,
+            userId:
+              userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?._id || userDetails?.item?._id
+                : UserData?._id,
+            profilePic:
+              userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?.profilePic ||
+                userDetails?.item?.profilePic
+                : UserData?.profilePic,
+          }
+        }
+        }
+      />
+    },
+    {
+      id: 3, label: "Follow Me", component: <SocialLinks state={
+        userDetails?.market || userDetails?.vairipay
+          ? userDetails?.item?.userId || userDetails?.item
+          : UserData
+      } />
+    },
+  ];
+
+
   return (
     <div
-      className="main-container usergreydisabled pb-1 "
-      style={{ maxHeight: "calc(100vh - 160px)" }}
+      className="container"
     >
-      <div className="w-full mx-auto flex flex-col justify-center items-center ">
-        <div className="w-full mx-auto flex flex-row justify-between items-start mt-4">
-          <div className="flex flex-col items-center justify-center leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold font-Roboto-Serif">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold font-Roboto-Serif">
-                  RIFY ID
-                </span>
-              </span>
-            </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold uppercase">
-                {userDetails?.market || userDetails?.vairipay ? (
-                  <>
-                    {userDetails?.item?.userId?.vaiID ||
-                      userDetails?.item?.vaiID}
-                  </>
-                ) : (
-                  <>{UserData?.vaiID}</>
-                )}
-              </span>
-            </div>
-          </div>
-          <div className="w-[120px] relative">
-            <div
-              style={{ left: "-5px", bottom: "65px" }}
-              className="absolute w-full h-full rounded-full"
-            >
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"View Profile"} />
+      </div>
+      <div className="flex gap-[24px]">
+        <div
+          className="w-fit sm:bg-[#FFFFFF0A] sm:p-[16px] rounded-[16px] w-full lg:max-w-[350px] flex flex-col "
+        >
+          <div
+            className="flex justify-center items-center "
+          >
+            <div className="relative">
               {(
                 userDetails?.market || userDetails?.vairipay
                   ? userDetails?.item?.userId?.profilePic ||
@@ -258,16 +314,8 @@ export default function Profile() {
                       : UserData?.profilePic
                     }`
                   }
-                  // src={
-                  //   import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                  //   `/${userDetails?.market || userDetails?.vairipay
-                  //     ? userDetails?.item?.userId?.profilePic ||
-                  //     userDetails?.item?.profilePic
-                  //     : UserData?.profilePic
-                  //   }`
-                  // }
-                  className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
-                  alt="Hot Rod"
+                  className="w-[120px] h-[120px] rounded-[125px] object-cover overflow-hidden bg-[#fff] border-2 border-white"
+                  alt="profile photo"
                 />
               ) : (
                 <img
@@ -280,174 +328,235 @@ export default function Profile() {
                       ? "/images/male.png"
                       : "/images/female.png"
                   }
-                  alt="Hot Rod"
+                  alt="profile photo"
                 />
               )}
+              {(
+                (userDetails?.market || userDetails?.vairipay
+                  ? userDetails?.item?.userId?._id || userDetails?.item?._id
+                  : UserData?._id
+                ) === UserData?._id
+              ) && (
+                  <button className="absolute bottom-0 right-[8px]" onClick={() => setQrOpen(true)}>
+                    <img
+                      src="/images/home/qr.svg"
+                      alt="QR"
+                      className="w-[24px] h-[24px] rounded-full "
+                    />
+                  </button>
+                )}
             </div>
-            {userDetails?.market ||
-              (userDetails?.vairipay && (
-                <div
-                  onClick={() => {
-                    followLoading ? null : handleFollow();
-                  }}
-                  style={{ right: "0px", top: "25px" }}
-                  className="absolute"
-                >
-                  {userType === "client-hobbyist" ? (
-                    <img
-                      src={import.meta.env.BASE_URL + "images/HotRodIcon2.png"}
-                      alt="Hot Rod Icon Second"
-                      className={`${isFollowed(
-                        userDetails?.item?.userId?._id ||
-                        userDetails?.item?._id
-                      )
-                        ? ""
-                        : "grayscale"
-                        }`}
-                    />
-                  ) : null}
-                  {userType === "companion-provider" ? (
-                    <img
-                      src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
-                      alt="Sugar Icon Second"
-                      className={`${isFollowed(
-                        userDetails?.item?.userId?._id ||
-                        userDetails?.item?._id
-                      )
-                        ? ""
-                        : "grayscale"
-                        }`}
-                    />
-                  ) : null}
-                  {userType === "agency-business" || userType === "super" ? (
-                    <img
-                      src={
-                        import.meta.env.BASE_URL +
-                        "images/IntimateMassageIcon2.png"
-                      }
-                      alt="Sugar Icon Second"
-                      className={`${isFollowed(
-                        userDetails?.item?.userId?._id ||
-                        userDetails?.item?._id
-                      )
-                        ? ""
-                        : "grayscale"
-                        }`}
-                    />
-                  ) : null}
-                </div>
-              ))}
+
+
           </div>
-          <div className="leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold font-Roboto-Serif">
+          <div className="w-full mx-auto flex flex-row justify-around items-start gap-[24px] mt-[24px]">
+
+            <div className="flex flex-col items-center justify-center  w-full ">
+              <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                VAIRIFY ID
+              </div>
+              <div className="text-base text-white font-semibold  whitespace-nowrap">
+                {userDetails?.market || userDetails?.vairipay ? (
+                  <>
+                    {userDetails?.item?.userId?.vaiID ||
+                      userDetails?.item?.vaiID}
+                  </>
+                ) : (
+                  <>{UserData?.vaiID}</>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center  w-full">
+              <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                Name
+              </div>
+              <div className="text-base text-white font-semibold whitespace-nowrap">
+                {userDetails?.market || userDetails?.vairipay ? (
+                  <>{userDetails?.item?.userId?.name || userDetails?.item?.name}</>
+                ) : (
+                  <>{UserData?.name}</>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center  w-full ">
+              <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
                 TruRevu
-              </span>
-            </div>
-
-            <div className="flex justify-center items-center">
-              <FontAwesomeIcon
-                icon={faStar}
-                color={rate >= 1 ? "#E1AB3F" : "#111"}
-                className="drop-shadow-[1px_1px_0px_#111] text-[10px] mr-0.5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={rate >= 2 ? "#E1AB3F" : "#111"}
-                className="drop-shadow-[1px_1px_0px_#111] text-[10px] mr-0.5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={rate >= 3 ? "#E1AB3F" : "#111"}
-                className="drop-shadow-[1px_1px_0px_#111] text-[10px] mr-0.5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={rate >= 4 ? "#E1AB3F" : "#111"}
-                className="drop-shadow-[1px_1px_0px_#111] text-[10px] mr-0.5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={rate >= 5 ? "#E1AB3F" : "#111"}
-                className="drop-shadow-[1px_1px_0px_#111] text-[10px] mr-0.5"
-              />
-              <span className="text-[15px] text-[#040C50] font-bold ml-0.5">
-                {/* {rate?.toFixed(1)} */}
-                {(rate || 0).toFixed(1)}
-              </span>
+              </div>
+              <div className="flex gap-1 items-center">
+                <p className="text-[18px] text-white font-bold m-0">
+                  {(rate || 0).toFixed(1)}
+                </p>
+                <img src="/images/home/star.svg" alt="star" />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-          <span className="font-bold text-[24px] capitalize">
-            {userDetails?.market || userDetails?.vairipay ? (
-              <>{userDetails?.item?.userId?.name || userDetails?.item?.name}</>
-            ) : (
-              <>{UserData?.name}</>
-            )}
-          </span>
-        </div>
-        <div className="inner-content-part-medium flex flex-col mx-auto w-full items-center no-scrollbar">
-          {(userDetails?.market || userDetails?.vairipay
-            ? userDetails?.item?.userId?._id || userDetails?.item?._id
-            : UserData?._id) !== UserData?._id && (
-              <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-                <button
-                  onClick={() => setMessageOpen(true)}
-                  className="w-[142px] h-[31px] bg-gradient-to-b from-[#FFFFFF] to-[#0C8A02] px-2 rounded-[20px]"
-                >
-                  <div className="flex flex-row justify-center items-center">
-                    <span className="mr-2 font-bold text-[16px] flex items-center justify-center">
-                      Request
-                    </span>
-                    <div className="w-[62px] h-[21px] flex items-center justify-center">
-                      <img
-                        src={
-                          import.meta.env.BASE_URL +
-                          "images/VairipayRequestSecond.png"
-                        }
-                        alt="Vairify Request"
-                      />
-                    </div>
-                  </div>
+          <div className="w-full">
+            {(userDetails?.market || userDetails?.vairipay
+              ? userDetails?.item?.userId?._id || userDetails?.item?._id
+              : UserData?._id) !== UserData?._id && (
+                <div className="mt-[24px] flex gap-[16px]">
+                  <Button disabled={followLoading} text={followLoading ?
+                    (<Loading />) :
+                    isFollowed(userDetails?.item?.userId?._id || userDetails?.item?._id) ? 'Unfollow' : 'Follow'
+                  } size={'36px'} className={'py-[4px]'} onClick={handleFollow} />
+                  <Button text={'QR Code'} size={'36px'} className={'py-[4px] secondary-btn !bg-[#FFFFFF29]'} onClick={() => setQrOpen(true)} />
+                </div>)}
+          </div>
+          <div className="flex gap-[16px] items-stretch">
+            {(userDetails?.market || userDetails?.vairipay
+              ? userDetails?.item?.userId?._id || userDetails?.item?._id
+              : UserData?._id) !== UserData?._id && (
+                <button className="py-[10px] px-[4px] gap-[6px] w-full flex flex-col items-center justify-center border border-[#919EAB33] text-xs text-white font-medium rounded-[8px] mt-[24px]" onClick={() => setMessageOpen(true)}>
+                  <img src="/images/home/dollar-pay.svg" alt="pay" />
+                  Pay
                 </button>
-              </div>
+              )}
+
+            {(userType === "companion-provider") &&
+              (userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?._id || userDetails?.item?._id
+                : UserData?._id) !== UserData?._id ? (
+              <button className="py-[10px] px-[4px] gap-[6px] w-full flex flex-col items-center justify-center border border-[#919EAB33] text-xs text-white font-medium rounded-[8px] mt-[24px] " onClick={() => {
+                navigate("/vairify-schedule", { state: userDetails });
+              }}>
+                <img src="/images/home/vairify-now.svg" alt="vairify-now" />
+                VAIRIFY - NOW
+              </button>
+            ) : null}
+            {(userDetails?.market || userDetails?.vairipay) && (
+              userType === "client-hobbyist" ? (
+                <></>
+              ) : (
+                <button className="py-[10px] px-[4px] gap-[6px] w-full flex flex-col items-center justify-center border border-[#919EAB33] text-xs text-white font-medium rounded-[8px] mt-[24px]"
+                  onClick={() =>
+                    navigate(`/varidate/select-date/${TargetUserId}`)
+                  }>
+                  <img src="/images/home/varidate.svg" alt="varidate" />
+                  VAIRIDATE
+                </button>
+              )
             )}
-
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-            <button
-              onClick={() => setQrOpen(true)}
-              className="w-[142px] h-[31px] bg-gradient-to-b from-[#FFFFFF] to-[#0C8A02] px-2 rounded-[20px]"
-            >
-              <div className="flex flex-row justify-center items-center">
-                <span className="mr-2 font-bold text-[16px] flex items-center justify-center">
-                  QR
-                </span>
-                <div className="w-[62px] h-[21px] flex items-center justify-center">
-                  <img
-                    src={import.meta.env.BASE_URL + "images/QRCodeScan.png"}
-                    alt="Vairify Request"
-                    style={{ height: "100%" }}
-                  />
-                </div>
-              </div>
-            </button>
           </div>
+          <div className="flex gap-[16px]">
+            {(userType === "companion-provider" ||
+              userType === "client-hobbyist") &&
+              (userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?._id || userDetails?.item?._id
+                : UserData?._id) !== UserData?._id ? (
+              null
+            ) : (
+              <Button
+                onClick={() => {
+                  navigate("/vai-now", { state: userDetails });
+                }}
+                text="VAI-CHECK"
+                className="!bg-[#008F34] py-[4px] secondary-btn mt-[24px] "
+                size={'36px'}
+              />)}
+            {(userDetails?.market || userDetails?.vairipay
+              ? userDetails?.item?.userId?._id || userDetails?.item?._id
+              : UserData?._id) === UserData?._id && (
+                <Button
+                  onClick={() => navigate("/location-requests")}
+                  text="Location Requests"
+                  className="!bg-[#FFFFFF29] py-[4px] secondary-btn mt-[24px]"
+                  size={'36px'}
+                />
+              )}
+          </div>
+          <div className="w-full mt-[24px]">
+            <p className="text-sm text-white font-normal text-center opacity-[0.9]">
+              {userProfileData?.description}
+            </p>
+          </div>
+          <div className="w-full lg:mt-[24px] lg:block hidden">
+            <div className="flex justify-between gap-3">
+              <p className="font-normal text-white text-base opacity-[0.6]">Gender</p>
+              <p className="font-medium text-white text-base">
+                {userData?.gender ?? userProfileData?.gender ?? "Not Specified"}
+              </p>
+            </div>
+            <div className="flex justify-between gap-3 mt-1">
+              <p className="font-normal text-white text-base opacity-[0.6]">Age</p>
+              <p className="font-medium text-white text-base">
+                {userData?.age ?? userProfileData?.age ?? "Not Specified"}
+              </p>
+            </div>
+            <div className="flex justify-between gap-3 mt-1">
+              <p className="font-normal text-white text-base opacity-[0.6]">Height</p>
+              <p className="font-medium text-white text-base">
+                {userData?.height ?? userProfileData?.height ?? "Not Specified"}
+              </p>
+            </div>
+            <div className="flex justify-between gap-3 mt-1">
+              <p className="font-normal text-white text-base opacity-[0.6]">Weight</p>
+              <p className="font-medium text-white text-base">
+                {userData?.weight ?? userProfileData?.weight ?? "Not Specified"}
+              </p>
+            </div>
+          </div>
+          <div className="w-full mt-[auto]">
+            {(userType === "companion-provider" ||
+              userType === "client-hobbyist") &&
+              (userDetails?.market || userDetails?.vairipay
+                ? userDetails?.item?.userId?._id || userDetails?.item?._id
+                : UserData?._id) !== UserData?._id ? (
+              <Button text={'Contact Me'} size={'42px'} className={'py-[5px] mt-[24px] bg-[#283B7B] sm:bg-[#E8EBF0] profile'} onClick={() =>
+                navigate(
+                  `/chat/${userDetails?.market || userDetails?.vairipay
+                    ? userDetails?.item?.userId?._id ||
+                    userDetails?.item?._id
+                    : UserData?._id
+                  }`
+                )
+              } />
+            ) : null}
+          </div>
+        </div>
+        <div className="w-full bg-[#FFFFFF0A] p-[16px] rounded-[16px] lg:block hidden">
+          <div className="">
+            {/* Tab Headers */}
+            <div className="flex gap-3">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full p-[8px] rounded-[8px] text-sm text-white font-medium hover:bg-[#FFFFFF29]
+              ${activeTab === tab.id
+                      ? "bg-[#FFFFFF29]"
+                      : "bg-transparent"
+                    }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
 
-          <div className="w-full max-w-[400px]">
+            {/* Tab Content */}
+            <div className="mt-[24px]">
+              {tabs.find((tab) => tab.id === activeTab)?.component}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="w-full mb-[48px]">
+
+        <div className="flex flex-col mx-auto w-full items-center">
+
+          <div className="lg:hidden block w-full">
             {userType === "companion-provider" ||
               userType === "agency-business" ||
               userType === "client-hobbyist" ||
               userType === "super" ? (
               <div className="w-full mx-auto flex items-center justify-center mt-4">
-                <PersonalInformationBtn
+                <Button
                   onClick={() => navigateToAboutMe()}
-                  imgURL="images/ContactsIcon.png"
-                  alt="Profile Contact"
                   text="About Me"
-                  className="h-[47.7px]"
-                  className1="text-[24px] font-bold"
-                  className2="w-[26.1px]"
+                  className="sm:!bg-[#FFFFFF29] !bg-[#283B7B] secondary-btn"
                 />
               </div>
             ) : null}
@@ -456,8 +565,8 @@ export default function Profile() {
               userType === "agency-business" ||
               userType === "client-hobbyist" ||
               userType === "super" ? (
-              <div className="w-full mx-auto flex items-center justify-center mt-6">
-                <PersonalInformationBtn
+              <div className="w-full mx-auto flex items-center justify-center mt-4">
+                <Button
                   disabled={
                     userDetails?.market || userDetails?.vairipay
                       ? !(
@@ -466,34 +575,18 @@ export default function Profile() {
                       )
                       : !UserData?.allowUserToAccessGallery
                   }
-                  imgURL="images/GalleryIcon.png"
-                  alt="Gallery Info"
                   text="Gallery"
-                  className="h-[47.7px]"
-                  className1="text-[24px] font-bold"
-                  className2="w-[28.95px]"
+                  className="sm:!bg-[#FFFFFF29] !bg-[#283B7B] secondary-btn"
                   onClick={() => navigateToUserGallery()}
                 />
               </div>
             ) : null}
 
-            {/* <div className="w-full mx-auto flex items-center justify-center mt-6">
-              <PersonalInformationBtn
-                imgURL="images/GalleryIcon.png"
-                alt="Gallery Info"
-                text="Gallery 2"
-                className="h-[47.7px]"
-                className1="text-[24px] font-bold"
-                className2="w-[28.95px]"
-                onClick={() => navigateToUserGallery(2)}
-              />
-            </div> */}
-
             {userType === "companion-provider" ||
               userType === "agency-business" ||
               userType === "client-hobbyist" ? (
-              <div className="w-full mx-auto flex items-center justify-center mt-6">
-                <PersonalInformationBtn
+              <div className="w-full mx-auto flex items-center justify-center mt-4">
+                <Button
                   disabled={
                     userDetails?.market || userDetails?.vairipay
                       ? !(
@@ -502,402 +595,143 @@ export default function Profile() {
                       )
                       : !UserData?.allowUserCanRates
                   }
-                  imgURL="images/png/find-friend.png"
-                  alt="Trurevu"
                   text="TruRevu"
-                  className="h-[47.7px]"
-                  className1="text-[24px] font-bold"
-                  className2="w-[28.8px]"
+                  className="sm:!bg-[#FFFFFF29] !bg-[#283B7B] secondary-btn"
                   onClick={navigateToTrurevu}
                 />
               </div>
             ) : null}
 
-            {/* {userType === "companion-provider" ||
-            userType === "agency-business" ||
-            userType === "client-hobbyist" ||
-            userType === "super" ? (
-              <div className="w-full mx-auto flex items-center justify-center mt-6">
-                <PersonalInformationBtn
-                  // disabled={!userType.varipayActivity}
-                  imgURL="images/VairipayIcon2.png"
-                  alt="Vairipay"
-                  text="VAIRIPAY"
-                  className="h-[47.7px]"
-                  className1="text-[24px] font-bold"
-                  className2="w-[50px] top-1"
-                  onClick={() =>
-                    navigate("/my-vairipay", {
-                      state: userDetails?.item?.userId,
-                    })
-                  }
+            {userType === "companion-provider" ||
+              userType === "agency-business" ||
+              userType === "client-hobbyist" ||
+              userType === "super" ? (
+              <div className="w-full mx-auto flex items-center justify-center mt-4">
+                <Button
+                  text="Follow Me"
+                  className="sm:!bg-[#FFFFFF29] !bg-[#283B7B] secondary-btn"
+                  onClick={() => {
+                    navigate("/social-links", {
+                      state:
+                        userDetails?.market || userDetails?.vairipay
+                          ? userDetails?.item?.userId || userDetails?.item
+                          : UserData,
+                    });
+                  }}
                 />
               </div>
-            ) : null} */}
-
-            {/* {!userDetails?.market && ( */}
-            <>
-              {userType === "companion-provider" ||
-                userType === "agency-business" ||
-                userType === "client-hobbyist" ||
-                userType === "super" ? (
-                <div className="w-full mx-auto flex items-center justify-center mt-6 mt-6">
-                  <PersonalInformationBtn
-                    imgURL="images/MyVairifyIcon.png"
-                    alt="Follow Me"
-                    text="Follow Me"
-                    className="h-[47.7px]"
-                    className1="text-[24px] font-bold"
-                    className2="w-[27px]"
-                    onClick={() => {
-                      navigate("/social-links", {
-                        state:
-                          userDetails?.market || userDetails?.vairipay
-                            ? userDetails?.item?.userId || userDetails?.item
-                            : UserData,
-                      });
-                    }}
-                  />
-                </div>
-              ) : null}
-
-              {/* TODO: we need to check if we already have page to show these info.. */}
-              {/* {userType === "companion-provider" ||
-              userType === "agency-business" ||
-              userType === "super" ? (
-                <div className="w-full mx-auto flex items-center justify-center mt-6 mt-6">
-                  <PersonalInformationBtn
-                    // disabled={!userType.calendarActivity}
-                    imgURL="images/calendarW.png"
-                    alt="Calendar"
-                    text="Calendar"
-                    className="h-[47.7px]"
-                    className1="text-[24px] font-bold"
-                    className2="w-[27px]"
-                  />
-                </div>
-              ) : null} */}
-
-              {/* TODO: we need to check if we already have page to show these info.. */}
-              {/* {userType === "companion-provider" ||
-              userType === "agency-business" ? (
-                <div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                  <PersonalInformationBtn
-                    disabled={
-                      userDetails?.market || userDetails?.vairipay
-                        ? !(
-                            userDetails?.item?.userId
-                              ?.allowUserToAccessServices ||
-                            userDetails?.item?.allowUserToAccessServices
-                          )
-                        : !UserData?.allowUserToAccessServices
-                    }
-                    imgURL="images/rate.png"
-                    alt="Services & Rates"
-                    text="Services & Rates"
-                    className="h-[47.7px]"
-                    className1="text-[24px] font-bold"
-                    className2="w-[25px]"
-                    onClick={() =>
-                      navigate(`/user/services-rates`, { state: userDetails })
-                    }
-                  />
-                </div>
-              ) : null} */}
-            </>
-            {/*  )}
-           {(userDetails?.market ||
-             userDetails?.vairipay) && ( */}
+            ) : null}
             <>
               {userType === "agency-business" || userType === "super" ? (
-                <div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                  <PersonalInformationBtn
+                <div className="w-full mx-auto flex items-center justify-center mt-4">
+                  <Button
                     // disabled={!userType.calendarActivity}
-                    imgURL="images/staff.png"
-                    alt="Staff"
                     text="Staff"
-                    className="h-[47.7px]"
-                    className1="text-[24px] font-bold"
-                    className2="w-[25px]"
+                    className="sm:!bg-[#FFFFFF29] !bg-[#283B7B] secondary-btn"
                   />
                 </div>
               ) : null}
 
               {userType === "super" || userType === "agency-business" ? (
-                <div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                  <PersonalInformationBtn
-                    imgURL="images/hours_contact.png"
-                    alt="Hours_Contact"
+                <div className="w-full mx-auto flex items-center justify-center mt-4">
+                  <Button
                     text="Hours/Contact"
-                    className="h-[47.7px]"
-                    className1="text-[24px] font-bold"
-                    className2="w-[25px]"
+                    className="sm:!bg-[#FFFFFF29] !bg-[#283B7B] secondary-btn"
                   />
                 </div>
               ) : null}
-
-              {(userType === "companion-provider" ||
-                userType === "client-hobbyist") &&
-                (userDetails?.market || userDetails?.vairipay
-                  ? userDetails?.item?.userId?._id || userDetails?.item?._id
-                  : UserData?._id) !== UserData?._id ? (
-                <div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                  <PersonalInformationBtn
-                    imgURL="images/phone-call.png"
-                    alt="Contact Me"
-                    text="Contact Me"
-                    className="h-[47.7px]"
-                    className1="text-[24px] font-bold"
-                    className2="w-[25px]"
-                    onClick={() =>
-                      navigate(
-                        `/chat/${userDetails?.market || userDetails?.vairipay
-                          ? userDetails?.item?.userId?._id ||
-                          userDetails?.item?._id
-                          : UserData?._id
-                        }`
-                      )
-                    }
-                  />
-                </div>
-              ) : null}
-
-              {(userDetails?.market || userDetails?.vairipay
-                ? userDetails?.item?.userId?._id || userDetails?.item?._id
-                : UserData?._id) === UserData?._id && (
-                  <div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                    <PersonalInformationBtn
-                      onClick={() => navigate("/location-requests")}
-                      imgURL="images/phone-call.png"
-                      alt="Location Requests"
-                      text="Location Requests"
-                      className="h-[47.7px]"
-                      className1="text-[24px] font-bold"
-                      className2="w-[25px]"
-                    />
-                  </div>
-                )}
-
-              {(userType === "companion-provider" ||
-                userType === "client-hobbyist") &&
-                (userDetails?.market || userDetails?.vairipay
-                  ? userDetails?.item?.userId?._id || userDetails?.item?._id
-                  : UserData?._id) !== UserData?._id ? (
-                null
-              ) : (<div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                <PersonalInformationBtn
-                  onClick={() => {
-                    navigate("/vai-now", { state: userDetails });
-                  }}
-                  imgURL="images/barCheck.png"
-                  alt="VAI-CHECK"
-                  text="VAI-CHECK"
-                  className="h-[47.7px] bg-green-btn"
-                  className1="text-[24px] font-bold text-[#01195C]"
-                  className2="w-[25px] text-[#01195C]"
-                />
-              </div>)}
-
-              {(userType === "companion-provider" ||
-                userType === "client-hobbyist") &&
-                (userDetails?.market || userDetails?.vairipay
-                  ? userDetails?.item?.userId?._id || userDetails?.item?._id
-                  : UserData?._id) !== UserData?._id ? (
-                <div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                  <PersonalInformationBtn
-                    onClick={() => {
-                      navigate("/vairify-schedule", { state: userDetails });
-                    }}
-                    imgURL="images/varidate.png"
-                    alt="VAIRIFY-NOW"
-                    text="VAIRIFY-NOW"
-                    className="h-[47.7px] bg-green-btn"
-                    className1="text-[24px] font-bold text-[#01195C]"
-                    className2="w-[25px] text-[#01195C]"
-                  />
-                </div>
-              ) : null}
-
-              {/* {!userDetails?.market || !userDetails?.vairipay ? (
-                <>
-                  {userType === "companion-provider" ||
-                  userType === "agency-business" ? (
-                    <div className="w-full mx-auto flex items-center justify-center mt-6 mb-4">
-                      <PersonalInformationBtn
-                        imgURL="images/varidate.png"
-                        alt="VAIRIDATE"
-                        text="VAIRIDATE"
-                        className="h-[47.7px] bg-green-btn"
-                        className1="text-[24px] font-bold text-[#01195C]"
-                        className2="w-[25px] text-[#01195C]"
-                      />
-                    </div>
-                  ) : null}
-                </>
-              ) : null} */}
             </>
-            {/* )} */}
-            {(userDetails?.market || userDetails?.vairipay) && (
-              <div className="flex mt-2 items-center justify-center w-full mb-3">
-                <Button
-                  onClick={() =>
-                    navigate(`/varidate/select-date/${TargetUserId}`)
-                  }
-                  className={
-                    "flex items-center mt-2 h-[47px] w-[50%] my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] py-2 rounded-[20px]"
-                  }
-                  text={"Request VAIRIDATE"}
-                  size="45px"
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
+
       <Modal
         isOpen={messageOpen}
         //   onAfterOpen={afterMessageOpen}
         onRequestClose={closeMessage}
         className={
-          "bg-[#3760CB] relative top-[50%] translate-y-[-50%] max-w-[450px] mx-auto py-4 w-[95%] rounded-3xl border-2 border-[#fff] px-4"
+          "bg-white relative max-w-[500px] mx-auto w-[90%] rounded-[16px]"
         }
         contentLabel="#"
       >
-        <div className=" sm:h-fit bg-[#3760CBD4]">
-          <div className="flex">
-            <div className="flex flex-col justify-between items-center w-[30%]">
-              <img
-                className="w-[74px] h-[74px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
-                src={
-                  userDetails?.item?.userId?.profilePic ||
-                    userDetails?.item?.profilePic
-                    ? 
-                    import.meta.env.VITE_APP_S3_IMAGE +
-                    `/${userDetails?.item?.userId?.profilePic ||
-                    userDetails?.item?.profilePic
-                    }`
-                    // import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                    // `/${userDetails?.item?.userId?.profilePic ||
-                    // userDetails?.item?.profilePic
-                    // }`
-                    : userDetails?.item?.userId?.gender === "male" ||
-                      userDetails?.item?.gender === "Male"
-                      ? "/images/female.png"
-                      : "/images/male.png"
-                  //"/images/gallery-peofile.png"
-                }
-                alt=""
-              />
-              <p className="text-[12px] mt-1 text-[#fff] font-bold pt-px leading-[10.57px]">
-                TruRevu
-              </p>
-              <p className="text-[12px] text-[#fff] pb-1 font-bold text-center leading-[17.57px]">
-                {userDetails?.item?.userId?.name || userDetails?.item?.name}{" "}
-                <span className="uppercase">
-                  {userDetails?.item?.userId?.vaiID || userDetails?.item?.vaiID}
-                </span>
-              </p>
-              <div className="flex gap-1 pb-1 items-start">
-                <div className="flex gap-1 mt-1">
-                  {Array.from(
-                    { length: Math.floor(rate || 0) },
-                    (_, index) => index
-                  ).map((rating) => (
-                    <img
-                      key={rating}
-                      src="/images/Star.svg"
-                      className="w-[10px]  h-[10px]"
-                      alt=""
-                    />
-                  ))}
-                  {Array.from(
-                    { length: 5 - Math.floor(rate || 0) },
-                    (_, index) => index
-                  )?.map((rating) => (
-                    <img
-                      src="/images/StarUnfilled.svg"
-                      className="w-[10px]  h-[10px]"
-                      alt=""
-                    />
-                  ))}
-                </div>
-                <span className="text-white block text-center  font-roboto font-bold text-[15px]">
-                  {rate?.toFixed(1)}
-                </span>
-              </div>
-              <p className="text-[12px] text-[#fff] font-bold rounded-2xl border-2 border-[#fff] bg-[#02227E] px-2 py-px text-center h-fit min-h-[33.7px] flex justify-center items-center cursor-pointer">
-                View Profile
-              </p>
+        <div className=" p-[24px] rounded-[16px]">
+          <div className="relative w-full">
+            <div className="text-[#212B36] text-xl font-semibold text-center">
+              VAIRIPAY Request
             </div>
-            <div className="w-[74%]">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-[14px] font-bold text-[#fff] text-center leading-[17.57px]">
-                    Amount Requested
-                  </p>
-                  <div className="flex justify-center items-center">
-                    <div className="w-[100px] relative">
-                      <label className="absolute left-3 top-1">$</label>
-                      <input
-                        value={ammount}
-                        onChange={handleAmountChange}
-                        size="25px"
-                        className="placeholder:text-[#ccc] w-full text-[18px] border-2 border-[#02227E] rounded-[10px] py-2 pl-6 pr-4 border-2 rounded-2xl h-[32px] bg-[#D9D9D97D]"
-                        placeholder={"0.00"}
-                      />
-                      {amountError?.length > 0 ? (
-                        <span className="text-[10px] text-[#DB3002] font-bold whitespace-nowrap">
-                          {amountError}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-[14px] font-bold text-[#fff]">
-                    Request Type{" "}
-                  </p>
-                  <p className="text-[18px] font-bold text-[#fff] uppercase">
-                    <span className="font-extrabold uppercase">
-                      VAI<span className="logoSetupweight">ripay</span>
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <div className="pb-px pt-5">
-                <p className="text-[10px] font-bold text-center text-[#fff]">
-                  Comments
-                </p>
-                <div className="px-7">
-                  <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    style={{
-                      width: '100%',
-                      height: '59px',
-                      backgroundColor: '#D9D9D97D',
-                      borderColor: '#02227E',
-                      borderWidth: '2px',
-                      borderRadius: '16px',
-                      resize: 'none',
-                    }}
-                    className="border-2 rounded-2xl ps-2 pt-2"
-                  />
-                </div>
-              </div>
-              <div className="my-1 flex justify-center h-[34px] flex justify-center items-center pt-2">
-                <p
-                  disabled={paymentRequestLoading}
-                  onClick={handelUserRequest}
-                  className="text-[#FFFFFF] text-[20px] font-bold mt-2 px-7 py-2 rounded-2xl bg-gradient-to-b from-[#A30C30] to-[#DB3002] max-w-[150px] text-center"
-                >
-                  {paymentRequestLoading ? "Loading.." : "Send"}
-                </p>
-              </div>
+            <button className="absolute top-0 right-0" onClick={closeMessage}>
+              <img src="/images/home/close.svg" alt="close" className="w-[24px] h-[24px]" />
+            </button>
+          </div>
+          <div className="mt-[24px] flex justify-center">
+            <img
+              className="w-[100px] h-[100px] rounded-[125px] overflow-hidden object-cover"
+              src={
+                userDetails?.item?.userId?.profilePic ||
+                  userDetails?.item?.profilePic
+                  ?
+                  import.meta.env.VITE_APP_S3_IMAGE +
+                  `/${userDetails?.item?.userId?.profilePic ||
+                  userDetails?.item?.profilePic
+                  }`
+                  : userDetails?.item?.userId?.gender === "Male" ||
+                    userDetails?.item?.gender === "Male"
+                    ? "/images/male.png"
+                    : "/images/female.png"
+              }
+              alt=""
+            />
+          </div>
+          <div className="mt-[24px] flex justify-around gap-2">
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-[#212B36] opacity-[0.6] text-sm font-normal">VAIRIFY ID</div>
+              <div className="text-[#212B36] text-base font-semibold mt-[4px] uppercase"> {userDetails?.item?.userId?.vaiID || userDetails?.item?.vaiID}</div>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-[#212B36] opacity-[0.6] text-sm font-normal">Name</div>
+              <div className="text-[#212B36] text-base font-semibold mt-[4px] ">  {userDetails?.item?.userId?.name || userDetails?.item?.name}</div>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-[#212B36] opacity-[0.6] text-sm font-normal">TruRevu</div>
+              <div className="text-[#212B36] text-base font-semibold mt-[4px] flex items-center gap-1"> {rate?.toFixed(1)} <img src="/images/home/star.svg" alt="star" /></div>
             </div>
           </div>
+          <div className="mt-[24px]">
+            <div className="w-full relative">
+              <label className="absolute left-[20px] top-[16px]">$</label>
+              <input
+                value={ammount}
+                onChange={handleAmountChange}
+                size="25px"
+                className="w-full text-sm font-normal p-[16px] border border-[#919EAB33] rounded-[8px] pl-[36px]"
+                placeholder={"0.00"}
+              />
+              {amountError?.length > 0 ? (
+                <span className="text-[10px] text-[#DB3002] font-bold whitespace-nowrap">
+                  {amountError}
+                </span>
+              ) : (
+                ""
+              )}
+            </div>
+            <div>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full text-sm font-normal p-[16px] border border-[#919EAB33] rounded-[8px] mt-[10px]"
+                placeholder="Comments"
+              />
+            </div>
+          </div>
+          <Button
+            disabled={paymentRequestLoading}
+            onClick={handelUserRequest}
+            text={paymentRequestLoading ? <div className="flex items-center	justify-center ">
+              <Loading />
+            </div> : "Send"}
+            className="secondary-btn mt-[16px]"
+          />
+
         </div>
       </Modal>
 
@@ -906,29 +740,29 @@ export default function Profile() {
         //   onAfterOpen={afterMessageOpen}
         onRequestClose={() => setQrOpen(false)}
         className={
-          "bg-[#3760CB] relative top-[50%] translate-y-[-50%] max-w-[450px] mx-auto py-4 w-[95%] rounded-3xl border-2 border-[#fff] px-4"
+          "bg-white relative max-w-[500px] mx-auto w-[90%] rounded-[16px]"
         }
         contentLabel="#"
       >
-        <div className=" sm:h-fit bg-[#3760CBD4]">
+        <div className="p-[24px] rounded-[16px]">
           <div className="flex flex-col pb-2">
             <div className="flex relative justify-center mb-3">
               <button
                 onClick={() => setQrOpen(false)}
-                className="right-2 my-2 absolute top-0 right-0"
+                className="mt-1 absolute top-0 right-0"
               >
                 <img
-                  src="/images/Mask group-close.png"
+                  src="/images/home/close.svg"
                   alt=""
-                  width="30px"
-                  height="30px"
+                  width="24px"
+                  height="24px"
                 />
               </button>
-              <p className="text-[24px] font-bold text-center text-[#fff]">
-                Scan QR
+              <p className="text-xl font-semibold text-center text-[#212B36]">
+                QR Code
               </p>
             </div>
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex items-center justify-center sm:my-[24px] my-[10px]">
               <QRCode
                 value={`${import.meta.env.VITE_APP_PUBLIC_URL}/public/profile/${userDetails?.market || userDetails?.vairipay
                   ? userDetails?.item?.userId?.vaiID ||
@@ -945,3 +779,6 @@ export default function Profile() {
     </div>
   );
 }
+
+
+

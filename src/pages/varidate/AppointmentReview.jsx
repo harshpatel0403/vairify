@@ -5,6 +5,7 @@ import moment from "moment";
 import { combineDateTime } from "../../utils";
 import { useSelector } from "react-redux";
 import VaridateService from "../../services/VaridateServices";
+import PageTitle from "../../components/PageTitle";
 
 export default function AppointmentReview() {
   const navigate = useNavigate();
@@ -61,104 +62,82 @@ export default function AppointmentReview() {
 
   return (
     <div
-      className="main-container flex flex-col justify-start overflow-auto"
-      style={{ maxHeight: "calc(100vh - 160px)" }}
+      className="container"
     >
-      <div className="inner-content-part-large">
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-0">
-            <span className="font-bold text-[24px]">Appointment Review</span>
-          </div>
-          <div className="mx-auto flex flex-col justify-around items-center mt-7 w-[90%] md:w-[70%] p-4 rounded-xl bg-[#696C88] gap-2">
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">Type</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">invitation</span>
-              </div>
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle isSmall={true} title={"Appointment Review"} />
+      </div>
+      <div>
+        <div className="mx-auto flex flex-col justify-around items-center mt-7 w-full p-4 rounded-xl bg-[#FFFFFF14] gap-2">
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div className="sm:text-base text-sm text-white opacity-[0.6] font-normal">
+              Type
             </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">Date</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">
-                  {moment(varidateData?.date).format("DD/MM/YYYY")}
-                </span>
-              </div>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">Service</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">Escort</span>
-              </div>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">Appt length</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">
-                  {varidateData?.hours?.value}
-                </span>
-              </div>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">Date location</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">
-                  {varidateData?.type}
-                </span>
-              </div>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">City</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">
-                  {varidateData?.country?.city}
-                </span>
-              </div>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">Agreed price</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">
-                  {parseFloat(
-                    varidateData?.hours?.[varidateData?.type?.toLowerCase()]
-                  ) +
-                    varidateData?.extraServices
-                      ?.map((item) => parseFloat(item?.amount))
-                      ?.reduce(
-                        (accumulator, currentValue) =>
-                          accumulator + currentValue,
-                        0
-                      )}
-                </span>
-              </div>
+            <div className="sm:text-base text-sm text-white opacity font-semibold">
+              invitation
             </div>
           </div>
-          <div className="mx-auto flex flex-col justify-around items-center mt-7 w-[90%] md:w-[70%] gap-2">
-            <Button
-              text={"Review Services and Extras"}
-              className={
-                "font-bold text-[18px] text-white rounded-[25px] border-2 border-white bg-grandient-to-b from-[#02227E] to-[#0247FF]"
-              }
-              onClick={() => navigate(-1)}
-            />
-            <div className="w-full mx-auto flex flex-col justify-center items-center mt-5">
-              <span className="font-bold text-[24px]">
-                Special Request/Message
-              </span>
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div className="sm:text-base text-sm text-white opacity-[0.6] font-normal">
+              Date
             </div>
+            <div className="sm:text-base text-sm text-white opacity font-semibold">
+              {moment(varidateData?.date).format("DD/MM/YYYY")}
+            </div>
+          </div>
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div className="sm:text-base text-sm text-white opacity-[0.6] font-normal">
+              Service
+            </div>
+            <div className="sm:text-base text-sm text-white opacity font-semibold">
+              Escort
+            </div>
+          </div>
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div className="sm:text-base text-sm text-white opacity-[0.6] font-normal">
+              Appt length
+            </div>
+            <div className="sm:text-base text-sm text-white opacity font-semibold">
+              {varidateData?.hours?.value}
+            </div>
+          </div>
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div className="sm:text-base text-sm text-white opacity-[0.6] font-normal">
+              Date location
+            </div>
+            <div className="sm:text-base text-sm text-white opacity font-semibold">
+              {varidateData?.type}
+            </div>
+          </div>
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div className="sm:text-base text-sm text-white opacity-[0.6] font-normal">
+              City
+            </div>
+            <div className="sm:text-base text-sm text-white opacity font-semibold">
+              {varidateData?.country?.city}
+            </div>
+          </div>
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div className="sm:text-base text-sm text-white opacity-[0.6] font-normal">
+              Agreed price
+            </div>
+            <div className="sm:text-base text-sm text-white opacity font-semibold">
+              {parseFloat(
+                varidateData?.hours?.[varidateData?.type?.toLowerCase()]
+              ) +
+                varidateData?.extraServices
+                  ?.map((item) => parseFloat(item?.amount))
+                  ?.reduce(
+                    (accumulator, currentValue) =>
+                      accumulator + currentValue,
+                    0
+                  )}
+            </div>
+          </div>
+        </div>
+        <div className="sm:mt-[24px] mt-[16px] ">
+
+          <div className="w-full mx-auto flex flex-col justify-center items-center">
             <textarea
               onChange={(e) =>
                 setVaridateData((prevValue) => ({
@@ -169,21 +148,24 @@ export default function AppointmentReview() {
               // influencer-affiliate
               // placeholder={"Phone"}
               // name={"phone"}
-              className={
-                "w-full text-[20px] font-bold text-gray bg-white outline-none border-none rounded-none"
-              }
+              className="w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px] !placeholder-white"
+              placeholder="Special Request/Message"
               // border={}
               rows={"4"}
               value={varidateData?.message}
             />
           </div>
+        </div>
+        <div className="flex sm:gap-[24px] gap-[16px] sm:mt-[24px] mt-[16px] mb-[48px] sm:flex-nowrap flex-wrap">
+
           <Button
-            disabled={loading}
             text={"Vairify"}
-            className={
-              "bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] text-[26px] font-bold mt-7 max-w-[70%]"
-            }
             onClick={() => handleSubmit()}
+          />
+          <Button
+            text={"Review Services and Extras"}
+            className={'secondary-btn !bg-[#FFFFFF29]'}
+            onClick={() => navigate(-1)}
           />
         </div>
       </div>

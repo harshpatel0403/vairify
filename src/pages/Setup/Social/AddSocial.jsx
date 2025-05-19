@@ -5,12 +5,14 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import SocialServices from "../../../services/SocialServices";
 import { toast } from "react-toastify";
+import Loading from "../../../components/Loading/Index";
 
 const AddSocial = () => {
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const navigate = useNavigate();
   const { state } = useLocation();
   const [stateData, setStateData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const HandleData = (event) => {
     setStateData({ ...stateData, [event.target.name]: event.target.value });
@@ -35,6 +37,7 @@ const AddSocial = () => {
       toast.error("Please enter a valid URL");
       return;
     }
+    setIsLoading(true);
 
     let boduData = {
       userId: UserDetails._id,
@@ -45,6 +48,7 @@ const AddSocial = () => {
     SocialServices.addUserSocial(boduData)
       .then((res) => {
         console.log(res);
+        setIsLoading(false);
         navigate("/social-done", {
           state: { state: state },
         });
@@ -89,12 +93,15 @@ const AddSocial = () => {
           </div>
         </div>
         <div className="flex-1 mt-16 w-[50%]">
-          <Button
-            // disabled={stateData?.SocailLink === undefined}
-            onClick={handelAddSocial}
-            text="Submit"
-            className="custom-btn-bg bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-extrabold text-[23px] cursor-pointer"
-          />
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <Button
+              // disabled={stateData?.SocailLink === undefined}
+              onClick={handelAddSocial}
+              text="Submit"
+              className="custom-btn-bg bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-extrabold text-[23px] cursor-pointer"
+            />)}
         </div>
       </div>
     </div>

@@ -16,13 +16,16 @@ import { HandleGenerateCoupon } from "../../redux/action/VAI";
 import { toast } from "react-toastify";
 import { instance as axios } from "../../services/httpService";
 import PaySubscriptionServices from "../../services/PaySubscriptionServices";
-import { HandleUpdateUser } from "../../redux/action/Auth";
+import { HandleUpdateUser, membershipSubscribe } from "../../redux/action/Auth";
+import BackButton from "../../components/BackButton/backArrowButton";
+import { useTranslation } from "react-i18next";
 
 const Payment = () => {
   const { state: totalPayment } = useLocation();
 
   const strip = useStripe();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const elements = useElements();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -64,8 +67,7 @@ const Payment = () => {
     setIsLoading(true);
     axios
       .post(
-        `${import.meta.env.VITE_APP_API_BASE_URL}/stripe/create-subscription/${
-          UserDetails?._id
+        `${import.meta.env.VITE_APP_API_BASE_URL}/stripe/create-subscription/${UserDetails?._id
         }`,
         {
           planId: totalPayment?.planId,
@@ -95,11 +97,10 @@ const Payment = () => {
             .then(async (res) => {
               if (res?.error?.code) {
                 toast.error(
-                  `${res?.error?.message} ${
-                    res?.error?.decline_code
-                      ? "Reason: " +
-                        res?.error?.decline_code?.replaceAll("_", " ")
-                      : ""
+                  `${res?.error?.message} ${res?.error?.decline_code
+                    ? "Reason: " +
+                    res?.error?.decline_code?.replaceAll("_", " ")
+                    : ""
                   }`,
                   {
                     className: "capitalize",
@@ -110,7 +111,7 @@ const Payment = () => {
                 return;
               }
 
-              await PaySubscriptionServices.subscribeMembership({
+              const data = {
                 userId: UserDetails?._id,
                 planId: totalPayment?.planId,
                 days: totalPayment?.days,
@@ -121,15 +122,19 @@ const Payment = () => {
                 subscriptionId: response?.data?.subscriptionId,
                 migrationPlanId: totalPayment.migrationId,
                 migrationAmount: totalPayment?.migration,
-              });
+              }
+              await dispatch(membershipSubscribe(data))
+                .then((res) => {
+                  console.log(res, "data payment");
+                })
               // Generat coupon code
               if (UserDetails?.user_type === "agency-business") {
                 return await GenerateCoupon();
               }
-
+              toast.success(t("payment.successToast"), { autoClose: 2000 });
               navigate("/payment-success");
 
-              await dispatch(HandleUpdateUser(UserDetails?._id));
+              // await dispatch(HandleUpdateUser(UserDetails?._id));
             })
             .catch((err) => {
               console.warn("strip error", err);
@@ -184,156 +189,161 @@ const Payment = () => {
   const formattedDate = currentDate.toLocaleDateString(undefined, dateOptions);
 
   return (
-    <div className="bg-[#B9BBCB] rounded-3xl items-center">
-      <div className="flex flex-col justify-start main-container">
-        {/* <div className="grid grid-flow-col grid-cols-1 gap-4">
-        <div className="relative flex flex-col items-center justify-start">
-          <div className="relative top-6">
-            <img
-              src={import.meta.env.BASE_URL + "images/VectorLogo1.png"}
-              alt="Vector Logo 1"
-            />
+    <div className="signup-backgound-design">
+      <div className="signup-container container">
+        <div className="signup-content relative">
+          <div className="backnavigation"><BackButton /></div>
+          <div className="logo-img-container">
+            <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+            <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
           </div>
-          <div className="relative bottom-2 left-4">
-            <img
-              src={import.meta.env.BASE_URL + "images/VectorLogo2.png"}
-              alt="Vector Logo 2"
-            />
-          </div>
-        </div>
-      </div> */}
-        <div className="max-w-[500px] w-full yellowbg_card mb-10 pb-4 px-0 bg-[#ededf7] mt-9">
-          <div className="relative flex flex-col justify-start items-center">
-            <div className="relative mb-4">
-              <img
-                width={"250px"}
-                src={"/images/chainpass_id_logo.png"}
-                alt="asdf"
-              />
+          <div className="sm:mt-[64px] mt-[32px] bg-[#FFFFFF14] sm:rounded-[16px] rounded-[8px] p-[16px]">
+            <div className="flex justify-between sm:flex-nowrap flex-wrap items-center sm:gap-[30px] gap-3 mb-[24px]">
+              <img src={"/images/face-verification/chainpass.svg"} alt="asdf" />
+              <div className="flex gap-2"><p className="sm:text-[18px] text-[14px] font-normal text-white opacity-70">{formattedDate}</p><p className="sm:text-[18px] text-[14px] font-normal text-white opacity-70">#1832-9912-7552</p></div>
             </div>
-          </div>
-          <div className="pt-4 text-lg font-medium text-[#838282]">
-            <p className="text-[14px]">{formattedDate}</p>
-            <p className="text-[16px]">#1832-9912-7552</p>
-          </div>
-
-          <div className="flex justify-center items-center">
-            <div className="mt-4 mb-7 py-2 grid grid-cols-3 gap-x-4 ">
-              <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                VAI Subscription:{" "}
-              </h1>
-              <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                {totalPayment?.currency + totalPayment?.subscriptionAmount}.00
-              </h1>
-              <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                Migration Special:{" "}
-              </h1>
-              <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                {totalPayment?.currency + totalPayment?.migration}.00
-              </h1>
-              {totalPayment?.AdditionalVerification > 0 ? (
-                <>
-                  <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-center">
-                    {`${totalPayment?.currency}${"25" + ".00"} * ${
-                      totalPayment?.AdditionalVerification
+            <div className="flex justify-between items-center gap-[30px] mb-[16px]">
+              <h4 className="sm:text-[18px] text-[14px] font-normal text-white"> {t("payment.vaiSubscription")}:{" "}</h4>
+              <h5 className="sm:text-[18px] text-[14px] font-normal text-white">{totalPayment?.currency + totalPayment?.subscriptionAmount}.00</h5>
+            </div>
+            <div className="flex justify-between items-center gap-[30px] mb-[16px]">
+              <h4 className="sm:text-[18px] text-[14px] font-normal text-white"> {t("payment.migrationSpecial")}:{" "}</h4>
+              <h5 className="sm:text-[18px] text-[14px] font-normal text-white">{totalPayment?.currency + totalPayment?.migration}.00</h5>
+            </div>
+            <hr className="border border-dashed border-[#919EAB33]" />
+            {totalPayment?.AdditionalVerification > 0 ? (
+              <>
+                <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-center">
+                  {`${totalPayment?.currency}${"25" + ".00"} * ${totalPayment?.AdditionalVerification
                     } coupons:`}
+                </h1>
+                <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
+                  {totalPayment?.currency +
+                    25 * totalPayment?.AdditionalVerification}
+                  .00
+                </h1>
+                <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
+                  {t("payment.totalAmount")}:
+                </h1>
+                <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
+                  {`${totalPayment?.currency} ${(
+                    25 * totalPayment?.AdditionalVerification +
+                    totalPayment?.totalAmount
+                  ).toFixed(2)}`}
+                </h1>
+              </>
+            ) : (
+              <>
+                <div className="flex justify-between items-center gap-[30px] mt-[16px]">
+                  <h1 className="sm:text-[18px] text-[14px] font-normal text-white">
+                    {t("payment.totalAmount")}:
                   </h1>
-                  <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                    {totalPayment?.currency +
-                      25 * totalPayment?.AdditionalVerification}
-                    .00
-                  </h1>
-
-                  <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                    Total Amount:
-                  </h1>
-                  <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                    {`${totalPayment?.currency} ${(
-                      25 * totalPayment?.AdditionalVerification +
-                      totalPayment?.totalAmount
-                    ).toFixed(2)}`}
-                  </h1>
-                </>
-              ) : (
-                <>
-                  <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                    Total Amount:
-                  </h1>
-                  <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
+                  <h1 className="sm:text-[18px] text-[14px] font-normal text-white">
                     {totalPayment?.currency + totalPayment?.totalAmount}.00
                   </h1>
-                </>
-              )}
-            </div>
+                </div>
+              </>
+            )}
           </div>
-        </div>
-
-        <div className="w-full yellowbg_card mb-3 pb-2 p-5  max-w-[450px]">
-          <div className="flex-1">
-            <div className="mb-3">
-              <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                Card Number
+          <div className="flex items-center justify-center sm:flex-nowrap flex-wrap gap-[20px] w-full mt-[24px]">
+            <div className="w-full flex flex-col gap-1">
+              <label className="text-[14px] font-normal text-white pl-1">
+                {t("payment.cardNumber")}
               </label>
-              <CardNumberElement
-                id="cardNumber"
-                className={`w-full pt-[15px] text-[20px] font-bold text-gray border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 px-4 h-[50px] bg-transparent `}
-              />
-            </div>
-            <div className="flex justify-between">
-              <div className="w-[66%] mb-3">
-                <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                  Expiration Date
-                </label>
-                <CardExpiryElement
-                  id="expiry"
-                  className={`w-full pt-[15px] text-[20px] font-bold text-gray border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 px-4 h-[50px] bg-transparent `}
-                />
-              </div>
-              <div className="w-[33%] mb-3 pl-[3%]">
-                <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                  CVC
-                </label>
-                <CardCvcElement
-                  id="cvc"
-                  className={`w-[100%] pt-[15px] px-4 text-[20px] font-bold text-gray border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 h-[50px] bg-transparent `}
+              <div>
+                <CardNumberElement
+                  id="cardNumber"
+                  options={{
+                    style: {
+                      base: {
+                        color: "#ffffff",
+                        fontSize: "16px",
+                        "::placeholder": {
+                          color: "#ffffff99",
+                        },
+                      },
+                    },
+                  }}
+                  className={`w-full pt-[15px] text-[16px] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px]`}
                 />
               </div>
             </div>
-            <div className="mb-3">
-              <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                Card Holder Name
+            <div className="w-full flex flex-col gap-1">
+              <label className="text-[14px] font-normal text-white pl-1">
+                {t("payment.cardHolderName")}
               </label>
               <InputText
                 value={cardHolderName}
                 onChange={(e) => setCardHolderName(e.target.value)}
                 placeholder={"Card Holder Name"}
                 influencer-affiliate
-                className={`w-full text-[12px] text-[20px] border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 px-4 h-[50px] bg-transparent `}
-                // border={error.nameOfBusiness && `#ef4444`}
+                className={`w-full text-[16px] !placeholder-[#ffffff99] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px]`}
                 name={"CardHolderName"}
               />
             </div>
           </div>
-        </div>
-
-        <div className="pb-2 mt-5 px-5 max-w-[450px] mx-auto w-[100%]">
-          <Button
-            onClick={handleOrder}
-            className={
-              "flex items-center justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-            }
-            text={
-              !isLoading ? (
-                "Submit"
-              ) : (
-                <div className="flex items-center	justify-center pt-[6px]">
-                  <Loading />
-                </div>
-              )
-            }
-            disabled={isLoading}
-            size="55px"
-          />
+          <div className="flex items-center justify-center sm:flex-nowrap flex-wrap gap-[20px] w-full mt-[24px]">
+            <div className="w-full flex flex-col gap-1">
+              <label className="text-[14px] font-normal text-white pl-1">
+                {t("payment.expirationDate")}
+              </label>
+              <div>
+                <CardExpiryElement
+                  id="expiry"
+                  options={{
+                    style: {
+                      base: {
+                        color: "#ffffff",
+                        fontSize: "16px",
+                        "::placeholder": {
+                          color: "#ffffff99",
+                        },
+                      },
+                    },
+                  }}
+                  className={`w-full pt-[15px] text-[16px] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px]`}
+                />
+              </div>
+            </div>
+            <div className="w-full flex flex-col gap-1">
+              <label className="text-[14px] font-normal text-white pl-1">
+                CVC
+              </label>
+              <div>
+                <CardCvcElement
+                  id="cvc"
+                  options={{
+                    style: {
+                      base: {
+                        color: "#ffffff",
+                        fontSize: "16px",
+                        "::placeholder": {
+                          color: "#ffffff99",
+                        },
+                      },
+                    },
+                  }}
+                  className={`w-full pt-[15px] text-[16px] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px] `}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex items-center justify-center mx-auto max-w-[500px] mt-[24px]">
+            <Button
+              onClick={handleOrder}
+              text={
+                !isLoading ? (
+                  t("payment.makePayment")
+                ) : (
+                  <div className="flex items-center	justify-center">
+                    <Loading />
+                  </div>
+                )
+              }
+              disabled={isLoading}
+            />
+          </div>
+          <p className="text-center text-[14px] font-normal mb-[24px] opacity-70 text-white mt-[12px] flex items-center justify-center gap-1"><img src="/images/face-verification/lock.svg" alt="icon" /> {t("payment.secureNote")} </p>
         </div>
       </div>
     </div>

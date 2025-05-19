@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 
 import { useNavigate } from "react-router-dom";
 import Carousel2 from "../../../components/Carousel-2/Carousel-2";
@@ -10,7 +10,13 @@ import {
 import BaseAPI from "../../../BaseAPI";
 import { toast } from "react-toastify";
 import { CardPlacehoderSkeleton } from "../../../components/CardPlacehoderSkeleton";
-
+import Header from "../../layout/Header";
+import BottomTabbar from "../../../components/BottomTabbar/BottomTabbar";
+import Comments from "./Comments";
+import PostDetails from "./PostDetails";
+import Modal from 'react-modal';
+import Button from "../../../components/Button";
+import { IoCloseCircleOutline } from "react-icons/io5";
 const vairipayOptions = [
   { img: "images/fe (1).png", dis: "Lexi 57I90H7" },
   { img: "images/fe (2).png", dis: "Lexi 57I90H7" },
@@ -35,13 +41,13 @@ const tabs = [
     current: false,
     code: tabsCode.local,
   },
-  {
-    id: 3,
-    name: "Marketplace",
-    icon: "/images/marketplace-icon.png",
-    current: false,
-    code: tabsCode.marketplace,
-  },
+  // {
+  //   id: 3,
+  //   name: "Marketplace",
+  //   icon: "/images/marketplace-icon.png",
+  //   current: false,
+  //   code: tabsCode.marketplace,
+  // },
 ];
 
 const Build = [
@@ -83,7 +89,7 @@ const swingers = [
 
 const store = ["Online", "Local"];
 
-const organizations = ["M4W", "M4M", "Bisexual"];
+const organizations = ["M4W", "W4M", "Bisexual"];
 
 const Adultforums = ["Influencer", "Forums"];
 // ];
@@ -115,6 +121,9 @@ const Featured = () => {
   const [isDropdownOpenWorder, setIsDropdownOpenWorker] = useState(false);
   const [isDropdownOpenAdvocacy, setIsDropdownOpenAdvocacy] = useState(false);
   const [orientationOptions, setOrientationOptions] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [particularPostItem, setParticularPostItem] = useState({});
+  const [like, setLike] = useState(false);
   const [selectedOption, setSelectedOption] = useState({
     businesstype: "All",
     orientation: "",
@@ -127,10 +136,36 @@ const Featured = () => {
     worker: "",
     Fourms: "",
   });
+  const dropdownRef = useRef(null);
+
 
   useEffect(() => {
     dispatch(HandleGetAllPost());
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        // Close all dropdowns
+        setIsDropdownOpenSelectedOption(false);
+        setIsDropdownOpenGender(false);
+        setIsDropdownOpenOrientation(false);
+        setIsDropdownOpenLifestyle(false);
+        setIsDropdownOpenResorts(false);
+        setIsDropdownOpenStore(false);
+        setIsDropdownOpenFetish(false);
+        setIsDropdownOpenAdvocacy(false);
+        setIsDropdownOpenWorker(false);
+      }
+    };
+
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
 
   const handelerDropdown = (value, type) => {
     if (type == "businesstype") {
@@ -152,12 +187,20 @@ const Featured = () => {
     }
   };
 
+  const closeModal = () => {
+    setIsOpen(false);
+  }
   const HandleLike = async (id) => {
-    const body = {
-      userId: UserDetails?._id,
-    };
-    await dispatch(HandleLikePost(id, body));
-    dispatch(HandleGetAllPost());
+    try {
+      const body = {
+        userId: UserDetails?._id,
+      };
+      dispatch(HandleLikePost(id, body));
+      dispatch(HandleGetAllPost());
+    } catch (error) {
+      console.error(error);
+      setLike(false);
+    }
   };
   const updateOrientationOptions = (selectedGender) => {
     if (selectedGender === "Male") {
@@ -371,41 +414,34 @@ const Featured = () => {
   };
 
   return (
-    <div className="main-content relative rounded-2xl overflow-hidden bg-[#D5D6E0] min-h-[640px]">
-      <div className="bg-[#D5D6E0] absolute left-[50%] translate-x-[-50%] -top-[25px] w-[92px] rounded-t-[10px]">
-        <span className="font-roboto text-[#02227E] font-[800] text-[16px]">
-          Featured
-        </span>
-      </div>
-      <Carousel2 images={vairipayOptions} admin={"true"} vairipay={"false"} />
-      <div className="block px-2">
-        <div className="border-b border-[#02227E]/[58%]">
-          <nav
-            className="-mb-[3px] flex  justify-around space-x-4 md:justify-center overflow-auto scroll-hide"
-            aria-label="Tabs"
-          >
-            {tabs.map((tab) => (
-              <button
-                onClick={() => handleTabSwitch(tab)}
-                key={tab.id}
-                className={classNames(
-                  selectedTab === tab.code
-                    ? "border-[#040C50]/[40%] "
-                    : "border-transparent  hover:border-[#040C50]/[40%] ",
-                  "whitespace-nowrap flex items-center judtify-center gap-px font-roboto-serif font-bold text-[#02227E] border-b-[5px]  px-1 text-[12px]"
-                )}
-              >
-                {!!tab.icon && <img src={tab.icon} />}
-                {tab.name}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-      <div className="p-3">
-        <div className="flex items-center justify-between mt-px ">
-          <div className="flex items-center min-w-0">
-            <div className="flex gap-2 pr-4 overflow-scroll">
+    <>
+      <div className="md:hidden block fixed top-0 sm:h-[80px] h-[70px] w-full bg-[#060C4D] z-50"></div>
+      <div className="container relative rounded-2xl ">
+        <div className="min-h-[calc(100vh-280px)] ">
+
+          <Carousel2 images={vairipayOptions} admin={"true"} vairipay={"false"} />
+          <div className="flex justify-between items-end sm:mt-[48px] mt-[24px] md:flex-nowrap flex-wrap sm:gap-[24px] gap-[16px]" >
+            <nav
+              className="flex gap-[16px] md:w-fit w-full"
+              aria-label="Tabs"
+            >
+              {tabs.map((tab) => (
+                <button
+                  onClick={() => handleTabSwitch(tab)}
+                  key={tab.id}
+                  className={classNames(
+                    selectedTab === tab.code
+                      ? "bg-[#FFFFFF4D] "
+                      : "bg-[#FFFFFF14]",
+                    "whitespace-nowrap px-[12px] py-[6px] text-sm font-medium text-white rounded-[8px]"
+                  )}
+                >
+                  {!!tab.icon && <img src={tab.icon} />}
+                  {tab.name}
+                </button>
+              ))}
+            </nav>
+            <div className="flex gap-2 flex-wrap" ref={dropdownRef}>
               <div>
                 <button
                   onClick={() => {
@@ -413,22 +449,14 @@ const Featured = () => {
                       !isDropdownOpenSelectedOption
                     );
                   }}
-                  className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                  className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                 >
-                  <div className="relative flex items-center justify-between mx-2">
-                    <div>{selectedOption.businesstype}</div>
-                    <div className="">
-                      <svg
-                        className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                        viewBox="0 0 20 20"
-                      >
-                        <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                      </svg>
-                    </div>
+                  <div className="relative text-white text-sm font-medium " >
+                    {selectedOption.businesstype}
                   </div>
                 </button>
                 {isDropdownOpenSelectedOption && (
-                  <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                  <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] z-[2]">
                     {businesstype.map((items) => {
                       return (
                         <span
@@ -438,7 +466,7 @@ const Featured = () => {
                             setIsDropdownOpenSelectedOption(false);
                           }}
                           href="#"
-                          className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                          className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                         >
                           {items}
                         </span>
@@ -456,26 +484,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenGender(!isDropdownOpenGender);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption?.gender?.length == 0
-                            ? "Gender"
-                            : selectedOption.gender}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption?.gender?.length == 0
+                          ? "Gender"
+                          : selectedOption.gender}
                       </div>
                     </button>
                     {isDropdownOpenGender && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] max-w-[140px]">
                         {gender?.map((items) => {
                           return (
                             <span
@@ -485,7 +503,7 @@ const Featured = () => {
                                 setIsDropdownOpenGender(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -501,26 +519,16 @@ const Featured = () => {
                           !isDropdownOpenOrientation
                         );
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption?.orientation?.length == 0
-                            ? "Orientation"
-                            : selectedOption.orientation}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption?.orientation?.length == 0
+                          ? "Orientation"
+                          : selectedOption.orientation}
                       </div>
                     </button>
                     {isDropdownOpenOrientation && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {organizations?.map((items) => {
                           return (
                             <span
@@ -530,7 +538,7 @@ const Featured = () => {
                                 setIsDropdownOpenOrientation(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -547,26 +555,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenLifestyle(!isDropdownOpenLifestyle);
                       }}
-                      className="relative w-[115px] md:w-[180px] text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption?.swingers?.length == 0
-                            ? "Swingers"
-                            : selectedOption.swingers}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption?.swingers?.length == 0
+                          ? "Swingers"
+                          : selectedOption.swingers}
                       </div>
                     </button>
                     {isDropdownOpenLifestyle && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {swingers?.map((items) => {
                           return (
                             <span
@@ -576,7 +574,7 @@ const Featured = () => {
                                 setIsDropdownOpenLifestyle(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -590,26 +588,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenResorts(!isDropdownOpenResorts);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption.resorts.length == 0
-                            ? "Resorts"
-                            : selectedOption.resorts}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption.resorts.length == 0
+                          ? "Resorts"
+                          : selectedOption.resorts}
                       </div>
                     </button>
                     {isDropdownOpenResorts && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {lifestyleoptions.map((items) => {
                           return (
                             <span
@@ -619,7 +607,7 @@ const Featured = () => {
                                 setIsDropdownOpenResorts(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -636,26 +624,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenStore(!isDropdownOpenStore);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption.store.length == 0
-                            ? "Store"
-                            : selectedOption.store}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption.store.length == 0
+                          ? "Store"
+                          : selectedOption.store}
                       </div>
                     </button>
                     {isDropdownOpenStore && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {store.map((items) => {
                           return (
                             <span
@@ -664,7 +642,7 @@ const Featured = () => {
                                 setIsDropdownOpenStore(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -678,26 +656,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenFetish(!isDropdownOpenFetish);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption.fetish.length == 0
-                            ? "Fetish"
-                            : selectedOption.fetish}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption.fetish.length == 0
+                          ? "Fetish"
+                          : selectedOption.fetish}
                       </div>
                     </button>
                     {isDropdownOpenFetish && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {[].map((items) => {
                           return (
                             <span
@@ -706,7 +674,7 @@ const Featured = () => {
                                 setIsDropdownOpenFetish(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -723,26 +691,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenAdvocacy(!isDropdownOpenAdvocacy);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption.advocacy.length == 0
-                            ? "Advocacy"
-                            : selectedOption.advocacy}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption.advocacy.length == 0
+                          ? "Advocacy"
+                          : selectedOption.advocacy}
                       </div>
                     </button>
                     {isDropdownOpenAdvocacy && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {organizations.map((items) => {
                           return (
                             <span
@@ -751,7 +709,7 @@ const Featured = () => {
                                 setIsDropdownOpenAdvocacy(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -765,26 +723,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenWorker(!isDropdownOpenWorder);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption.worker.length == 0
-                            ? "sex worker"
-                            : selectedOption.worker}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption.worker.length == 0
+                          ? "sex worker"
+                          : selectedOption.worker}
                       </div>
                     </button>
                     {isDropdownOpenWorder && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {["sex worker"].map((items) => {
                           return (
                             <span
@@ -793,7 +741,7 @@ const Featured = () => {
                                 setIsDropdownOpenWorker(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -810,26 +758,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenAdvocacy(!isDropdownOpenAdvocacy);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption.advocacy.length == 0
-                            ? "Advocacy"
-                            : selectedOption.advocacy}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption.advocacy.length == 0
+                          ? "Advocacy"
+                          : selectedOption.advocacy}
                       </div>
                     </button>
                     {isDropdownOpenAdvocacy && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {organizations.map((items) => {
                           return (
                             <span
@@ -839,7 +777,7 @@ const Featured = () => {
                                 setIsDropdownOpenAdvocacy(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -853,26 +791,16 @@ const Featured = () => {
                       onClick={() => {
                         setIsDropdownOpenWorker(!isDropdownOpenWorder);
                       }}
-                      className="min-w-[115px] md:min-w-[180px] pl-2 md:pl-6 text-center outline-none cursor-pointer appearance-none px-1 md:px-4 h-[35px] bg-[#02227E] border-2 border-[#0198FE] rounded-full text-[12px] md:text-[18px] text-[#fff] font-bold overflow:hidden"
+                      className="outline-none cursor-pointer appearance-none pl-[12px] min-w-[140px]  pr-[34px] py-[6px] bg-[#FFFFFF14] border border-[#FFFFFF4D] rounded-[8px] text-[12px] md:text-[18px] text-[#fff] font-medium overflow:hidden  select-arrow before:right-[12px] before:top-[42%]"
                     >
-                      <div className="relative flex items-center justify-between mx-2">
-                        <div>
-                          {selectedOption.worker.length == 0
-                            ? "sex worker"
-                            : selectedOption.worker}
-                        </div>
-                        <div className="">
-                          <svg
-                            className={`w-4 md:w-6 h-5 md:h6 fill-current text-white`}
-                            viewBox="0 0 20 20"
-                          >
-                            <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                          </svg>
-                        </div>
+                      <div className="relative text-white text-sm font-medium " >
+                        {selectedOption.worker.length == 0
+                          ? "sex worker"
+                          : selectedOption.worker}
                       </div>
                     </button>
                     {isDropdownOpenWorder && (
-                      <div className="absolute self-center md:w-44 w-32 py-2 bg-[#e5e7eb] shadow-xl">
+                      <div className="absolute self-center py-2 bg-[#fff] mt-3 rounded-[8px] min-w-[140px] ">
                         {["sexWorker"].map((items) => {
                           return (
                             <span
@@ -881,7 +809,7 @@ const Featured = () => {
                                 setIsDropdownOpenWorker(false);
                               }}
                               href="#"
-                              className="block px-4 py-2 font-bold text-[#02227E] cursor-pointer"
+                              className="block px-4 py-2 font-medium text-[#02227E] cursor-pointer text-sm"
                             >
                               {items}
                             </span>
@@ -892,269 +820,202 @@ const Featured = () => {
                   </div>
                 </>
               ) : null}
+
+
             </div>
           </div>
-          <div className="border-slate-500 drop-shadow-lg border-e border-solid h-[48px] ms-auto" />
-          <div className="flex items-center ps-3">
-            <button
-              onClick={() => setSelectedGrid(1)}
-              className={classNames(
-                selectedGrid === 1
-                  ? "border bg-[#02227E]/[32%] border-[#02227E]"
-                  : "",
-                "flex items-center justify-center w-[40px] h-[35px]"
-              )}
-            >
-              <img src="/images/grid-list.svg" />
-            </button>
-            <button
-              onClick={() => setSelectedGrid(2)}
-              className={classNames(
-                selectedGrid === 2
-                  ? "border bg-[#02227E]/[32%] border-[#02227E]"
-                  : "",
-                "flex items-center justify-center w-[40px] h-[35px]"
-              )}
-            >
-              <img src="/images/grid-2.svg" />
-            </button>
+          {/* <div className="">
+          <div className="flex items-center justify-between mt-px ">
+            <div className="flex items-center min-w-0">
+
+            </div>
+            <div className="border-slate-500 drop-shadow-lg border-e border-solid h-[48px] ms-auto" />
+            <div className="flex items-center ps-3">
+              <button
+                onClick={() => setSelectedGrid(1)}
+                className={classNames(
+                  selectedGrid === 1
+                    ? "border bg-[#02227E]/[32%] border-[#02227E]"
+                    : "",
+                  "flex items-center justify-center w-[40px] h-[35px]"
+                )}
+              >
+                <img src="/images/grid-list.svg" />
+              </button>
+              <button
+                onClick={() => setSelectedGrid(2)}
+                className={classNames(
+                  selectedGrid === 2
+                    ? "border bg-[#02227E]/[32%] border-[#02227E]"
+                    : "",
+                  "flex items-center justify-center w-[40px] h-[35px]"
+                )}
+              >
+                <img src="/images/grid-2.svg" />
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
-      {/* <div
+        </div> */}
+          {/* <div
         className={classNames(
           selectedGrid === 2 ? "grid-cols-2" : "sm:grid-cols-1",
           " max-h-[calc(100vh_-_274px)] mb-2 overflow-auto grid mt-1.5  gap-2 pb-[50px] px-3 "
         )}
       > */}
-      {filteredLadyData.length > 0
-        ? filteredLadyData?.map((item, index) => {
-          const likedByUser = item?.likes?.includes(UserDetails?._id);
+          <div
+            className="md:grid-cols-2 grid gap-[24px] pb-[50px] sm:mt-[48px] mt-[30px]"
+          >
+            {filteredLadyData.length > 0
+              ? filteredLadyData?.map((item, index) => {
+                const likedByUser = item?.likes?.includes(UserDetails?._id);
 
-          return (
-            <div
-              className={classNames(
-                selectedGrid === 2 ? "grid-cols-2" : "sm:grid-cols-1",
-                " max-h-[calc(100vh_-_274px)] mb-2 overflow-auto grid mt-1.5  gap-2 pb-[50px] px-3 "
-              )}
-            >
-              <div
-                key={index}
-                className={classNames(
-                  selectedGrid === 2 ? "rounded-[14px]" : "rounded-[30px]",
-                  "bg-[#040C50]/[70%] py-1.5 md:max-w-[368px] w-full mx-auto "
-                )}
-              >
-                <div
-                  className={classNames(
-                    selectedGrid === 2 ? "px-2" : " px-5",
-                    "flex items-end"
-                  )}
-                >
-                  <div className="flex items-center flex-1 gap-1 mb-1">
-                    <img
-                      // for dynamic
-                      // <img
-                      // src={
-                      //   item?.userId?.profilePic
-                      //     ? `${BaseAPI}/api/images/userprofile/${item?.userId?.profilePic}`
-                      //     : `/images/Ellipse74.png`
-                      // }
-
-                      //
-                      src={
-                        item?.userId?.profilePic
-                          ? `${import.meta.env
-                            .VITE_APP_S3_IMAGE
-                          }/${item?.userId?.profilePic}`
-                          : item?.userId?.gender === "Male"
-                            ? "/images/male.png"
-                            : "/images/female.png"
-                      }
-                      // src={
-                      //   item?.userId?.profilePic
-                      //     ? `${import.meta.env
-                      //       .VITE_APP_API_USERPROFILE_IMAGE_URL
-                      //     }/${item?.userId?.profilePic}`
-                      //     : item?.userId?.gender === "Male"
-                      //       ? "/images/male.png"
-                      //       : "/images/female.png"
-                      // }
-                      className={classNames(
-                        selectedGrid === 2
-                          ? "w-[14px] h-[14px] border"
-                          : "w-[26px] h-[26px] border-[2px]",
-                        "rounded-full  border-white"
-                      )}
-                    />
-                    <div>
-                      <h2
-                        className={classNames(
-                          selectedGrid === 2 ? "text-[6px]" : "text-[11px]",
-                          " text-white font-bold font-roboto capitalize"
-                        )}
-                      >
-                        {item?.userId?.name}
-                      </h2>
-                      <h2
-                        className={classNames(
-                          selectedGrid === 2 ? "text-[6px]" : "text-[11px]",
-                          " text-white font-bold font-roboto"
-                        )}
-                      >
-                        ID# {item?.userId?.vaiID}
-                      </h2>
-                      <div
-                        className={classNames(
-                          selectedGrid === 2 ? "gap-px" : "gap-1",
-                          "flex items-center"
-                        )}
-                      >
-                        {[0, 1, 2, 3, 4].map((rating, index) => (
-                          <img
-                            key={index}
-                            src="/images/Star.svg"
-                            className={classNames(
-                              selectedGrid === 2
-                                ? "w-[8px] h-[8px]"
-                                : "w-[13px] h-[13px]"
-                            )}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                return (
 
                   <div
-                    className={classNames(
-                      selectedGrid === 2 ? "gap-1" : "gap-3",
-                      "flex items-center mb-1 "
-                    )}
+                    key={index}
+                    className="w-full"
                   >
                     <div
-                      className="flex items-center gap-1"
-                      onClick={() => HandleLike(item?._id)}
+                      className={classNames(
+                        "flex items-start justify-between"
+                      )}
                     >
-                      <span
-                        className={classNames(
-                          selectedGrid === 2 ? "text-[7px]" : "text-[11px]",
-                          " text-white font-bold to"
-                        )}
-                      >
-                        {item?.likes?.length}
-                      </span>
-                      <span
-                        className={classNames(
-                          selectedGrid === 2 ? "text-[7px]" : "text-[11px]",
-                          " text-white font-bold to"
-                        )}
-                      >
-                        {`Like${item?.likes?.length > 1 ? "s" : ""}`}
-                      </span>
-                      <img
-                        src={
-                          likedByUser
-                            ? "/images/likes.png"
-                            : "/images/like.svg"
+                      <div className="flex items-center flex-1 gap-[8px] mb-1">
+                        <img
+                          src={
+                            item?.userId?.profilePic
+                              ? `${import.meta.env
+                                .VITE_APP_S3_IMAGE
+                              }/${item?.userId?.profilePic}`
+                              : item?.userId?.gender === "Male"
+                                ? "/images/male.png"
+                                : "/images/female.png"
+                          }
+                          className='h-[40px] w-[40px] rounded-full object-cover'
+                        />
+                        <div>
+                          <h2
+                            className="font-medium text-white text-base"
+                          >
+                            {item?.userId?.name}
+                          </h2>
+                          <h2
+                            className="text-[#919EAB] font-regular text-sm"
+                          >
+                            ID# {item?.userId?.vaiID}
+                          </h2>
+                        </div>
+                      </div>
+                      <div className="flex gap-1 items-center">
+                        <p className="text-white font-semibold text-base mt-[3px]">{item?.userId?.averageRating}</p>
+                        <img
+                          key={index}
+                          src="/images/home/star.svg"
+                          className="h-[20px] w-[20px]"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="sm:h-[300px] h-[200px] mt-[8px]"
+                    >
+                      <CardPlacehoderSkeleton
+                        imageUrl={`${import.meta.env.VITE_APP_S3_IMAGE
+                          }/${item?.image}`}
+                        imageClassNames='h-full w-full object-cover rounded-[8px]'
+                      />
+                    </div>
+                    <div className="flex items-center mb-1 mt-[8px] gap-[10px]">
+                      <div
+                        className="flex items-center gap-[6px] cursor-pointer"
+                        onClick={() => {
+                          setLike(like ? false : true);
+                          HandleLike(item?._id)
                         }
-                        className={classNames(
-                          selectedGrid === 2 ? "w-[8px] h-[11px]" : "w-[22px]"
-                        )}
-                        alt={likedByUser ? "Liked" : "Like"}
-                      />
-                    </div>
-                    <div
-                      className="flex items-center gap-1"
-                      onClick={() =>
-                        navigate("/user/comments", {
-                          state: item,
-                        })
-                      }
-                    >
-                      <span
-                        className={classNames(
-                          selectedGrid === 2 ? "text-[7px]" : "text-[11px]",
-                          " text-white font-bold font-roboto"
-                        )}
+                        }
                       >
-                        {item?.comments?.length}
-                      </span>
-                      <span
-                        className={classNames(
-                          selectedGrid === 2 ? "text-[7px]" : "text-[11px]",
-                          " text-white font-bold font-roboto"
-                        )}
+                        {(like || likedByUser) ? <img src="/images/home/like.svg" alt={(like || likedByUser) ? "Liked" : "Like"}
+                        /> : <img src="/images/home/like_outline.svg" alt={(like || likedByUser) ? "Liked" : "Like"}
+                        />}
+                        <span
+                          className=" text-white font-medium text-base"
+                        >
+                          {item?.likes?.length}
+                        </span>
+                      </div>
+                      <div
+                        className="flex items-center gap-[6px] cursor-pointer"
+                        onClick={() => {
+                          setParticularPostItem(item);
+                          setIsOpen(true)
+                        }
+                        }
                       >
-                        {`Comment${item?.comments?.length > 1 ? "s" : ""}`}
-                      </span>
-                      <img
-                        src="/images/Vector.png"
-                        className={classNames(
-                          selectedGrid === 2 ? "w-[10px] h-[11px]" : ""
-                        )}
-                      />
+                        <img src="/images/home/comment.svg"
+                        />
+                        <span
+                          className=" text-white font-medium font-roboto text-base"
+                        >
+                          {item?.comments?.length}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div
-                  className="px-px"
-                  onClick={() =>
-                    navigate("/user/details", {
-                      state: item,
-                    })
-                  }
-                >
-                  <CardPlacehoderSkeleton
-                    imageUrl={`${import.meta.env.VITE_APP_S3_IMAGE
-                      }/${item?.image}`}
-                    imageClassNames={classNames(
-                      selectedGrid === 2
-                        ? "rounded-[12px]"
-                        : "rounded-[30px]",
-                      " w-full mx-auto "
-                    )}
-                  />
-                </div>
+                    <div className="mt-[5px]">
+                      <h2
+                        className="text-[#919EAB] text-sm font-normal"
+                      >
+                        {item?.message === 'undefined' ? '' : item?.message}
+                      </h2>
+                    </div>
 
-                <div className="mt-[5px]">
-                  <h2
-                    className={classNames(
-                      selectedGrid === 2
-                        ? "text-[8px] font-medium"
-                        : "text-[15px] font-bold",
-                      "text-white  mx-auto max-w-[300px]  sm:max-w-auto text-center "
-                    )}
-                  >
-                    {item?.message === 'undefined' ? '' : item?.message}
-                  </h2>
-                </div>
-                {UserDetails?._id === item?.userId?._id ? (
-                  <div className="mt-2"></div>
-                ) : (
-                  <div className="mt-2">
-                    {UserDetails?.user_type === "client-hobbyist" ? (
-                      <button
-                        onClick={() => handleRequestVairidate(item)}
-                        className={classNames(
-                          selectedGrid === 2 ? "text-[6px] " : "text-[14px] ",
-                          "border-[2px] rounded-full px-2 py-[3px] mt-0 text-white bg-[#02227E] font-roboto  border-[#0198FE]"
-                        )}
-                      >
-                        Request <span className="font-bold">VAI</span>
-                        <span>RIDATE</span>
-                      </button>
+                    {UserDetails?._id === item?.userId?._id ? (
+                      <div className="mt-2"></div>
                     ) : (
-                      ""
+                      <div className="mt-2 mb-4 w-fit">
+                        {UserDetails?.user_type === "client-hobbyist" ? (
+                          <Button className={'px-2 !py-1 !text-[14px]'} onClick={() => handleRequestVairidate(item)} text={'Request VAIRIDATE'} />
+                        ) : (
+                          ""
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-            </div>
-          );
-        })
-        : "There are No Posts Yet"}
-      {/* </div> */}
-    </div>
+
+                );
+              })
+
+              : <>
+                <div className="w-full flex flex-col justify-center items-center md:col-span-2">
+                  <img src="/images/home/no-post.svg" alt="no post" />
+                  <p className="text-white font-medium text-xl mt-[24px]">There are no posts yet </p>
+                </div>
+              </>}
+
+            <Modal
+              isOpen={isOpen}
+              onRequestClose={closeModal}
+              className={
+                "sm:bg-[#FFFFFF] bg-[#060C4D] relative mx-auto sm:rounded-[16px] sm:px-[24px] sm:pb-[24px] sm:pt-[24px] px-[16px] pt-[60px] pb-[75px] sm:w-[90%] w-[100%] md:max-w-[548px] overflow-y-auto h-[100%] sm:h-auto z-[100000]"
+              }
+              contentLabel="#"
+            >
+
+              <button
+                className="sm:absolute fixed sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-white sm:text-black cursor-pointer z-[100000] float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                onClick={closeModal}
+              >
+                <IoCloseCircleOutline size={26} />
+              </button>
+
+              <div className="sm:block hidden"><PostDetails state={particularPostItem} /></div>
+              <Comments state={particularPostItem} />
+            </Modal>
+          </div>
+        </div>
+      </div>
+      <div className="sm:pb-0 pb-[80px]"></div>
+      <BottomTabbar />
+
+    </>
   );
 };
 

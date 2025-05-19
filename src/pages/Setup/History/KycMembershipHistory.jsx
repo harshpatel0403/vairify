@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import moment from "moment";
+import Loading from "../../../components/Loading/Index";
 
 const KycMembershipHistory = () => {
   const navigate = useNavigate();
@@ -40,7 +41,9 @@ const KycMembershipHistory = () => {
     return (
       <div className="main-container h-full">
         <div className="h-full flex justify-center items-center">
-          <p>Loading...</p>
+          <div className="flex items-center	justify-center">
+            <Loading />
+          </div>
         </div>
       </div>
     );
@@ -95,16 +98,11 @@ const KycMembershipHistory = () => {
                             />
                           ) : (
                             <img
-                            src={
-                              import.meta.env
-                                .VITE_APP_S3_IMAGE +
-                              `/${UserDetails?.profilePic}`
-                            }
-                              // src={
-                              //   import.meta.env
-                              //     .VITE_APP_API_USERPROFILE_IMAGE_URL +
-                              //   `/${UserDetails?.profilePic}`
-                              // }
+                              src={
+                                import.meta.env
+                                  .VITE_APP_S3_IMAGE +
+                                `/${UserDetails?.profilePic}`
+                              }
                               className="w-[80px] h-[80px]  rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
                               alt="Hot Rod"
                             />

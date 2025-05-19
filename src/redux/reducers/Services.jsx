@@ -3,6 +3,7 @@ const initialState = {
   services: {},
   getservices: [],
   selectServices: [],
+  loading: true,
 };
 
 export const HandleServices = (state = initialState, action) => {
@@ -16,19 +17,22 @@ export const HandleServices = (state = initialState, action) => {
       return {
         ...state,
         getservices: action.payload,
+        loading: false,
       };
     case "SELECT_SERVICES":
       return {
         ...state,
         selectServices: action?.payload,
       };
-      case "RESET_SELECT_SERVICES":
+    case "RESET_SELECT_SERVICES":
       return {
         ...state,
-        selectServices: [], // Reset to an empty array
+        selectServices: [],
       };
     case "SET_LOADING":
-      return { ...state, error: action?.payload?.response };
+      return {
+        ...state, loading: false, error: action?.payload?.response
+      };
 
     default:
       return state;

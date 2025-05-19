@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { HandleUpdateFollowers } from "../../redux/action/Auth";
 import { toast } from "react-toastify";
 import MyVairifyService from "../../services/MyVairifyService";
+import PageTitle from "../../components/PageTitle";
 
 const VaridateHome = () => {
   const [handelChangeTab, setHandelChangeTab] = useState(false);
@@ -63,8 +64,8 @@ const VaridateHome = () => {
   }
 
   return (
-    <div style={{ maxHeight: "calc(100vh - 160px)" }}>
-      <div className="w-full mx-auto flex flex-row justify-between items-start mt-2 px-3">
+    <div className="container">
+      {/* <div className="w-full mx-auto flex flex-row justify-between items-start mt-2 px-3">
         <div className="flex flex-col items-center justify-center">
           <div>
             <span className="text-[18px] text-[#040C50] font-extrabold">
@@ -157,77 +158,93 @@ const VaridateHome = () => {
             </span>
           </div>
         </div>
-      </div>
-
+      </div> */}
+      {/* 
       <div className="w-full mx-auto flex flex-col justify-center items-center mt-2 px-3">
         <span className="font-bold text-[24px] capitalize">
           {varidateData?.companionData?.name}
         </span>
-      </div>
+      </div> */}
 
-      <div className="flex flex-row border-b-2 border-gray-700 justify-evenly mt-4">
-        <div
-          style={{
-            backgroundColor: !handelChangeTab
-              ? "rgba(55,96,203,0.2)"
-              : "rgba(0,0,0,0)",
-          }}
-          className="w-1/2 px-4"
-          onClick={() => setHandelChangeTab(false)}
-        >
-          <span className="text-2xl font-bold text-[#01195C]">Services</span>
+      <div className="min-h-[calc(100vh-380px)]">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle isSmall={true} title={"Services/Rates"} />
         </div>
-        <div
-          style={{
-            backgroundColor: handelChangeTab
-              ? "rgba(55,96,203,0.2)"
-              : "rgba(0,0,0,0)",
-          }}
-          className="w-1/2 px-4"
-          onClick={() => setHandelChangeTab(true)}
-        >
-          <span className="text-2xl font-bold text-[#01195C]">Rates</span>
+
+        <div className="flex flex-row gap-[16px] mt-4">
+          <div
+            style={{
+              backgroundColor: !handelChangeTab
+                ? "#FFFFFF29"
+                : "#FFFFFF14",
+            }}
+            className="px-[12px] py-[6px] text-sm font-bold text-white rounded-[8px] cursor-pointer"
+            onClick={() => setHandelChangeTab(false)}
+          >
+            Services
+          </div>
+          <div
+            style={{
+              backgroundColor: handelChangeTab
+                ? "#FFFFFF29"
+                : "#FFFFFF14",
+            }}
+            className="px-[12px] py-[6px] text-sm font-bold text-white rounded-[8px] cursor-pointer"
+            onClick={() => setHandelChangeTab(true)}
+          >
+            Rates
+          </div>
         </div>
-      </div>
-      <div className="inner-content-part-country">
-        {!handelChangeTab ? (
-          <ServicesTab
-            services={varidateData?.selectedSubServices}
-            selectedService={varidateData?.service}
-            setService={(service) =>
-              setVaridateData((prevValue) => ({ ...prevValue, service }))
-            }
-            selectedExtraServices={varidateData?.extraServices}
-            setSelectedExtraServices={(service) =>
-              setVaridateData((prevValue) => ({
-                ...prevValue,
-                extraServices: [...prevValue?.["extraServices"], service],
-              }))
-            }
-            removeSelectedExtraService={(service) =>
-              setVaridateData((prevValue) => ({
-                ...prevValue,
-                extraServices: prevValue?.["extraServices"]?.filter(
-                  (item) => item?._id !== service?._id
-                ),
-              }))
-            }
-          />
-        ) : (
-          <RatesTab
-            availableHours={varidateData?.availableHours}
-            selectedHours={varidateData?.hours}
-          />
-        )}
-        <div className="flex items-center justify-center mx-4 mt-2 mb-3">
-          <Button
-            className={
-              "flex items-center mt-4 py-2 w-[50%] my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[23.4px] rounded-xl "
-            }
-            text={"VAIRIDATE"}
-            size="40px"
-            onClick={handleVairidate}
-          />
+        <div>
+          {!handelChangeTab ? (
+            <ServicesTab
+              services={varidateData?.selectedSubServices}
+              setService={(service) =>
+                setVaridateData((prevValue) => ({ ...prevValue, service }))
+              }
+              removeService={(service) =>
+                setVaridateData((prevValue) => ({
+                  ...prevValue,
+                  selectedSubServices: prevValue?.["selectedSubServices"]?.filter(
+                    (item) => item?._id !== service?._id
+                  ),
+                }))
+              }
+              selectedExtraServices={varidateData?.extraServices}
+              setSelectedExtraServices={(service) =>
+                setVaridateData((prevValue) => ({
+                  ...prevValue,
+                  extraServices: [...prevValue?.["extraServices"], service],
+                }))
+              }
+              removeSelectedExtraService={(service) =>
+                setVaridateData((prevValue) => ({
+                  ...prevValue,
+                  extraServices: prevValue?.["extraServices"]?.filter(
+                    (item) => item?._id !== service?._id
+                  ),
+                }))
+              }
+            />
+          ) : (
+            <RatesTab
+              availableHours={varidateData?.availableHours}
+              selectedHours={varidateData?.hours}
+              setHours={(hour) =>
+                setVaridateData((prevValue) => ({
+                  ...prevValue,
+                  hours: hour,
+                }))
+              }
+            />
+          )}
+          <div className="max-w-[500px] mx-auto mt-[24px] mb-[48px]">
+            <Button
+              text={"VAIRIDATE"}
+              size="48px"
+              onClick={handleVairidate}
+            />
+          </div>
         </div>
       </div>
     </div>

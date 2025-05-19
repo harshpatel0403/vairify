@@ -11,11 +11,21 @@ import {
   HandleUpdateFollowers,
   HandleUpdateUser,
 } from "../../redux/action/Auth";
+import Button from "../../components/Button";
+import PageTitle from "../../components/PageTitle";
 
 const MyVairifyCards = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (state?._id) {
+      dispatch(HandleUpdateFollowers(UserData?._id))
+      dispatch(HandleUpdateFavourites(UserData?._id))
+    }
+  }, [state]);
+
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
@@ -45,6 +55,20 @@ const MyVairifyCards = () => {
       [option]: !prevCheckboxes[option],
     }));
   };
+
+  const isFollowed = useCallback(
+    (id) => {
+      let result = UserData?.followers?.find(
+        (item) => item?._id === id || item?.userId === id
+      );
+      if (result) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [UserData]
+  );
 
   const handleFollow = async () => {
     try {
@@ -78,19 +102,7 @@ const MyVairifyCards = () => {
     }
   };
 
-  const isFollowed = useCallback(
-    (id) => {
-      let result = UserData?.followers?.find(
-        (item) => item?._id === id || item?.userId === id
-      );
-      if (result) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    [UserData]
-  );
+
 
   const isFavorite = useCallback(
     (id) => {
@@ -123,22 +135,25 @@ const MyVairifyCards = () => {
         toast.success("Successfully added to favourites!");
       }
     } catch (error) {
+      console.error(error)
       toast.error("Unable to perform this action!");
     } finally {
       setFavoriteLoading(false);
     }
   };
 
-  const handleNotifyPost = async () => {
+  const handleNotifyPost = async (e) => {
     try {
       setNotifyPostLoading(true);
+      const checkbox = document.getElementsByName("notify-post")[0]
+      checkbox.checked = e.target.checked;
+
       // api call
-      await MyVairifyService.updateWhenToNotify(UserData?._id, {
-        followerId: state?._id,
-        isNotifyWhenPost: !selectedNotifyPost,
+      await MyVairifyService.updateWhenToNotify(state?._id, {
+        followerId: UserData?._id,
+        isNotifyWhenPost: e.target.checked,
       });
-      setSelectedNotifyPost(!selectedNotifyPost);
-      toast.success("Sucessfully changed notify on post!");
+      toast.success(`Sucessfully changed notify ${e.target.checked ? "on" : "off"} post!`);
     } catch (error) {
       toast.error("Unable to change notify on post!");
     } finally {
@@ -146,16 +161,18 @@ const MyVairifyCards = () => {
     }
   };
 
-  const handleNotifyTrurevu = async () => {
+  const handleNotifyTrurevu = async (e) => {
     try {
       setNotifyTrurevuLoading(true);
+      const checkbox = document.getElementsByName("notify-trurevu")[0]
+      checkbox.checked = e.target.checked;
+
       // api call
-      await MyVairifyService.updateWhenToNotify(UserData?._id, {
-        followerId: state?._id,
-        isNotifyWhenNewReview: !selectedNotifyTrurevu,
+      await MyVairifyService.updateWhenToNotify(state?._id, {
+        followerId: UserData?._id,
+        isNotifyWhenNewReview: e.target.checked,
       });
-      setSelectedNotifyTrurevu(!selectedNotifyTrurevu);
-      toast.success("Sucessfully changed notify on trurevu!");
+      toast.success(`Sucessfully changed notify ${e.target.checked ? "on" : "off"} trurevu!`);
     } catch (error) {
       toast.error("Unable to change notify on trurevu!");
     } finally {
@@ -163,16 +180,17 @@ const MyVairifyCards = () => {
     }
   };
 
-  const handleNotifyPostGalleryImage = async () => {
+  const handleNotifyPostGalleryImage = async (e) => {
     try {
       setNotifyPostGalleryImageLoading(true);
+      const checkbox = document.getElementsByName("notify-gallery-post")[0]
+      checkbox.checked = e.target.checked;
       // api call
-      await MyVairifyService.updateWhenToNotify(UserData?._id, {
-        followerId: state?._id,
-        isNotifyWhenNewGallaryImagePost: !selectedNotifyPostGalleryImage,
+      await MyVairifyService.updateWhenToNotify(state?._id, {
+        followerId: UserData?._id,
+        isNotifyWhenNewGallaryImagePost: e.target.checked,
       });
-      setSelectedNotifyPostGalleryImage(!selectedNotifyPostGalleryImage);
-      toast.success("Sucessfully changed notify on post gallery image!");
+      toast.success(`Sucessfully changed notify ${e.target.checked ? "on" : "off"} post gallery image!`);
     } catch (error) {
       toast.error("Unable to change notify on post gallery image!");
     } finally {
@@ -182,17 +200,21 @@ const MyVairifyCards = () => {
 
   useEffect(() => {
     if (isFollowed(state?._id)) {
-      MyVairifyService.getNotifyRules(UserData?._id, state?._id).then(
+
+      MyVairifyService.getNotifyRules(state?._id, UserData?._id).then(
         (response) => {
-          setSelectedNotifyPost(response?.isNotifyWhenPost);
-          setSelectedNotifyTrurevu(response?.isNotifyWhenNewReview);
-          setSelectedNotifyPostGalleryImage(
-            response?.isNotifyWhenNewGallaryImagePost
-          );
+          const notifyPost = document.getElementsByName("notify-post")[0]
+          notifyPost.checked = response?.isNotifyWhenPost ? true : false;
+
+          const notifyTrurevu = document.getElementsByName("notify-trurevu")[0]
+          notifyTrurevu.checked = response?.isNotifyWhenNewReview ? true : false;
+
+          const notifyGalleryPost = document.getElementsByName("notify-gallery-post")[0]
+          notifyGalleryPost.checked = response?.isNotifyWhenNewGallaryImagePost ? true : false;
         }
       );
     }
-  }, []);
+  }, [UserData?._id, state?._id]);
 
   const updateNotificationSettings = async (updatedCheckboxes) => {
     try {
@@ -226,298 +248,207 @@ const MyVairifyCards = () => {
   }
 
   return (
-    <div className="h-full rounded-2xl ">
-      <div className="w-full mx-auto flex flex-row justify-between items-start mt-4 relative social-heading pt-[20px]">
-        <div className="flex flex-col items-center justify-center leading-[18px] mx-[10px]">
-          <div>
-            <span className="text-[20px] text-[#040C50] font-extrabold font-Roboto-Serif">
-              VAI
-              <span className="text-[20px] text-[#040C50] font-semibold font-Roboto-Serif">
-                RIFY ID
-              </span>
-            </span>
-          </div>
-          <div>
-            <span className="text-[15px] text-[#01195C] font-bold sub-title-class val-id uppercase">
-              {state?.vaiID ? <>{state?.vaiID}</> : <>{UserData?.vaiID}</>}
-            </span>
-          </div>
-        </div>
-
-        <div className="w-[140px] absolute inset-x-0 top-[-55px] left-[0px] mx-auto image-sr">
-          <div
-            style={{ left: "0px", bottom: "65px", zIndex: 50 }}
-            className="w-full h-full rounded-full"
-          >
-            <img
-              className="md:min-w-[120px] md:max-w-[120px] md:w-[120px] md:h-[120px] min-w-[100px] max-w-[100px] w-[100px] h-[100px] rounded-[100px] my-1 mx-auto"
-               src={
-                state?.profilePic
-                  ? import.meta.env.VITE_APP_S3_IMAGE +
-                    `/${state?.profilePic}`
-                  : state?.gender === "Male"
-                  ? "/images/male.png"
-                  : "/images/female.png"
-              }
-              // src={
-              //   state?.profilePic
-              //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-              //       `/${state?.profilePic}`
-              //     : state?.gender === "Male"
-              //     ? "/images/male.png"
-              //     : "/images/female.png"
-              // }
-              alt="Hot Rod"
-            />
-          </div>
-          {state?._id !== UserData?._id && (
+    <div className="h-full rounded-2xl container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"My VAIRIFY"} />
+      </div>
+      <div className="w-full mx-auto items-start mt-4 relative">
+        <div className="flex gap-[24px] md:flex-nowrap flex-wrap">
+          {isFollowed(state?._id) ? (
             <div
-              style={{ right: "22px", top: "5.1rem", zIndex: 51 }}
-              className="absolute"
-              onClick={() => {
-                followLoading ? null : handleFollow();
-              }}
+              className="w-fit sm:bg-[#FFFFFF0A] sm:p-[16px] rounded-[16px] w-full lg:max-w-[350px] flex flex-col "
             >
-              {state?.userType === "client-hobbyist" ? (
-                <img
-                  src={import.meta.env.BASE_URL + "images/HotRodIcon2.png"}
-                  alt="Sugar Icon"
-                  className={`${isFollowed(state?._id) ? "" : "grayscale"}`}
-                />
-              ) : null}
-              {state?.userType === "companion-provider" ? (
-                <img
-                  src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
-                  alt="Intimate Message Icon"
-                  className={`${isFollowed(state?._id) ? "" : "grayscale"}`}
-                />
-              ) : null}
-              {state?.userType === "agency-business" || userType === "super" ? (
-                <img
-                  src={
-                    import.meta.env.BASE_URL + "images/IntimateMassageIcon2.png"
-                  }
-                  alt="Hod Rod Icon"
-                  className={`${isFollowed(state?._id) ? "" : "grayscale"}`}
-                />
-              ) : null}
-            </div>
-          )}
-        </div>
-
-        <div className="leading-[18px] mx-[10px]">
-          <div>
-            <span className="text-[20px] text-[#040C50] font-extrabold font-Roboto-Serif">
-            TruRevu
-            </span>
-          </div>
-          <div className="flex flex-row justify-center items-center trurevu-star">
-            <FontAwesomeIcon
-              icon={faStar}
-              color={state?.averageRating >= 1 ? "#E1AB3F" : "#111"}
-              className="text-[10px] margin-right-5"
-            />
-            <FontAwesomeIcon
-              icon={faStar}
-              color={state?.averageRating >= 2 ? "#E1AB3F" : "#111"}
-              className="text-[10px] margin-right-5"
-            />
-            <FontAwesomeIcon
-              icon={faStar}
-              color={state?.averageRating >= 3 ? "#E1AB3F" : "#111"}
-              className="text-[10px] margin-right-5"
-            />
-            <FontAwesomeIcon
-              icon={faStar}
-              color={state?.averageRating >= 4 ? "#E1AB3F" : "#111"}
-              className="text-[10px] margin-right-5"
-            />
-            <FontAwesomeIcon
-              icon={faStar}
-              color={state?.averageRating >= 5 ? "#E1AB3F" : "#111"}
-              className="text-[10px] margin-right-5"
-            />
-            <span className="text-[15px] text-[#01195C] font-bold sub-title-class val-id">
-              {state?.averageRating === 0
-                ? state?.averageRating
-                : state?.averageRating?.toFixed(1)}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="text-[24px] font-extrabold capitalize">{state?.name}</div>
-
-      <div className="mx-5 mt-2">
-        <div className="text-[22px] font-bold text-left mt-1 mb-5">Social</div>
-        <div className="flex flex-row justify-between items-center social-border fav-follow">
-          <div className="text-[18px] opacity-70 font-semibold text-left mt-1 mb-2 follow-class sub-title-class">
-            Favorites
-          </div>
-          {favoriteLoading ? (
-            <div className="flex flex-row justify-between items-right">
-              <span
-                className={`w-full relative text-[15px] font-semibold text-black text-center px-3`}
+              <div
+                className="flex justify-center items-center "
               >
-                Loading...
-              </span>
+                <div className="relative">
+
+                  <img
+                    src={
+                      state?.profilePic
+                        ? import.meta.env.VITE_APP_S3_IMAGE +
+                        `/${state?.profilePic}`
+                        : state?.gender === "Male"
+                          ? "/images/male.png"
+                          : "/images/female.png"
+                    }
+                    className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
+                    alt="Hot Rod"
+                  />
+
+                </div>
+
+
+              </div>
+              <div className="w-full mx-auto flex flex-row justify-around items-start gap-[24px] mt-[24px]">
+
+                <div className="flex flex-col items-center justify-center  w-full ">
+                  <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                    VAIRIFY ID
+                  </div>
+                  <div className="text-base text-white font-semibold  whitespace-nowrap">
+                    {state?.vaiID ? <>{state?.vaiID}</> : <>{UserData?.vaiID}</>}
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center justify-center  w-full">
+                  <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                    Name
+                  </div>
+                  <div className="text-base text-white font-semibold whitespace-nowrap">
+                    {state?.name}
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center justify-center  w-full ">
+                  <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                    TruRevu
+                  </div>
+                  <div className="flex gap-1 items-center">
+                    <p className="text-[18px] text-white font-bold m-0">
+                      {(rate || 0).toFixed(1)}
+                    </p>
+                    <img src="/images/home/star.svg" alt="star" />
+                  </div>
+                </div>
+              </div>
+              <div className="w-full">
+                <div className="mt-[24px] flex gap-[16px]">
+                  <Button text={followLoading ?
+                    (<Loading />) :
+                    isFollowed(state?._id) ? 'Unfollow' : 'Follow'
+                  } size={'36px'} className={'py-[4px]'} onClick={handleFollow} />
+                  <Button text={favoriteLoading ? (<Loading className="!h-5 !w-5 flex-1" />) : isFavorite(state?._id) ? 'Favorited' : 'Favorites'} size={'36px'} className={'py-[4px] secondary-btn !bg-[#FFFFFF29]'} onClick={handleFavorite} showFavIcon={favoriteLoading ? false : true}>
+                  </Button>
+                </div>
+              </div>
+
             </div>
           ) : (
-            <button
-              className={`w-[110px] flex flex-row justify-between  items-right ${
-                isFavorite(state?._id)
-                  ? "personal-information-btn-2-active"
-                  : "personal-information-btn-2"
-              } h-[34px] leading-[34px] rounded-[5px] mb-[12px]`}
-              onClick={handleFavorite}
-              disabled={favoriteLoading}
-            >
-              <span
-                className={`w-full relative text-[15px] font-semibold ${
-                  isFavorite(state?._id) ? "text-black" : "text-white"
-                } text-center px-3`}
+            <div className="flex justify-center items-center w-full">
+              <div
+                className="w-fit sm:bg-[#FFFFFF0A] sm:p-[16px] rounded-[16px] w-full lg:max-w-[350px] flex flex-col "
               >
-                {isFavorite(state?._id) ? "Unfavorites" : "Favorites"}
-              </span>
-            </button>
-          )}
-        </div>
-        <div className="flex flex-row justify-between items-center social-border">
-          <div className="text-[18px] opacity-70 font-semibold text-left mt-1 mb-2 follow-class sub-title-class">
-            Follow
-          </div>
+                <div
+                  className="flex justify-center items-center "
+                >
+                  <div className="relative">
 
-          {followLoading ? (
-            <div className="flex flex-row justify-between items-right">
-              <span
-                className={`w-full relative text-[15px] font-semibold text-black text-center px-3`}
-              >
-                Loading...
-              </span>
+                    <img
+                      src={
+                        state?.profilePic
+                          ? import.meta.env.VITE_APP_S3_IMAGE +
+                          `/${state?.profilePic}`
+                          : state?.gender === "Male"
+                            ? "/images/male.png"
+                            : "/images/female.png"
+                      }
+                      className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
+                      alt="Hot Rod"
+                    />
+
+                  </div>
+
+
+                </div>
+                <div className="w-full mx-auto flex flex-row justify-around items-start gap-[24px] mt-[24px]">
+
+                  <div className="flex flex-col items-center justify-center  w-full ">
+                    <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                      VAIRIFY ID
+                    </div>
+                    <div className="text-base text-white font-semibold  whitespace-nowrap">
+                      {state?.vaiID ? <>{state?.vaiID}</> : <>{UserData?.vaiID}</>}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center  w-full">
+                    <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                      Name
+                    </div>
+                    <div className="text-base text-white font-semibold whitespace-nowrap">
+                      {state?.name}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center  w-full ">
+                    <div className="text-white text-sm opacity-[0.6] font-normal  whitespace-nowrap">
+                      TruRevu
+                    </div>
+                    <div className="flex gap-1 items-center">
+                      <p className="text-[18px] text-white font-bold m-0">
+                        {(rate || 0).toFixed(1)}
+                      </p>
+                      <img src="/images/home/star.svg" alt="star" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full">
+                  <div className="mt-[24px] flex gap-[16px]">
+                    <Button text={followLoading ?
+                      (<Loading />) :
+                      isFollowed(state?._id) ? 'Unfollow' : 'Follow'
+                    } size={'36px'} className={'py-[4px]'} onClick={handleFollow} />
+                    <Button text={favoriteLoading ? (<Loading className="!h-5 !w-5 flex-1" />) : isFavorite(state?._id) ? 'Favorited' : 'Favorites'} size={'36px'} className={'py-[4px] secondary-btn !bg-[#FFFFFF29]'} onClick={handleFavorite} showFavIcon={favoriteLoading ? false : true}>
+                    </Button>
+                  </div>
+                </div>
+
+
+
+              </div>
             </div>
-          ) : (
-            <button
-              className={`w-[110px] flex flex-row justify-between  items-right ${
-                isFollowed(state?._id)
-                  ? "personal-information-btn-2-active"
-                  : "personal-information-btn-2"
-              } h-[34px] leading-[34px] rounded-[5px] mb-[10px]`}
-              onClick={handleFollow}
-              disabled={followLoading}
-            >
-              <span
-                className={`w-full relative text-[15px] font-semibold ${
-                  isFollowed(state?._id) ? "text-black" : "text-white"
-                } text-center px-3`}
-              >
-                {isFollowed(state?._id) ? "Following" : "Follow"}
-              </span>
-            </button>
+          )}
+
+          {isFollowed(state?._id) && (
+            <div className="w-full md:bg-[#FFFFFF0A] md:p-[16px] rounded-[16px] lg:block text-white">
+              <div className="md:mx-5 ">
+                <div className="text-[20px] text-white font-bold text-left mt-0 mb-5">
+                  Notifications
+                </div>
+                <div className="flex flex-row justify-between items-center social-border fav-follow bg-[#FFFFFF14] rounded-[12px] p-[12px] mb-5">
+                  <div className="sm:text-[18px] text-sm font-semibold text-lef sub-title-class">
+                    Notify when post
+                  </div>
+                  <div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" name="notify-post" value="" className="sr-only peer"
+                        onChange={(e) => handleNotifyPost(e)} />
+                      <div className="w-[33px] h-[20px] bg-[#FFFFFF] border border-[#FFFFFF] peer-focus:outline-none peer-focus:ring-0 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#060C4D] after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-[#060C4D] after:border-[#060C4D] after:border after:rounded-full after:h-[14px] after:w-[14px] after:transition-all peer-checked:bg-green-500 peer-checked:border-none peer-checked:after:bg-[#FFFFFF] peer-checked:after:border-none"></div>
+                    </label>
+                  </div>
+
+                </div>
+                <div className="flex flex-row justify-between items-center social-border fav-follow bg-[#FFFFFF14] rounded-[12px] p-[12px] mb-5">
+                  <div className="sm:text-[18px] text-sm font-semibold text-left sub-title-class">
+                    Notify when New TruRevu is posted
+                  </div>
+                  <div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" name="notify-trurevu" value="" className="sr-only peer"
+                        onChange={(e) => handleNotifyTrurevu(e)} />
+                      <div className="w-[33px] h-[20px] bg-[#FFFFFF] border border-[#FFFFFF] peer-focus:outline-none peer-focus:ring-0 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#060C4D] after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-[#060C4D] after:border-[#060C4D] after:border after:rounded-full after:h-[14px] after:w-[14px] after:transition-all peer-checked:bg-green-500 peer-checked:border-none peer-checked:after:bg-[#FFFFFF] peer-checked:after:border-none"></div>
+                    </label>
+                  </div>
+
+                </div>
+                <div className="flex flex-row justify-between items-center social-border bg-[#FFFFFF14] rounded-[12px] p-[12px] mb-5">
+                  <div className="sm:text-[18px] text-sm font-semibold text-left sub-title-class">
+                    Notify when new gallery image is posted
+                  </div>
+                  <div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" name="notify-gallery-post" value="" className="sr-only peer"
+                        onChange={(e) => handleNotifyPostGalleryImage(e)} />
+                      <div className="w-[33px] h-[20px] bg-[#FFFFFF] border border-[#FFFFFF] peer-focus:outline-none peer-focus:ring-0 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-[#060C4D] after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-[#060C4D] after:border-[#060C4D] after:border after:rounded-full after:h-[14px] after:w-[14px] after:transition-all peer-checked:bg-green-500 peer-checked:border-none peer-checked:after:bg-[#FFFFFF] peer-checked:after:border-none"></div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
-
-      {isFollowed(state?._id) && (
-        <div className="mx-5">
-          <div className="text-[22px] font-bold text-left mt-8 mb-5">
-            Notifications
-          </div>
-          <div className="flex flex-row justify-between items-center social-border fav-follow">
-            <div className="text-[18px] opacity-70 font-semibold text-left mt-1 mb-[12px] sub-title-class">
-              Notify when post
-            </div>
-            <div className="switch-container mb-[12px]">
-              <input
-                type="checkbox"
-                id="yesCheckbox1"
-                checked={selectedNotifyPost}
-                onChange={handleNotifyPost}
-                className="hidden"
-                disabled={notifyPostLoading}
-              />
-              <label
-                htmlFor="yesCheckbox1"
-                className={`border-[#4CAF50] switch-button ${
-                  selectedNotifyPost ? "active" : "text-black"
-                }`}
-              >
-                Yes
-              </label>
-              <label
-                htmlFor="yesCheckbox1"
-                className={`border-[#4CAF50] switch-button ${
-                  !selectedNotifyPost ? "active" : "text-black"
-                }`}
-              >
-                No
-              </label>
-            </div>
-          </div>
-          <div className="flex flex-row justify-between items-center social-border fav-follow">
-            <div className="text-[18px] opacity-70 font-semibold text-left mt-1 mb-[12px] sub-title-class">
-              Notify when New TruRevu is posted
-            </div>
-            <div className="switch-container mb-[12px]">
-              <input
-                type="checkbox"
-                id="yesCheckbox2"
-                checked={selectedNotifyTrurevu}
-                onChange={handleNotifyTrurevu}
-                className="hidden"
-                disabled={notifyTrurevuLoading}
-              />
-              <label
-                htmlFor="yesCheckbox2"
-                className={`border-[#4CAF50] switch-button ${
-                  selectedNotifyTrurevu ? "active" : "text-black"
-                }`}
-              >
-                Yes
-              </label>
-              <label
-                htmlFor="yesCheckbox2"
-                className={`border-[#4CAF50] switch-button ${
-                  !selectedNotifyTrurevu ? "active" : "text-black"
-                }`}
-              >
-                No
-              </label>
-            </div>
-          </div>
-
-          <div className="flex flex-row justify-between items-center social-border">
-            <div className="text-[18px] opacity-70 font-semibold text-left mt-1 mb-[12px] sub-title-class">
-              Notify when new gallery image is posted
-            </div>
-            <div className="switch-container mb-[12px]">
-              <input
-                type="checkbox"
-                id="yesCheckbox3"
-                checked={selectedNotifyPostGalleryImage}
-                onChange={handleNotifyPostGalleryImage}
-                className="hidden"
-                disabled={notifyPostGalleryImageLoading}
-              />
-              <label
-                htmlFor="yesCheckbox3"
-                className={`border-[#4CAF50] switch-button ${
-                  selectedNotifyPostGalleryImage ? "active" : "text-black"
-                }`}
-              >
-                Yes
-              </label>
-              <label
-                htmlFor="yesCheckbox3"
-                className={`border-[#4CAF50] switch-button ${
-                  !selectedNotifyPostGalleryImage ? "active" : "text-black"
-                }`}
-              >
-                No
-              </label>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

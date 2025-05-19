@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +9,9 @@ import VaridateService from "../../services/VaridateServices";
 import { toast } from "react-toastify";
 import MyVairifyService from "../../services/MyVairifyService";
 import { HandleUpdateFollowers } from "../../redux/action/Auth";
-
+import { IoCloseCircleOutline } from "react-icons/io5";
+import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
 const Modal = ({ isOpen, onClose, appointment, UserDetails }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,50 +36,52 @@ const Modal = ({ isOpen, onClose, appointment, UserDetails }) => {
   };
   return (
     <>
+
       {isOpen ? (
-        <div className="fixed z-10 inset-0 overflow-y-auto rounded-2xl">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="fixed inset-0 overflow-y-auto rounded-2xl z-[10000000000000] flex items-center justify-center w-full">
+          <div
+            onClick={onClose}
+            className="fixed inset-0 bg-black opacity-30"
+          />
+          <div onClick={(e) => e.stopPropagation()} className="flex items-center justify-center sm:p-[24px] p-[16px] bg-[white] w-[90%] mx-auto max-w-[500px] rounded-2xl relative">
             {/* <div className="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
               </div> */}
 
             {/* <span className="hidden sm:inline-block sm:align-top sm:h-screen" aria-hidden="true">&#8203;</span> */}
 
-            <div className="bg-gradient-to-t w-full from-[#0247FF] to-[#316AFF] inline-block align-middle bg-[white] rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full">
-              <button onClick={onClose} className="absolute top-2 right-2">
-                <img
-                  src="/images/Mask group-close.png"
-                  alt=""
-                  width="30px"
-                  height="30px"
-                />
+            <div className="w-full">
+              <button onClick={onClose} className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+              >
+                <IoCloseCircleOutline size={26} />
               </button>
-              <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex items-start md:items-center justify-center">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 ">
-                    <h3 className="text-lg leading-6 font-medium text-white">
-                      Would you like to write <br />{" "}
-                      {appointment?.clientId?.name} a message
-                    </h3>
-                    <div className="mt-2">
-                      <textarea
-                        onChange={(e) => setMessage(e.target.value)}
-                        value={message}
-                        className="w-full rounded-2xl pl-3 pt-2"
-                        rows={4}
-                      />
-                    </div>
+              <div className="w-full">
+                <div className="text-center">
+                  <h3 className="text-[20px] text-center font-medium text-[#212B36]">
+                    Would you like to write <br />{" "}
+                    {appointment?.clientId?.name} a message
+                  </h3>
+                  <div className="mt-5 w-full">
+                    <textarea
+                      onChange={(e) => setMessage(e.target.value)}
+                      value={message}
+                      className="w-full text-[14px] text-black px-[12px] py-[6px] rounded-lg bg-transparent border-2"
+                      rows={4}
+                      placeholder="Comments"
+                    />
                   </div>
                 </div>
               </div>
-              <div className="px-4 py-3 mb-3 sm:px-6 sm:flex sm:flex-row-reverse justify-center flex">
+              <div className="w-full mt-[24px]">
                 <button
                   disabled={loading}
                   onClick={() => cancelAppointment(appointment._id)}
                   type="button"
-                  className="w-32 inline-flex justify-center rounded-full border border-transparent  bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 h-[32px] flex items-center"
+                  className="justify-center w-full rounded-lg border-none bg-[#E43530] py-[11px] px-[16px] text-base font-medium text-white hover:bg-[#060C4D] focus:outline-none focus:ring-0 flex items-center"
                 >
-                  {loading ? "Loading.." : "Deny"}
+                  {loading ? <div className="flex items-center	justify-center">
+                    <Loading />
+                  </div> : "Deny"}
                 </button>
               </div>
             </div>
@@ -92,6 +96,7 @@ export default function UpcomingBookingDetails() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [followLoading, setFollowLoading] = useState(false);
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
   const location = useLocation();
@@ -154,11 +159,16 @@ export default function UpcomingBookingDetails() {
     (data || []).reduce((total, item) => total + item.rating, 0) /
     ((data || []).length || 1);
 
-  const [followLoading, setFollowLoading] = useState(false);
+
+  useEffect(() => {
+    if (UserData?._id) {
+      dispatch(HandleUpdateFollowers(UserData?._id))
+    }
+  }, []);
 
   const isFollowed = useCallback(
     (id) => {
-      let result = UserData?.followers?.find((item) => item?.userId === id);
+      let result = UserData?.followers?.find((item) => item?.userId === id || item?._id === id);
       if (result) {
         return true;
       } else {
@@ -204,70 +214,60 @@ export default function UpcomingBookingDetails() {
     }
   };
 
+  const status =
+    appointment?.[
+    userType === "client-hobbyist" ? "clientStatus" : "companionStatus"
+    ];
+
+
   return (
-    <div className="main-container px-0">
-      <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="w-full mx-auto flex flex-row justify-between items-start mt-2 px-[15px]">
-          <div className="flex flex-col items-center justify-center">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold">
-                  RIFY ID
-                </span>
-              </span>
-            </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold uppercase">
-                {userType === "client-hobbyist"
-                  ? appointment?.["companionId"]?.vaiID
-                  : appointment?.["clientId"]?.vaiID}
-              </span>
-            </div>
+    <div className="container mb-[48px]">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle isSmall={true} title={"Booking Details"} />
+      </div>
+      <div className="w-full flex flex-row justify-around items-end mt-[102px] p-[16px] bg-[#FFFFFF0A] rounded-[16px]">
+        <div className="flex flex-col items-center justify-center sm:min-w-[120px] min-w-[80px]">
+          <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+            VAIRIFY ID
           </div>
-          <div className="w-[120px] relative">
+          <div className="font-bold text-lg text-white uppercase">
+            {userType === "client-hobbyist"
+              ? appointment?.["companionId"]?.vaiID
+              : appointment?.["clientId"]?.vaiID}
+          </div>
+        </div>
+        <div className=" relative sm:min-w-[120px] min-w-[80px]">
+          <div
+            className="h-[120px] w-[120px] rounded-full mt-[-74px] relative"
+          >
+            <img
+              src={
+                appointment?.[
+                  userType === "client-hobbyist"
+                    ? "companionId"
+                    : "clientId"
+                ]?.profilePic
+                  ?
+                  import.meta.env.VITE_APP_S3_IMAGE +
+                  `/${appointment?.[
+                    userType === "client-hobbyist"
+                      ? "companionId"
+                      : "clientId"
+                  ]?.profilePic
+                  }`
+                  : appointment?.[
+                    userType === "client-hobbyist"
+                      ? "companionId"
+                      : "clientId"
+                  ]?.gender === "Male"
+                    ? "/images/male.png"
+                    : "/images/female.png"
+              }
+              alt="Intimate Massage"
+              className="w-[120px] h-[120px] rounded-full object-cover border-[4px] border-white"
+            />
             <div
-              style={{ left: "10px", bottom: "65px" }}
-              className="absolute w-full h-full rounded-full"
-            >
-              <div className="w-[120px] h-[120px] rounded-full overflow-hidden">
-                <img
-                  src={
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.profilePic
-                      ?
-                      import.meta.env.VITE_APP_S3_IMAGE +
-                      `/${appointment?.[
-                        userType === "client-hobbyist"
-                          ? "companionId"
-                          : "clientId"
-                      ]?.profilePic
-                      }`
-                      //  import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                      // `/${appointment?.[
-                      //   userType === "client-hobbyist"
-                      //     ? "companionId"
-                      //     : "clientId"
-                      // ]?.profilePic
-                      // }`
-                      : appointment?.[
-                        userType === "client-hobbyist"
-                          ? "companionId"
-                          : "clientId"
-                      ]?.gender === "Male"
-                        ? "/images/male.png"
-                        : "/images/female.png"
-                  }
-                  // src={'/images/IntimateMassage.png'}
-                  alt="Intimate Massage"
-                />
-              </div>
-            </div>
-            <div
-              style={{ right: "0px", top: "25px" }}
+              style={{ right: "0px", bottom: "0px" }}
               className="absolute"
               onClick={() => {
                 followLoading ? null : handleFollow();
@@ -294,430 +294,183 @@ export default function UpcomingBookingDetails() {
               )}
             </div>
           </div>
-          <div>
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold">
-                TruRevu
-              </span>
+          <div className="flex-col flex justify-center items-center mt-[24px]">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              Name
             </div>
-            {/* TODO: make this dynamic when we implement trureview */}
-            <div className="flex flex-row justify-center items-center">
-              {console.log(
-                rate(
+            <span className="font-bold text-lg text-white">
+              {
+                appointment?.[
+                  userType === "client-hobbyist" ? "companionId" : "clientId"
+                ]?.name
+              }
+            </span>
+          </div>
+        </div>
+        <div className="leading-[18px] sm:min-w-[120px] min-w-[80px]">
+          <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+            TruRevu
+          </div>
+          <div className="flex justify-center items-center gap-1">
+            <div className="text-lg text-white font-bold ">
+              {rate(
+                appointment?.[
+                  userType === "client-hobbyist" ? "companionId" : "clientId"
+                ]?.reviews
+              ) === 0
+                ? rate(
                   appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
+                    userType === "client-hobbyist"
+                      ? "companionId"
+                      : "clientId"
                   ]?.reviews
                 )
-              )}
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  rate(
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.reviews
-                  ) >= 1
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  rate(
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.reviews
-                  ) >= 2
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  rate(
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.reviews
-                  ) >= 3
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  rate(
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.reviews
-                  ) >= 4
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  rate(
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.reviews
-                  ) >= 5
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5"
-              />
-              <span className="text-[15px] text-[#040C50] font-bold ">
-                {rate(
+                : rate(
                   appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
+                    userType === "client-hobbyist"
+                      ? "companionId"
+                      : "clientId"
                   ]?.reviews
-                ) === 0
-                  ? rate(
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.reviews
-                  )
-                  : rate(
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.reviews
-                  ).toFixed(1)}
-              </span>
+                ).toFixed(1)}
             </div>
+            <img src="/images/home/star.svg" alt="star" />
           </div>
         </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-2">
-          <span className="font-bold text-[24px] capitalize">
-            {
-              appointment?.[
-                userType === "client-hobbyist" ? "companionId" : "clientId"
-              ]?.name
-            }
-          </span>
-        </div>
+      </div>
 
-        <div className="w-full flex flex-col justify-center items-center mt-2 bg-[#797E9E] py-2 px-[30px]">
-          <span className="font-bold text-[26px] text-[#040C50]">
-            {
-              appointment?.[
-              userType === "client-hobbyist"
-                ? "clientStatus"
-                : "companionStatus"
-              ]
-            }{" "}
-            Requests
-          </span>
+      <div className="mt-[24px] flex justify-between items-center">
+        <div className="text-lg font-medium text-white">Upcoming Requests</div>
+        <div className={`font-bold text-sm py-[4px] px-[8px] rounded-[8px] ${status === "Scheduled"
+          ? "text-[#008F34] bg-[#008F3429]"
+          : status === "Rejected"
+            ? "text-[#E43530] bg-[#E4353029]"
+            : "text-white"
+          }`}>
+          {status}{" "}
+          Request
         </div>
-        <div className="inner-content-part-xlarge pb-10">
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-4 px-[30px]">
-            <div className="w-full mx-auto flex flex-row justify-center items-center">
-              <span className="font-extrabold text-[20px]">
-                Upcoming Booking Details
-              </span>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
+      </div>
+
+      <div className="bg-[#FFFFFF14] rounded-[16px] p-[16px] mt-[24px]">
+        <div className="flex justify-between items-center">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">Date/Time</div>
+          <p className="font-medium sm:text-base text-sm text-white"> {moment(appointment?.startDateTime).format("MM/DD/YY hh:mmA") || '-'}</p>
+        </div>
+        <div className="flex justify-between items-center mt-[8px]">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">Services</div>
+          <p className="font-medium sm:text-base text-sm text-white"> {appointment?.service?.servicesName || '-'}</p>
+        </div>
+        <div className="flex justify-between items-center mt-[8px]">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">Durations</div>
+          <p className="font-medium sm:text-base text-sm text-white">{(appointment?.duration || 0) / 60} hr(s)</p>
+        </div>
+        <div className="flex justify-between items-center mt-[8px]">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">Rate</div>
+          <p className="font-medium sm:text-base text-sm text-white"> ${appointment?.agreedPrice || 0}</p>
+        </div>
+        <div className="flex justify-between items-center mt-[8px]">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">Extra’s</div>
+          {console.log(moment().isAfter(
+            moment(appointment?.startDateTime).subtract(2, "hours")
+          ))}
+          <p className="font-medium sm:text-base text-sm text-white">  {appointment?.extras?.map((item) => `${item?.servicesName} - $${item?.amount}`).join(", ") || '-'}</p>
+        </div>
+        <div className="flex justify-between items-center mt-[8px]">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">VAI CHECK</div>
+          {moment().isAfter(
+            moment(appointment?.startDateTime).subtract(2, "hours")
+          ) && (
               <div>
-                <span className="font-bold text-[14px] text-[#0247FF]">
-                  Date/Time
-                </span>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${appointment?.location?.lat},${appointment?.location?.lng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium sm:text-base text-sm text-white"
+                >
+                  {appointment?.location?.address || '-'}
+                </a>
               </div>
-              <div>
-                <span className="font-normal text-[14px]">
-                  {moment(appointment?.startDateTime).format("MM/DD/YY hh:mmA")}
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-              <div className="flex flex-row justify-center items-center">
-                <div>
-                  <span className="font-bold text-[16px] text-[#0247FF] mr-2">
-                    Service
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold text-[14px]">
-                    {appointment?.service?.servicesName}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-row justify-center items-center">
-                <div>
-                  <span className="font-bold text-[16px] text-[#0247FF] mr-2">
-                    Duration
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold text-[14px]">
-                    {(appointment?.duration || 0) / 60} hr(s)
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-row justify-center items-center">
-                <div>
-                  <span className="font-bold text-[16px] text-[#0247FF] mr-2">
-                    Rate
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold text-[14px]">
-                    ${appointment?.agreedPrice || 0}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-              <div>
-                <span className="font-bold text-[14px] text-[#0247FF]">
-                  Extra's
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[14px]">
-                  {appointment?.extras
-                    ?.map((item) => `${item?.servicesName} - $${item?.amount}`)
-                    .join(", ")}
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-              <div>
-                <span className="font-bold text-[14px] text-[#0247FF]">
-                  {appointment?.type}
-                </span>
-              </div>
-              {moment().isAfter(
-                moment(appointment?.startDateTime).subtract(2, "hours")
-              ) && (
-                  <div>
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${appointment?.location?.lat},${appointment?.location?.lng}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <span className="font-bold text-[14px] text-[#ff0000] underline">
-                        {appointment?.location?.address}
-                      </span>
-                    </a>
-                  </div>
-                )}
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-          </div>
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-4 px-[30px]">
-            <div className="w-full mx-auto flex flex-row justify-center items-center">
-              <span className="font-extrabold text-[20px]">
-                {
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.name
-                }{" "}
-                Details
-              </span>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-              <div>
-                <span className="font-bold text-[16px] text-[#0247FF]">
-                  Gender
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[16px]">
-                  {
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.gender
-                  }
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-              <div>
-                <span className="font-extrabold text-[16px] text-[#0247FF] uppercase">
-                  VAI<span className="logoSetupweight">RIFY ID</span>
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[17px] text-[#0247FF]">
-                  {
-                    appointment?.[
-                      userType === "client-hobbyist"
-                        ? "companionId"
-                        : "clientId"
-                    ]?.vaiID
-                  }
-                </span>
-              </div>
-            </div>
-            {/* <div style={{border: '1px solid white'}} className='w-full mt-2'></div>
-                    <div className='w-full mx-auto flex flex-row justify-between items-center px-2 mt-4'>
-                        <div><span className='font-bold text-[16px] text-[#0247FF]'>VAIRIDATE #</span></div>
-                        <div><span className='font-bold text-[16px] text-[#0247FF]'>0046893490</span></div>
-                    </div> */}
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-              <div>
-                <span className="font-bold text-[16px]">
-                  Agreed Rate for this Appointment
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[16px]">
-                  ${appointment?.agreedPrice || 0}
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            {appointment?.rejectionMessage && (
-              <>
-                <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-                  <div className="flex flex-col text-start">
-                    <span className="font-bold text-[16px]">
-                      Rejection message
-                    </span>
-                    <span className="font-bold text-[14px]">
-                      {appointment?.rejectionMessage}
-                    </span>
-                  </div>
-                </div>
-                <div
-                  style={{ border: "1px solid white" }}
-                  className="w-full mt-2"
-                ></div>
-              </>
             )}
-            {appointment?.message && (
-              <>
-                <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-4">
-                  <div className="flex flex-col text-start">
-                    <span className="font-bold text-[16px]">Message</span>
-                    <span className="font-bold text-[14px]">
-                      {appointment?.message}
-                    </span>
-                  </div>
-                </div>
-                <div
-                  style={{ border: "1px solid white" }}
-                  className="w-full mt-2"
-                ></div>
-              </>
-            )}
-          </div>
+        </div>
+      </div>
+
+      <div className="text-lg font-medium text-white mt-[24px]">{
+        appointment?.[
+          userType === "client-hobbyist"
+            ? "companionId"
+            : "clientId"
+        ]?.name
+      }{" "}
+        Details</div>
+      <div className="bg-[#FFFFFF14] rounded-[16px] p-[16px] mt-[24px]">
+        <div className="flex justify-between items-center ">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">Gender</div>
+          <p className="font-medium sm:text-base text-sm text-white"> {appointment?.[userType === "client-hobbyist" ? "companionId" : "clientId"]?.gender}</p>
+        </div>
+        <div className="flex justify-between items-center mt-[8px]">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">VAIRIFY ID</div>
+          <p className="font-medium sm:text-base text-sm text-white">  {appointment?.[userType === "client-hobbyist" ? "companionId" : "clientId"]?.vaiID}</p>
+        </div>
+        <div className="flex justify-between items-center mt-[8px]">
+          <div className="text-white opacity-[0.6] sm:text-base text-sm font-normal">Remark</div>
+          <p className="font-medium sm:text-base text-sm text-white">  Agreed Rate for this Appointment</p>
+        </div>
+      </div>
+
+      <div className="w-full mx-auto flex flex-col justify-center items-center">
+
+        <div className="pb-[48px] w-full">
+
           {appointment?.from !== "vai-now" &&
             (userType !== "client-hobbyist" ? (
               appointment?.companionStatus !== "Signed" &&
                 appointment?.clientStatus === "Signed" ? (
-                <div className="w-full mx-auto flex flex-row justify-center items-center mt-14 px-[30px]">
-                  <div className="w-[104px] mr-2 mb-2">
-                    <Button
-                      onClick={() => navigateToesign()}
-                      text="Sign"
-                      className={
-                        "rounded-[20px] bg-[#13A307] border-2 border-[#02227E] font-extrabold text-[16px] text-[#02227E]"
-                      }
-                      size="33px"
-                    />
-                  </div>
+                <div className="w-full mx-auto flex justify-center items-center mt-[24px] ">
+                  <Button
+                    onClick={() => navigateToesign()}
+                    text="Sign"
+                    className={'py-[5px] max-w-[500px]'}
+                    size="40px"
+                  />
                 </div>
               ) : appointment?.companionStatus === "Scheduled" &&
                 appointment?.clientStatus === "Scheduled" ? null : (
                 appointment?.clientStatus !== "Cancel" && (
-                  <div className="w-full mx-auto flex flex-row justify-between items-center mt-14 px-[30px]">
-                    <div className="w-[104px] mr-2 mb-2">
-                      <Button
-                        onClick={() => navigateToesign()}
-                        text="Approve"
-                        className={
-                          "rounded-[20px] bg-[#13A307] border-2 border-[#02227E] font-extrabold text-[16px] text-[#02227E]"
-                        }
-                        size="33px"
-                      />
-                    </div>
-                    <div className="w-[104px] mr-2 mb-2">
-                      <Button
-                        onClick={() => navigateToModify()}
-                        text="Modify"
-                        className={
-                          "rounded-[20px] bg-[#FFC020] border-2 border-[#02227E] font-extrabold text-[16px] text-[#02227E]"
-                        }
-                        size="33px"
-                      />
-                    </div>
-                    <div className="w-[104px] mb-2">
-                      <Button
-                        text="Deny"
-                        onClick={handleOpenDenyModal}
-                        className={
-                          "rounded-[20px] bg-[#DB3002] border-2 border-[#02227E] font-extrabold text-[16px] text-[#02227E]"
-                        }
-                        size="33px"
-                      />
-                    </div>
+                  <div className="mx-auto flex flex-row justify-center items-center mt-[24px] w-full gap-[8px]">
+                    <Button
+                      onClick={() => navigateToesign()}
+                      text="Approve"
+                      className={
+                        " w-full"
+                      }
+                    />
+                    <Button
+                      onClick={() => navigateToModify()}
+                      text="Modify"
+                      className={
+                        "secondary-btn  !bg-[#FFFFFF29] w-full"
+                      }
+                    />
+                    <Button
+                      text="Deny"
+                      onClick={handleOpenDenyModal}
+                      className={
+                        "secondary-btn  !bg-[#E43530] w-full"
+                      }
+                    />
                   </div>
                 )
               )
             ) : (
               (appointment?.companionStatus === "Signed" ||
                 appointment?.companionStatus === "Modified") && (
-                <div className="w-full mx-auto flex flex-row justify-center items-center mt-14 px-[30px]">
-                  <div className="w-[104px] mr-2 mb-2">
-                    <Button
-                      onClick={() => navigateToesign()}
-                      text="E-sign"
-                      className={
-                        "rounded-[20px] bg-[#13A307] border-2 border-[#02227E] font-extrabold text-[16px] text-[#02227E]"
-                      }
-                      size="33px"
-                    />
-                  </div>
+                <div className="w-full mx-auto flex flex-row justify-center items-center mt-[24px] ">
+                  <Button
+                    onClick={() => navigateToesign()}
+                    text="E-sign"
+                    className={'py-[5px] max-w-[500px]'}
+                    size="40px"
+                  />
                 </div>
               )
             ))}
@@ -727,24 +480,30 @@ export default function UpcomingBookingDetails() {
               appointment?.cancellationRequestedBy !== userType) ||
               !appointment?.cancellationRequested) &&
             (appointment?.cancellationRequested ? (
-              <button
+              <Button
                 disabled={loading}
                 onClick={() => approveCancelAppointment(appointment._id)}
-                className="mt-2 w-[90%] ms-6 font-roboto font-bold text-[16px]  px-2 py-[3px]  rounded-[10px]  text-white bg-[#E04A22] "
-              >
-                {loading ? "Loading.." : "Approve Cancellation"}
-              </button>
+                className={'py-[5px] max-w-[500px] mt-[24px]'}
+                size="40px"
+                text={loading ? <div className="flex items-center	justify-center">
+                  <Loading />
+                </div> : "Approve Cancellation"}
+              />
             ) : moment(appointment?.startDateTime).isBefore(moment()) ? (
               <></>
             ) : (
               appointment.type !== "vairify-now" && (
-                <button
+                <div className="flex justify-center ">
+                   
+                <Button
                   disabled={loading}
                   onClick={() => cancelAppointment(appointment._id)}
-                  className="mt-2 w-[90%] ms-6 font-roboto font-bold text-[16px]  px-2 py-[3px]  rounded-[10px]  text-white bg-[#E04A22] "
-                >
-                  {loading ? "Loading..." : "Request Cancellation"}
-                </button>
+                  className={' max-w-[500px] mt-[24px] !mx-auto !bg-red-500 secondary-btn hover:!bg-red-600'}
+                  text={loading ? <div className="flex items-center	justify-center">
+                    <Loading />
+                  </div> : "Request Cancellation"}
+                />
+              </div>
               )
             ))}
         </div>

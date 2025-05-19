@@ -61,7 +61,7 @@ export default function ProfileB({ toggleStatus, setToggle }) {
 
   const navigateDateGuard = (e) => {
     e.preventDefault();
-    navigate("/dateguard/select-appointment");
+    navigate("/dateguard-setup");
   };
 
   const navigateNotification = (e) => {
@@ -79,20 +79,13 @@ export default function ProfileB({ toggleStatus, setToggle }) {
 
   return (
     <div
-      className={`usergreytextdisabled sidebar-part text-white flex flex-col justify-start items-center px-5 pb-10 overflow-auto w-[170px] h-[100vh] fixed top-0 custom-left-minus-100 bg-gradient-to-b from-[#01195C] to-[#073FE1]  ${toggleStatus == true ? "custom-left-0" : ""
+      className={`usergreytextdisabled sidebar-part text-white flex flex-col justify-start items-center px-[16px] py-7 overflow-auto w-[269px] h-full fixed top-0 custom-left-minus-100 bg-[#060C4D]  ${toggleStatus == true ? "custom-left-0" : ""
         }`}
     >
-      <div className="flex flex-col items-center justify-center w-full pt-5 mx-auto">
-        <div className="font-roboto">
-          <span className="text-[16px] font-bold text-white font-roboto">
-            Profile
-          </span>
-        </div>
-      </div>
-      <div className="flex flex-col items-center justify-center w-full mx-auto mt-2">
+      <div className="flex items-center w-full gap-[10px]">
         {UserDetails?.profilePic ? (
           <img
-            className="w-[108px] h-[108px] bg-[#fff] rounded-full border-2 overflow-hidden"
+            className="w-[72px] h-[72px] object-cover bg-[#fff] rounded-full overflow-hidden"
             src={`${import.meta.env.VITE_APP_S3_IMAGE}/${UserDetails?.profilePic
               }`}
             // src={`${import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL}/${
@@ -104,31 +97,26 @@ export default function ProfileB({ toggleStatus, setToggle }) {
           <img
             height={100}
             width={100}
-            className="w-[108px] h-[108px] bg-[#fff] rounded-full border-2 overflow-hidden"
+            className="w-[72px] h-[72px] object-cover bg-[#fff] rounded-full overflow-hidden"
             // src={profilepic}
             src={
               UserDetails?.item?.userId?.gender === "Male"
-                ? "/images/female.png"
-                : "/images/male.png"
+                ? "/images/male.png"
+                : "/images/female.png"
             }
             alt="Profile Sugar 2"
           />
         )}
-      </div>
-
-      <div className="flex flex-col items-center justify-center w-full mx-auto mt-4">
-        <div
-          style={{ border: "1px solid white" }}
-          className="w-[65px] border-white"
-        ></div>
         <div>
-          <span className="text-white font-bold text-[18px] capitalize">
+          <span className="text-white font-semibold text-[20px]">
             {UserDetails?.name}
           </span>
         </div>
       </div>
-      <div className="flex flex-col items-start justify-center w-full mx-auto mt-7">
-        <button
+
+
+      <div className="flex flex-col items-start justify-center w-full mx-auto mt-[10px] h-[100%]">
+        {/* <button
           className=""
           onClick={() => {
             navigate("/featured");
@@ -141,7 +129,7 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             </div>
             <div className="sidebar-link-text">Home</div>
           </div>
-        </button>
+        </button> */}
         <button
           className="mt-6"
           onClick={() => {
@@ -149,12 +137,12 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             CloseSideBar();
           }}
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div className="sidebar-icon">
-              <img className="" src={"/images/barClock.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div>
+              <img className="" src={"/images/home/sidebar-icon1.svg"} />
             </div>
             <div className="sidebar-link-text red sidebar-link-inner-text">
-              <span className="font-extrabold">VAI</span>RIFY-NOW
+              <span className="text-[14px] font-normal text-white">VAI</span>RIFY-NOW
             </div>
           </div>
         </button>
@@ -165,17 +153,17 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             CloseSideBar();
           }}
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div className="sidebar-icon">
-              <img className="" src={"/images/barCheck.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div>
+              <img className="" src={"/images/home/sidebar-icon2.svg"} />
             </div>
-            <div className="sidebar-link-text red">
-              VAI<span className="sidebar-link-inner-text">-CHECK</span>
+            <div className="text-[14px] font-normal text-white">
+              VAI-CHECK
             </div>
           </div>
         </button>
 
-        <button
+        {/* <button
           onClick={(e) => {
             navigateMarketplace(e);
             CloseSideBar();
@@ -189,7 +177,7 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             </div>
             <div className="sidebar-link-text">Market Place</div>
           </div>
-        </button>
+        </button> */}
 
         <button
           onClick={(e) => {
@@ -199,15 +187,15 @@ export default function ProfileB({ toggleStatus, setToggle }) {
           className="mt-6"
           disabled={!UserDetails?.marketPlaceActivity}
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div className="sidebar-icon">
-              <img className="" src={"/images/sidebarMarket.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div>
+              <img className="" src={"/images/home/sidebar-icon3.svg"} />
             </div>
-            <div className="sidebar-link-text">Marketplace Post</div>
+            <div className="text-[14px] font-normal text-white">Marketplace Post</div>
           </div>
         </button>
 
-        <button
+        {/* <button
           onClick={(e) => {
             naviageLogs(e);
             CloseSideBar();
@@ -221,7 +209,7 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             </div>
             <div className="sidebar-link-text">Chat</div>
           </div>
-        </button>
+        </button> */}
 
         <button
           onClick={(e) => {
@@ -231,16 +219,16 @@ export default function ProfileB({ toggleStatus, setToggle }) {
           className="mt-6"
           disabled={!UserDetails?.varipayActivity}
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div onClick={(e) => handleClick(e)} className="sidebar-icon">
-              <img className="relative" src={"/images/ProfileVairipay.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div onClick={(e) => handleClick(e)}>
+              <img className="relative" src={"/images/home/sidebar-icon4.svg"} />
             </div>
-            <div className="sidebar-link-text">
-              VAI<span className="sidebar-link-inner-text">RIPAY</span>
+            <div className="text-[14px] font-normal text-white">
+              VAIRIPAY
             </div>
           </div>
         </button>
-
+        {/* 
         <button className="mt-6" disabled={!UserDetails?.varipayActivity}>
           <div className="flex flex-row items-center justify-start w-full">
             <div className="sidebar-icon">
@@ -248,7 +236,7 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             </div>
             <div className="sidebar-link-text">My Revenue</div>
           </div>
-        </button>
+        </button> */}
 
         <button
           onClick={(e) => {
@@ -257,12 +245,12 @@ export default function ProfileB({ toggleStatus, setToggle }) {
           }}
           className="mt-6"
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div onClick={(e) => handleClick(e)} className="sidebar-icon">
-              <img className="" src={"/images/ProfileMyVairipay.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div onClick={(e) => handleClick(e)}>
+              <img className="" src={"/images/home/sidebar-icon5.svg"} />
             </div>
-            <div className="sidebar-link-text">
-              My VAI<span className="sidebar-link-inner-text">RIFY</span>
+            <div className="text-[14px] font-normal text-white">
+              My VAIRIFY
             </div>
           </div>
         </button>
@@ -284,11 +272,11 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             CloseSideBar();
           }}
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div className="sidebar-icon">
-              <img className="" src={"/images/VectorCalendar.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div>
+              <img className="" src={"/images/home/sidebar-icon6.svg"} />
             </div>
-            <div className="sidebar-link-text">Calendar</div>
+            <div className="text-[14px] font-normal text-white">Calendar</div>
           </div>
         </button>
 
@@ -299,11 +287,11 @@ export default function ProfileB({ toggleStatus, setToggle }) {
           }}
           className="mt-6"
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div className="sidebar-icon">
-              <img className="" src={"/images/ProfileDateGuard.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div>
+              <img className="" src={"/images/home/sidebar-icon7.svg"} />
             </div>
-            <div className="sidebar-link-text">Date Guard</div>
+            <div className="text-[14px] font-normal text-white">Date Guard</div>
           </div>
         </button>
         {/* <button className='mt-8'><div className='flex flex-row items-center justify-start w-full'><div><img className='' src={'/images/VectorRevenue.png'} /></div><div><span className='sidebar-link-text'>My Revenue</span></div></div></button> */}
@@ -315,11 +303,11 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             CloseSideBar();
           }}
         >
-          <div className="flex flex-row items-center justify-start w-full">
-            <div className="sidebar-icon">
-              <img className="" src={"/images/VectorSettings.png"} />
+          <div className="flex flex-row items-center justify-start w-full gap-[10px]">
+            <div>
+              <img className="" src={"/images/home/sidebar-icon8.svg"} />
             </div>
-            <div className="sidebar-link-text">Settings</div>
+            <div className="text-[14px] font-normal text-white">Settings</div>
           </div>
         </button>
         {/* <button className="mt-6">
@@ -331,13 +319,8 @@ export default function ProfileB({ toggleStatus, setToggle }) {
             </div>
           </div>
         </button> */}
-        <button className="mt-6" onClick={HandleLogOut}>
-          <div className="flex flex-row items-center justify-start w-full">
-            <div className="sidebar-icon">
-              <img className="" width={18} src={"/images/logout.png"} />
-            </div>
-            <div className="sidebar-link-text">LogOut</div>
-          </div>
+        <button className="mt-auto flex items-center gap-[8px] px-[16px] py-[8px] bg-[#E43530] w-full rounded-[8px] text-[14px] text-white font-normal" onClick={HandleLogOut}>
+          <img className="w-[16px] h-[16px]" src={"/images/logout.png"} alt="icon" />LogOut
         </button>
       </div>
     </div>

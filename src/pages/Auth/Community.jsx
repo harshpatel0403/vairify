@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { useState } from "react";
+import BackButton from "../../components/BackButton/backArrowButton";
 
 const Catagory = [
   "Escort",
@@ -181,23 +182,105 @@ export default function Community() {
     navigate("/business/tellus", { state: body });
   };
   return (
-    <div>
-      <div className="main-container justify-center">
-        <div className="form-field-container w-full">
-          <div className="relative top-6">
-            <span className="font-bold text-[27px] font-robotot-700">
-              Help our community find you
-            </span>
+    <div className="signup-backgound-design">
+      <div className="signup-container container">
+        <div className="signup-content relative">
+          <div className="backnavigation"><BackButton /></div>
+          <div className="logo-img-container">
+            <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+            <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
           </div>
-          <div className="relative mt-12">
-            <span
-              style={{ fontFamily: "Roboto Serif" }}
-              className="font-bold font-robotot-700 max-w-xl text-[27px] text-center"
-            >
-              Tell us about your <br /> Business
-            </span>
+          <div className="mt-[64px]">
+            <h3 className="sm:text-[28px] text-[24px] font-semibold text-white">Help our community find you</h3>
+            <p className="sm:text-[18px] text-[14px] font-normal text-white opacity-70 mt-[10px]">Tell us about your business</p>
+            <div className="flex items-center sm:flex-nowrap flex-wrap gap-[20px] w-[100%] mt-[24px]">
+              <div className="w-full">
+
+                <div className="w-full relative select-arrow">
+                  <select
+                    className="appearance-none px-[14px] text-[14px] h-[50px] focus-visible:border-2 focus-visible:border-[#0247ff] border-[2px] border-[#919EAB33] rounded-[8px] bg-transparent  text-white w-full font-normal focus:outline-none"
+                    name="build"
+                    onChange={(event) => HandelCatagory(event.target.value)}
+                  >
+                    <option selected disabled className=" text-black">
+                      Select a Catagory
+                    </option>
+                    {Catagory?.map((option) => (
+                      <option key={option} value={option} className=" text-black">
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+
+                </div>
+                {error.selectedCatagory && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.selectedCatagory}
+                  </label>
+                )}
+              </div>
+              <div className="w-full">
+                <div className="w-full relative select-arrow">
+                  <select
+                    className="appearance-none px-[14px] text-[14px] h-[50px] focus-visible:border-2 focus-visible:border-[#0247ff] border-[2px] border-[#919EAB33] rounded-[8px]  bg-transparent text-white w-full font-normal focus:outline-none"
+                    name="build"
+                    onChange={(e) => {
+                      HandleSpecialtyOption(e.target.value);
+                      setSelectedType(e.target.value);
+                    }}
+                  >
+                    <option selected disabled className=" text-black">
+                      Select a Type
+                    </option>
+                    {type?.map((option) => (
+                      <option key={option} value={option} className=" text-black">
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+
+                </div>
+                {error.selectedType && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.selectedType}
+                  </label>
+                )}
+              </div>
+            </div>
+            <div className="w-full">
+              <div className="w-full mt-[20px] relative select-arrow">
+                <select className="appearance-none px-[14px] text-[14px] h-[50px] focus-visible:border-2 focus-visible:border-[#0247ff] border-[2px] border-[#919EAB33] rounded-[8px] bg-transparent  text-white w-full font-normal focus:outline-none"
+                  name="build" onChange={(e) => setSelectedSpecialtyOption(e.target.value)}>
+                  <option selected disabled className=" text-black">
+                    Select a Specialty
+                  </option>
+                  {specialtyOption?.map((option) => (
+                    <option key={option} value={option} className=" text-black">
+                      {option}
+                    </option>
+                  ))}
+                </select>
+          
+              </div>
+              {error.selectedSpecialtyOption && (
+                <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                  {error.selectedSpecialtyOption}
+                </label>
+              )}
+            </div>
+            <div className="mt-[24px] w-full flex items-center justify-center">
+              <Button
+                className={
+                  "max-w-[500px]"
+                }
+                text={"Register"}
+                onClick={HandleButton}
+              />
+            </div>
           </div>
-        </div>
+
+          {/* <div className="main-container justify-center">
+
 
         <div className="form-field-container w-full">
           <div className=" mt-8 relative rounded-3xl flex justify-center items-center w-full h-[52px]">
@@ -300,6 +383,8 @@ export default function Community() {
               onClick={HandleButton}
             />
           </div>
+        </div>
+      </div> */}
         </div>
       </div>
     </div>

@@ -6,9 +6,12 @@ import { useDispatch } from "react-redux";
 import { VerifyOTP } from "../../../redux/action/Auth";
 import { toast } from "react-toastify";
 import Loading from "../../../components/Loading/Index";
+import BackButton from "../../../components/BackButton/backArrowButton";
+import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordotpPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false); // State to track loading
 
   const { state: UserEmail } = useLocation();
@@ -36,7 +39,7 @@ export default function ResetPasswordotpPage() {
     dispatch(VerifyOTP(body))
       .then((result) => {
         if (result?.payload?.status === 200) {
-          toast("OTP verify successfully", {
+          toast(t("resetPasswordOtp.otpSuccess"), {
             hideProgressBar: true,
             autoClose: 1000,
             type: "success",
@@ -60,7 +63,79 @@ export default function ResetPasswordotpPage() {
       });
   };
   return (
-    <div className="main-container flex flex-col justify-center form-field-container">
+
+    <div className="signup-backgound-design">
+      <div className="signup-container container">
+        <div className="signup-content relative">
+          <div className="backnavigation"><BackButton /></div>
+          <div className="logo-img-container">
+            <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+            <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
+          </div>
+
+
+          <div className="main-container grid grid-cols-12 w-[100%] form-field-container mt-[64px]">
+            <div className="lg:col-span-5 col-span-12">
+              <div className="lg:block flex justify-center items-center">
+                <img src={"/images/signup/otp-img.svg"} alt="otp Image" />
+              </div>
+            </div>
+            <div className=" lg:col-span-7 col-span-12">
+              <h4 className='sm:text-[28px] text-[24px] font-semibold text-white'>{t("resetPasswordOtp.title")}</h4>
+              <h5 className='text-[18px] font-normal text-white opacity-80'>{t("resetPasswordOtp.subtitle")}</h5>
+              <h5 className='text-[18px] font-normal text-white my-[24px]'>{t("resetPasswordOtp.otpSentMsg")}</h5>
+              <div>
+                <InputText
+                   placeholder={t("resetPasswordOtp.enterOtpPlaceholder")}
+                  className="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] max-w-[500px] rounded-[8px]"
+                  onChange={(e) => setOtp(e.target.value)}
+                  border={error.otp && `#ef4444`}
+                />
+                {error.otp && (
+                  <level className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[2px]">
+                    {error.otp}
+                  </level>
+                )}
+              </div>
+              <div className="flex w-full h-fit justify-center mt-[24px] max-w-[500px]">
+                <Button
+                disabled={isLoading}
+                  text={
+                    !isLoading ? (
+                      t("resetPasswordOtp.submitButton")
+                    ) : (
+                      <div className="flex items-center	justify-center">
+                        <Loading />
+                      </div>
+                    )
+                  }
+                  onClick={() => handleOTP()}
+                />
+              </div>
+              <div className="mt-3">
+                <a className="text-[14px] font-normal text-white" href="#">
+                  {t("resetPasswordOtp.resendLink")}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+  );
+}
+
+
+{/* <div className="main-container flex flex-col justify-center form-field-container">
+
       <div className="relative flex flex-col justify-start items-center">
         <div className="relative top-6">
           <img src={"/images/VectorLogo1.png"} alt="Vector Logo 1" />
@@ -113,6 +188,4 @@ export default function ResetPasswordotpPage() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    </div> */}

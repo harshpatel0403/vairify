@@ -14,7 +14,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { addMonths } from "date-fns";
 import moment from "moment-timezone";
-
+import { CaretDown } from "phosphor-react";
 const locales = {
   "en-US": enUSLocale,
 };
@@ -140,7 +140,7 @@ export default function MyCalendar() {
       to: toUtc,
     };
     const locData = UserDetails.savedLocations.find(
-      (item) => item._id === selectedLocation
+      (item) => (item.country === selectedLocation) || (item?._id === selectedLocation)
     );
     newData.location = locData.country;
     newData.city = locData.city;
@@ -210,41 +210,44 @@ export default function MyCalendar() {
   };
 
   return (
-    <div className="main-container celender px-0 p-4 bg-[#D5D6E0] ">
-      <DatePicker
-        selected={startDate}
-        onChange={onChange}
-        minDate={new Date()}
-        maxDate={addMonths(new Date(), 5)}
-        startDate={startDate}
-        endDate={endDate}
-        selectsRange
-        inline
-        showDisabledMonthNavigation
-      />
+    <div className="container">
+      <div className="max-w-[400px] mx-auto sm:my-[48px] my-[24px]">
+        <div className="post-section">
+          <h4 className="font-medium text-[18px] text-white mb-1 text-center">Select Date</h4>
+          <div className="mt-[24px]">
+            <DatePicker
+              selected={startDate}
+              onChange={onChange}
+              minDate={new Date()}
+              maxDate={addMonths(new Date(), 5)}
+              startDate={startDate}
+              endDate={endDate}
+              selectsRange
+              inline
+              showDisabledMonthNavigation
+            />
+          </div>
 
-      <div className="flex items-center justify-center">
-        <button className="bg-[#01195C] px-8 py-2 mr-4 text-white rounded-[30px]">
-          Done
-        </button>
-        <button
-          className="bg-[#01195C] px-8 py-2 text-white rounded-[30px]"
-          onClick={() => {
-            setEndDate(new Date());
-            setStartDate(new Date());
-          }}
-        >
-          Reset
-        </button>
-      </div>
-
-      <hr className="border-[3px] border-[#000] my-4" />
-      <div className="form-field-container">
-        <div className="flex flex-col items-start justify-start px-4">
-          <div className="text-black text-[16px] font-extrabold">Time :</div>
-          <div className="flex gap-2 justify-between items-center w-full">
-            <div className="flex flex-row justify-center items-center w-full">
-              {/* <SelectBox_
+          <div className="flex items-center justify-between gap-2 mt-[10px]">
+            <button className="bg-[#FFFFFF] rounded-[8px] py-[7px] px-[20px] w-full max-w-[144px] text-[14px] font-medium text-[#060C4D] hover:scale-[0.97] transition-all duration-200">
+              Done
+            </button>
+            <button
+              className="bg-[#FFFFFF29] rounded-[8px] py-[7px] px-[20px] w-full max-w-[144px] text-[14px] font-medium text-white hover:scale-[0.97] transition-all duration-200"
+              onClick={() => {
+                setEndDate(new Date());
+                setStartDate(new Date());
+              }}
+            >
+              Reset
+            </button>
+          </div>
+          <div className="mt-[24px]">
+            <div className="flex flex-col items-start justify-start">
+              <div className="text-white text-[18px] font-medium mb-1">Select Timing</div>
+              <div className="flex gap-2 sm:justify-between sm:flex-nowrap flex-wrap items-center w-full">
+                <div className="flex gap-2 justify-center items-center">
+                  {/* <SelectBox_
               onChange={(e) => {
                 setFromTime(e.target.value);
               }}
@@ -254,27 +257,20 @@ export default function MyCalendar() {
               }
               value={fromTime}
             /> */}
-              <div className="relative w-[85px] bg-[#02227E] rounded-xl">
-                <SelectBox_
-                  onChange={(e) => {
-                    setFromTime(e.target.value);
-                  }}
-                  options={times}
-                  value={fromTime}
-                  className={
-                    "rounded-r-none bg-inherit pl-2 appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[36px]"
-                  }
-                />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
-              {/* <SelectBox_
+                  <div className="relative w-[85px]">
+                    <SelectBox_
+                      onChange={(e) => {
+                        setFromTime(e.target.value);
+                      }}
+                      options={times}
+                      value={fromTime}
+                      className={
+                        "bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
+                      }
+                    />
+                    <div className="absolute z-[-1] top-[10px] right-2 text-white"><CaretDown size={16} /></div>
+                  </div>
+                  {/* <SelectBox_
               onChange={(e) => setFromZone(e.target.value)}
               options={zones}
               className={
@@ -282,28 +278,20 @@ export default function MyCalendar() {
               }
               value={fromZone}
             /> */}
-              <div className="relative w-1/2 bg-[#02227E] rounded-xl">
-                <SelectBox_
-                  onChange={(e) => setFromZone(e.target.value)}
-                  options={zones}
-                  className={
-                    "rounded-l-none bg-inherit pl-2 appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[36px]"
-                  }
-                  value={fromZone}
-                />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
+                  <div className="relative rounded-xl w-[60px]">
+                    <SelectBox_
+                      onChange={(e) => setFromZone(e.target.value)}
+                      options={zones}
+                      className={
+                        "bg-transparent appearance-none cursor-pointer pl-2 rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2  w-full border border-[#919EAB33] focus:border-[#ffffff] "
+                      }
+                      value={fromZone}
+                    />
+                    <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <span className="text-[14.4px] font-bold">To</span>
-            <div className="flex flex-row justify-center items-center w-full">
-              {/* <SelectBox_
+                <div className="flex gap-2 justify-center items-center">
+                  {/* <SelectBox_
               onChange={(e) => {
                 setToTime(e.target.value);
               }}
@@ -313,27 +301,20 @@ export default function MyCalendar() {
               }
               value={toTime}
             /> */}
-              <div className="relative w-[85px] bg-[#02227E] rounded-xl">
-                <SelectBox_
-                  onChange={(e) => {
-                    setToTime(e.target.value);
-                  }}
-                  options={times}
-                  value={toTime}
-                  className={
-                    "rounded-r-none bg-inherit pl-2 appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[36px]"
-                  }
-                />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
-              {/* <SelectBox_
+                  <div className="relative w-[85px] rounded-xl">
+                    <SelectBox_
+                      onChange={(e) => {
+                        setToTime(e.target.value);
+                      }}
+                      options={times}
+                      value={toTime}
+                      className={
+                        "bg-transparent appearance-none cursor-pointer pl-2 rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2  w-full border border-[#919EAB33] focus:border-[#ffffff] "
+                      }
+                    />
+                    <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+                  </div>
+                  {/* <SelectBox_
               onChange={(e) => setToZone(e.target.value)}
               options={zones}
               className={
@@ -341,217 +322,172 @@ export default function MyCalendar() {
               }
               value={toZone}
             /> */}
-              <div className="relative w-1/2 bg-[#02227E] rounded-xl">
-                <SelectBox_
-                  onChange={(e) => setToZone(e.target.value)}
-                  options={zones}
-                  className={
-                    "rounded-l-none bg-inherit pl-2 appearance-none rounded-xl bg-[#02227E] text-[18px] text-[#fff] font-bold px-0 max-[350px]:pl-2 sm:2l-4 py-1 w-full border-2 border-[#CFCFCF] focus:border-[#000] h-[36px]"
-                  }
-                  value={toZone}
-                />
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
+                  <div className="relative rounded-xl w-[60px]">
+                    <SelectBox_
+                      onChange={(e) => setToZone(e.target.value)}
+                      options={zones}
+                      className={
+                        "bg-transparent appearance-none cursor-pointer pl-2 rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2  w-full border border-[#919EAB33] focus:border-[#ffffff] "
+                      }
+                      value={toZone}
+                    />
+                    <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="flex flex-col items-start justify-start px-4">
-          <div className="text-black text-[16px] font-extrabold">Location:</div>
-          <div className="flex gap-5 justify-between items-center w-full">
-            <div className="flex relative flex-row items-center">
-              <select
-                className="appearance-none pl-2 pr-8 pb-1.5 bg-[#02227E] rounded-xl text-[20px] text-[#fff] font-bold font-inter h-[35px]"
-                name="location"
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                value={selectedLocation}
-              >
-                <option value={CurrentLocation?.country_name}>
-                  Current Location ({CurrentLocation?.country_name})
-                </option>
-                {(UserDetails.savedLocations || []).map((item) => {
-                  return (
-                    <option key={item._id} value={item._id}>
-                      {item.country} {item.city}
-                    </option>
-                  );
-                })}
-              </select>
-              <div className="absolute top-2 right-2">
-                <svg
-                  className={`w-6 h-6 fill-current text-white`}
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                </svg>
-              </div>
-            </div>
-
-            <div className="flex flex-row justify-center items-center w-fit">
+            <div className="mt-[24px] flex items-center justify-between">
+              <div className="text-white text-[18px] font-medium mb-1">Location</div>
               <Button
-                className={
-                  " flex items-center px-[10px] py-2 my-2 justify-center rounded-xl bg-gradient-to-b from-[#02227E] to-[#02227E] text-[#fff] font-bold text-[20px] w-[70.2px]"
-                }
-                text={"Add"}
-                size="35px"
+                text={"+ Add"}
+                className={'max-w-[60px] !p-0'}
                 onClick={() => setAddSearchLocation(!addSearchLocation)}
               />
             </div>
-          </div>
-          {error.selectedLocation && (
-            <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[1px] pb-[2px]">
-              {error.selectedLocation}
-            </label>
-          )}
-        </div>
-        {addSearchLocation && (
-          <div className="flex px-4 flex-col items-start w-full max-w-[420px] mt-6 mb-1">
-            <p className="text-[18px] text-[#000] text-start font-bold font-inter">
-              Search
-            </p>
-            <div className="flex items-center justify-center w-full gap-4 sm:gap-5">
-              <div className="relative w-full">
+
+            <div>
+              <div className="relative mt-2">
                 <select
-                  className="w-full rounded-xl bg-[#02227E] appearance-none px-2 pr-5 py-1.5 bg-gradient-to-b from-[#02227E] to-[#02227E] text-[#fff] font-bold font-inter shadow-[0px_3px_20px_rgba(0,0,0,0.5)]"
+                  className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
                   name="location"
-                  onChange={(e) => {
-                    setAddLocation(e.target.value);
-                  }}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                  value={UserDetails?.savedLocations?.find(item => item?.country === selectedLocation)?._id}
                 >
-                  <option selected disabled>
-                    Country
+                  <option value={CurrentLocation?.country_name} className="text-black">
+                    Current Location ({CurrentLocation?.country_name})
                   </option>
-                  {Location.map((item) => {
-                    return <option value={item}>{item}</option>;
-                  })}
-                </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="relative w-full">
-                <select
-                  className="w-full rounded-xl bg-[#02227E] appearance-none px-2 pr-5 py-1.5 bg-gradient-to-b from-[#02227E] to-[#02227E] text-[#fff] font-bold font-inter shadow-[0px_3px_20px_rgba(0,0,0,0.5)]"
-                  name="city"
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  value={selectedCity}
-                >
-                  <option selected={!selectedCity}>City</option>
-                  {City.map((item) => {
+                  {(UserDetails.savedLocations || []).map((item) => {
                     return (
-                      <option
-                        selected={item.name === selectedCity}
-                        value={item.name}
-                      >
-                        {item.name}
+                      <option key={item._id} value={item._id} className="text-black">
+                        {item.country} {item.city}
                       </option>
                     );
                   })}
                 </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
               </div>
+              {error.selectedLocation && (
+                <label className="text-red-500 text-lg flex items-baseline pl-[12px] mt-2 pb-[2px]">
+                  {error.selectedLocation}
+                </label>
+              )}
             </div>
-            <div className="w-full flex justify-center items-center">
-              <div className="flex justify-center items-center">
+            {addSearchLocation && (
+              <div className="flex flex-col items-start w-full mt-6 mb-1">
+                <p className="text-[18px] text-white text-start font-medium">
+                  Search
+                </p>
+                <div className="flex items-center justify-center w-full gap-4 sm:gap-5">
+                  <div className="relative w-full">
+                    <select
+                      className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff]"
+                      name="location"
+                      onChange={(e) => {
+                        setAddLocation(e.target.value);
+                      }}
+                    >
+                      <option selected disabled className="text-black">
+                        Country
+                      </option>
+                      {Location.map((item) => {
+                        return <option value={item} className="text-black">{item}</option>;
+                      })}
+                    </select>
+                    <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+                  </div>
+                  <div className="relative w-full">
+                    <select
+                      className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff]"
+                      name="city"
+                      onChange={(e) => setSelectedCity(e.target.value)}
+                      value={selectedCity}
+                    >
+                      <option selected={!selectedCity} className="text-black">City</option>
+                      {City.map((item) => {
+                        return (
+                          <option
+                            selected={item.name === selectedCity}
+                            value={item.name}
+                            className="text-black"
+                          >
+                            {item.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+                  </div>
+                </div>
                 <Button
-                  className={
-                    "flex items-center pr-4 pl-4 mt-4 py-2 my-2 justify-center bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#02227E] text-[#fff] font-bold text-[24px] py-2 rounded-xl shadow-[0px_9px_20px_rgba(0,0,0,0.5)]"
-                  }
+                  className={'my-[24px]'}
                   text={"Save location "}
-                  size="40px"
                   onClick={() => {
                     HandleLocation();
                     setAddSearchLocation(!addSearchLocation);
                   }}
                 />
               </div>
-            </div>
-          </div>
-        )}
-        <div className="flex flex-col items-start justify-start px-4">
-          <div className="text-black text-[16px] font-extrabold">Frequency</div>
-          <div className="flex gap-5 justify-between items-center w-full">
-            <div className="flex relative flex-row justify-center items-center">
-              <select
-                className="w-full appearance-none pl-2 pr-8 pb-1.5 bg-[#02227E] rounded-xl text-[20px] text-[#fff] font-bold font-inter h-[35px]"
-                name="frequency"
-                onChange={(e) => setFrequency(e.target.value)}
-                value={frequency}
-              >
-                <option selected disabled>
-                  Frequency
-                </option>
-                {Frequency.map((item) => {
-                  return <option value={item}>{item}hrs</option>;
-                })}
-              </select>
-              <div className="absolute top-2 right-2">
-                <svg
-                  className={`w-6 h-6 fill-current text-white`}
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                </svg>
-              </div>
-            </div>
+            )}
+            <div>
+              <div className="flex gap-2 justify-between items-center w-full my-[24px]">
+                <div className="flex relative flex-row justify-center items-center w-full">
+                  <select
+                    className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff]"
+                    name="frequency"
+                    onChange={(e) => setFrequency(e.target.value)}
+                    value={frequency}
+                  >
+                    <option selected disabled>
+                      Frequency
+                    </option>
+                    {Frequency.map((item) => {
+                      return <option value={item} className="text-black">{item}hrs</option>;
+                    })}
+                  </select>
+                  <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+                </div>
 
-            <div className="flex flex-row justify-center items-center w-fit gap-4 mr-10">
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={(e) => setFeaturelisting(e.target.checked)}
+                <div className="flex flex-row justify-center items-center w-fit">
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          onChange={(e) => setFeaturelisting(e.target.checked)}
+                          sx={{
+                            color: 'white',
+                            '&.Mui-checked': {
+                              color: 'white',
+                            },
+                          }}
+                        />
+                      }
+                      className="w-[19px]"
                     />
-                  }
-                  className="w-[19px]"
-                />
-              </FormGroup>
-              <p className="text-[#02227E] text-[20px] font-extrabold">
-                Feature
+                  </FormGroup>
+                  <p className="text-[18px] text-white text-start font-normal">
+                    Feature
+                  </p>
+                </div>
+              </div>
+              {error.frequency && (
+                <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[1px] pb-[2px]">
+                  {error.frequency}
+                </label>
+              )}
+            </div>
+            <div className="my-[24px]">
+              <p className="text-[14px] font-normal text-white opacity-[0.7]">*1GRT Per Post</p>
+              <p className="text-[14px] font-normal text-white opacity-[0.7]">
+                {" "}
+                *2GRT per day for Feature listing
               </p>
             </div>
-          </div>
-          {error.frequency && (
-            <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[1px] pb-[2px]">
-              {error.frequency}
-            </label>
-          )}
-        </div>
-        <div className="text-start px-4">
-          <p className="text-[20px] font-extrabold">*1GRT Per Post</p>
-          <p className="text-[20px] font-extrabold">
-            {" "}
-            *2GRT per day for Feature listing
-          </p>
-        </div>
-        <div className="px-4 w-full mt-4 flex justify-center">
-          <div className="w-[80%]">
-            <Button
-              className={
-                "flex items-center px-[10px] py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px]"
-              }
-              text={"Review"}
-              size="40px"
-              onClick={HandleButton}
-            />
+            <div className="w-full">
+              <Button
+                text={"Review"}
+                onClick={HandleButton}
+              />
+            </div>
           </div>
         </div>
       </div>

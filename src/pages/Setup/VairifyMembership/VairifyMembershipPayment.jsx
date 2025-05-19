@@ -88,7 +88,6 @@ const VairifyMembershipPayment = () => {
                 days: state?.days,
                 amount: res?.paymentIntent?.amount,
                 currency: res?.paymentIntent?.currency,
-                type: state?.type,
                 transactionId: res?.paymentIntent?.id,
                 subscriptionId: response?.data?.subscriptionId,
                 isRenew: true
@@ -100,6 +99,7 @@ const VairifyMembershipPayment = () => {
             })
             .catch((err) => {
               console.warn(err);
+              toast.error(err?.response.data)
               setIsLoading(false);
             }).finally(() => {
               setIsLoading(false)
@@ -108,6 +108,7 @@ const VairifyMembershipPayment = () => {
       })
       .catch(function (error) {
         console.log("error: ", error);
+        toast.error(error?.response.data)
         setIsLoading(false);
       });
   };
@@ -200,108 +201,125 @@ const VairifyMembershipPayment = () => {
   const formattedDate = currentDate.toLocaleDateString(undefined, dateOptions);
 
   return (
-    <div className="bg-[#B9BBCB] rounded-3xl items-center">
-      <div className="flex flex-col justify-start main-container">
-        {/* <div className="grid grid-flow-col grid-cols-1 gap-4">
-        <div className="relative flex flex-col items-center justify-start">
-          <div className="relative top-6">
-            <img
-              src={import.meta.env.BASE_URL + "images/VectorLogo1.png"}
-              alt="Vector Logo 1"
-            />
-          </div>
-          <div className="relative bottom-2 left-4">
-            <img
-              src={import.meta.env.BASE_URL + "images/VectorLogo2.png"}
-              alt="Vector Logo 2"
-            />
-          </div>
+    <>
+      <div className="container">
+        <div className="w-full flex flex-col items-center mt-[30px] py-2 px-[10px]">
+          <span className="text-[26px] text-white">
+            VAIRIFY
+          </span>
         </div>
-      </div> */}
-
-        <div className="relative flex flex-col justify-start items-center mt-9">
-          <div className="relative">
-            <img
-              width={"250px"}
-              src={"/images/chainpass_id_logo.png"}
-              alt="asdf"
-            />
+        <div className="sm:mt-[64px] mt-[32px] bg-[#FFFFFF14] sm:rounded-[16px] rounded-[8px] p-[16px]">
+          <div className="flex justify-between sm:flex-nowrap flex-wrap items-center sm:gap-[30px] gap-3 mb-[24px]">
+            <img src={"/images/face-verification/chainpass.svg"} alt="asdf" />
+            <div className="flex gap-2"><p className="sm:text-[18px] text-[14px] font-normal text-white opacity-70">{formattedDate}</p><p className="sm:text-[18px] text-[14px] font-normal text-white opacity-70">#1832-9912-7552</p></div>
+          </div>
+          <div className="flex justify-between items-center gap-[30px] mb-[16px]">
+            <h4 className="sm:text-[18px] text-[14px] font-normal text-white">VAI Subscription :{" "}</h4>
+            <h5 className="sm:text-[18px] text-[14px] font-normal text-white">{state?.finalAmount}.00</h5>
           </div>
 
-          <div className="pt-4 text-lg font-medium text-[#838282]">
-            <p className="text-[14px]">{formattedDate}</p>
-            <p className="text-[16px]">#1832-9912-7552</p>
-          </div>
         </div>
-
-        <div className="w-full yellowbg_card mb-3 pb-2 p-5 mt-12 max-w-[450px]">
-          <div className="flex-1">
-            <div className="mb-3">
-              <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                Card Number
-              </label>
+        <div className="flex items-center justify-center sm:flex-nowrap flex-wrap gap-[20px] w-full mt-[24px]">
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-[14px] font-normal text-white pl-1">
+              Card Number
+            </label>
+            <div>
               <CardNumberElement
                 id="cardNumber"
-                className={`w-full pt-[15px] text-[20px] font-bold text-gray border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 px-4 h-[50px] bg-transparent `}
+                options={{
+                  style: {
+                    base: {
+                      color: "#ffffff",
+                      fontSize: "16px",
+                      "::placeholder": {
+                        color: "#ffffff99",
+                      },
+                    },
+                  },
+                }}
+                className={`w-full pt-[15px] text-[16px] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px]`}
               />
             </div>
-            <div className="flex justify-between">
-              <div className="w-[66%] mb-3">
-                <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                  Expiration Date
-                </label>
-                <CardExpiryElement
-                  id="expiry"
-                  className={`w-full pt-[15px] text-[20px] font-bold text-gray border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 px-4 h-[50px] bg-transparent `}
-                />
-              </div>
-              <div className="w-[33%] mb-3 pl-[3%]">
-                <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                  CVC
-                </label>
-                <CardCvcElement
-                  id="cvc"
-                  className={`w-[100%] pt-[15px] px-4 text-[20px] font-bold text-gray border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 h-[50px] bg-transparent `}
-                />
-              </div>
+          </div>
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-[14px] font-normal text-white pl-1">
+              Card Holder Name
+            </label>
+            <InputText
+              value={cardHolderName}
+              onChange={(e) => setCardHolderName(e.target.value)}
+              placeholder={"Card Holder Name"}
+              influencer-affiliate
+              className={`w-full text-[16px] !placeholder-[#ffffff99] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px]`}
+              name={"CardHolderName"}
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-center sm:flex-nowrap flex-wrap gap-[20px] w-full mt-[24px]">
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-[14px] font-normal text-white pl-1">
+              Expiration Date
+            </label>
+            <div>
+              <CardExpiryElement
+                id="expiry"
+                options={{
+                  style: {
+                    base: {
+                      color: "#ffffff",
+                      fontSize: "16px",
+                      "::placeholder": {
+                        color: "#ffffff99",
+                      },
+                    },
+                  },
+                }}
+                className={`w-full pt-[15px] text-[16px] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px]`}
+              />
             </div>
-            <div className="mb-3">
-              <label className="text-[18px] font-bold ml-2 text-[#040b47] flex">
-                Card Holder Name
-              </label>
-              <InputText
-                value={cardHolderName}
-                onChange={(e) => setCardHolderName(e.target.value)}
-                placeholder={"Card Holder Name"}
-                influencer-affiliate
-                className={`w-full text-[12px] text-[20px] border-2 border-[#8f92a7] bg-[#fffefc] rounded-2xl py-2 px-4 h-[50px] bg-transparent `}
-                // border={error.nameOfBusiness && `#ef4444`}
-                name={"CardHolderName"}
+          </div>
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-[14px] font-normal text-white pl-1">
+              CVC
+            </label>
+            <div>
+              <CardCvcElement
+                id="cvc"
+                options={{
+                  style: {
+                    base: {
+                      color: "#ffffff",
+                      fontSize: "16px",
+                      "::placeholder": {
+                        color: "#ffffff99",
+                      },
+                    },
+                  },
+                }}
+                className={`w-full pt-[15px] text-[16px] font-normal text-white border-2 border-[#919EAB33] bg-transparent rounded-[8px] py-[16px] px-[14px] h-[50px] `}
               />
             </div>
           </div>
         </div>
-
-        <div className="pb-2 mt-5 px-5 max-w-[450px] mx-auto w-[100%]">
+        <div className="w-full flex items-center justify-center mx-auto max-w-[500px] mt-[24px]">
           <Button
             onClick={handleOrder}
-            className={
-              "flex items-center justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-            }
             text={
               !isLoading ? (
-                "Submit"
+                "Make Payment"
               ) : (
-                <div className="flex items-center	justify-center pt-[6px]">
+                <div className="flex items-center	justify-center">
                   <Loading />
                 </div>
               )
             }
-            size="55px"
+            disabled={isLoading}
           />
         </div>
+        <p className="text-center text-[14px] font-normal opacity-70 text-white mt-[12px] flex items-center justify-center gap-1"><img src="/images/face-verification/lock.svg" alt="icon" /> Make payment securely </p>
       </div>
-    </div>
+    </>
   );
 };
 

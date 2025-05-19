@@ -1,6 +1,7 @@
 :focus-visible {
   outline: none;
 }
+
 .text-custom-title {
   font-style: normal;
   font-weight: 700;
@@ -444,11 +445,9 @@
 }
 
 .bg-custom-4 {
-  background: linear-gradient(
-    90deg,
-    rgba(2, 71, 255, 0.31) 45.37%,
-    rgba(121, 158, 255, 0.31) 94.69%
-  );
+  background: linear-gradient(90deg,
+      rgba(2, 71, 255, 0.31) 45.37%,
+      rgba(121, 158, 255, 0.31) 94.69%);
   border-radius: 10px;
 }
 
@@ -1077,14 +1076,6 @@
   border-width: 2px;
 }
 
-@media screen and (max-width: 360px) {
-  .otp_input {
-    margin: 0.3rem !important;
-    height: 3.5rem !important;
-    width: 2rem !important;
-  }
-}
-
 .img-container {
   max-width: 341px;
   height: 341px;
@@ -1192,15 +1183,6 @@
   font-size: 16px;
   line-height: 20px;
   text-align: center;
-}
-
-.description-congratulated {
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 20px;
-  text-align: center;
-  color: #0247ff;
 }
 
 .extre-price {
@@ -1457,21 +1439,21 @@
   visibility: hidden;
 }
 
-input[type="radio"] + label span {
+input[type="radio"]+label span {
   transition: background 0.2s, transform 0.2s;
 }
 
-input[type="radio"] + label span:hover,
-input[type="radio"] + label:hover span {
+input[type="radio"]+label span:hover,
+input[type="radio"]+label:hover span {
   transform: scale(1.2);
 }
 
-input[type="radio"]:checked + label span {
+input[type="radio"]:checked+label span {
   background-color: #3490dc;
   box-shadow: 0px 0px 0px 2px white inset;
 }
 
-input[type="radio"]:checked + label {
+input[type="radio"]:checked+label {
   color: #3490dc;
 }
 
@@ -1515,6 +1497,7 @@ input[type="radio"]:checked + label {
   .rate-time-price {
     font-size: 14px;
   }
+
   .rate-time-price-title {
     font-size: 16px;
   }
@@ -1524,6 +1507,7 @@ input[type="radio"]:checked + label {
   .rate-time-price {
     font-size: 12px;
   }
+
   .rate-time-price-title {
     font-size: 14px;
   }
@@ -1533,14 +1517,17 @@ input[type="radio"]:checked + label {
   .rate-time-price {
     font-size: 10px;
   }
+
   .rate-time-price-title {
     font-size: 12px;
   }
 }
+
 @media screen and (max-width: 230px) {
   .rate-time-price {
     font-size: 8px;
   }
+
   .rate-time-price-title {
     font-size: 10px;
   }
@@ -1550,6 +1537,7 @@ input[type="radio"]:checked + label {
   position: absolute;
   right: 15px;
 }
+
 .dataguard-services-search-icon {
   position: absolute;
   left: 15px;
@@ -1663,10 +1651,10 @@ input[type="radio"]:checked + label {
 
 .payment-type-item:hover {
   color: #0247ff;
+}
 
-  .custom-radio {
-    background: #0247ff;
-  }
+.payment-type-item:hover  .custom-radio {
+  background: #0247ff;
 }
 
 .photo-upload-btn,
@@ -1697,6 +1685,8 @@ input[type="radio"]:checked + label {
   position: relative;
   right: 20px;
 }
+
+/* react calender  */
 .calendar-design {
   .react-calendar__navigation {
     .react-calendar__navigation__arrow {
@@ -1706,16 +1696,20 @@ input[type="radio"]:checked + label {
       padding-right: 0px !important;
     }
   }
+
   .react-calendar__viewContainer {
     .react-calendar__month-view__weekdays {
-      border-bottom: 2px solid #495582;
+      border-bottom: 2px solid #919EAB33;
       margin-bottom: 10px;
       background-color: transparent;
     }
+
     .react-calendar__month-view__days {
       .react-calendar__tile {
         height: 35px;
+        color: #ffffff;
       }
+
       .react-calendar__tile--active {
         border-radius: 50px;
       }
@@ -1931,6 +1925,7 @@ input[type="radio"]:checked + label {
 .react-calendar__navigation__label__labelText {
   font-size: 24px;
   font-weight: 700;
+  color: #ffffff
 }
 
 /* End Calendar*/
@@ -1939,6 +1934,7 @@ input[type="radio"]:checked + label {
   .congratulation-title span {
     font-size: 40px;
   }
+
   .cong-time-setup span {
     font-size: 18px;
   }
@@ -1948,6 +1944,7 @@ input[type="radio"]:checked + label {
   .congratulation-title span {
     font-size: 35px;
   }
+
   .btn-res {
     font-size: 18px !important;
   }
@@ -1976,7 +1973,7 @@ input[type="radio"]:checked + label {
   right: -22px !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: end !important;
+  justify-content: flex-end !important;
 }
 
 .custom-left-minus-100 {
@@ -2001,6 +1998,7 @@ input[type="radio"]:checked + label {
     z-index: 1;
     transition: 0.5s;
   }
+
   .admin-custom-contianer {
     width: calc(100vw - 380px);
   }
@@ -2016,6 +2014,7 @@ input[type="radio"]:checked + label {
     left: 290px;
     position: relative;
   }
+
   .burger-admin {
     display: none;
   }
@@ -2076,6 +2075,10 @@ input[type="radio"]:checked + label {
 
 .ReactModal__Overlay--after-open {
   z-index: 999 !important;
+  background-color: #060c4d4d !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .option.red:after {
@@ -2178,28 +2181,24 @@ input[type="radio"]:checked + label {
   top: 10px !important;
   width: 44px !important;
   height: 44px !important;
-  border-radius: 25px !important;
-  background: #01195c !important;
   color: white !important;
-
   font-size: 41px !important;
   padding-bottom: 6px !important;
   padding-right: 4px !important;
 }
+
 .react-calendar__navigation__next-button {
   display: inline !important;
   position: relative !important;
   top: 10px !important;
   width: 44px !important;
   height: 44px !important;
-  border-radius: 25px !important;
-  background: #01195c !important;
   color: white !important;
-
   font-size: 41px !important;
   padding-bottom: 6px !important;
   padding-left: 4px !important;
 }
+
 .react-calendar__navigation__label {
   position: relative;
   color: #383838 !important;
@@ -2221,7 +2220,7 @@ input[type="radio"]:checked + label {
 }
 
 .react-calendar__tile--active {
-  background-color: #01195c !important;
+  background-color: #FFFFFF14 !important;
   color: white;
 }
 
@@ -2229,7 +2228,8 @@ input[type="radio"]:checked + label {
   padding: 0.5em;
   font-weight: 500 !important;
   font-size: 10px !important;
-  color: #7c7c7c !important;
+  color: #ffffff !important;
+  text-align: center;
 }
 
 .focus\:shadow-none:focus {
@@ -2237,23 +2237,19 @@ input[type="radio"]:checked + label {
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
 }
-.bluebg_full {
-  height: calc(100vh - 149px);
-  background: #040b47;
-}
+
 .yellowbg_card {
   background: #b9bbcb;
   margin: 0 auto;
   border-radius: 12px;
   padding: 45px 15px;
 }
+
 .bg-green-btn {
   background: rgb(12, 163, 108);
-  background: linear-gradient(
-    360deg,
-    rgba(8, 250, 90, 1) 0%,
-    rgba(12, 163, 108, 1) 100%
-  ) !important;
+  background: linear-gradient(360deg,
+      rgba(8, 250, 90, 1) 0%,
+      rgba(12, 163, 108, 1) 100%) !important;
   border-radius: 20px;
 }
 
@@ -2262,28 +2258,35 @@ button[disabled].usergreydisabled {
   opacity: 0.8;
   filter: grayscale(1);
 }
+
 .usergreytextdisabled button[disabled],
 button[disabled].usergreytextdisabled {
   opacity: 1;
   filter: brightness(0.5);
 }
+
 input[type="file"] {
   cursor: pointer;
 }
+
 .mapspopup .leaflet-popup-content-wrapper {
   background-color: #00c2ff;
   border-radius: 0;
 }
+
 .mapspopup .leaflet-popup-content-wrapper .leaflet-popup-content {
   margin: 0 5px;
 }
+
 .mapspopup a.leaflet-popup-close-button {
   display: none;
 }
+
 .mapspopup .leaflet-popup-content-wrapper,
 .mapspopup .leaflet-popup-tip {
   background: #00c2ff;
 }
+
 .font-Roboto-Serif {
   font-family: "Roboto Serif", serif;
 }
@@ -2305,9 +2308,11 @@ input[type="file"] {
   /* line-height: 19px; */
   background: #ffffff3b;
 }
+
 .switch-container .switch-button:nth-child(2) {
   border-right: none;
 }
+
 .active {
   background-color: #4caf50;
   color: white;
@@ -2329,6 +2334,7 @@ input[type="file"] {
 .bg-linear-gradient {
   background: linear-gradient(180deg, rgba(2, 34, 126, 0.68), #0247ff);
 }
+
 .main-container,
 .main-container-other {
   /* min-height: calc(100vh - 175px); */
@@ -2405,9 +2411,11 @@ input[type="range"]::-moz-range-thumb {
 input[type="range"]::-webkit-slider-thumb:hover {
   box-shadow: 0 0 0 10px rgba(255, 85, 0, 0.1);
 }
+
 input[type="range"]:active::-webkit-slider-thumb {
   box-shadow: 0 0 0 13px rgba(255, 85, 0, 0.2);
 }
+
 input[type="range"]:focus::-webkit-slider-thumb {
   box-shadow: 0 0 0 13px rgba(255, 85, 0, 0.2);
 }
@@ -2417,17 +2425,21 @@ input[type="range"]:focus::-webkit-slider-thumb {
 input[type="range"]::-moz-range-thumb:hover {
   box-shadow: 0 0 0 10px rgba(255, 85, 0, 0.1);
 }
+
 input[type="range"]:active::-moz-range-thumb {
   box-shadow: 0 0 0 13px rgba(255, 85, 0, 0.2);
 }
+
 input[type="range"]:focus::-moz-range-thumb {
   box-shadow: 0 0 0 13px rgba(255, 85, 0, 0.2);
 }
+
 .border-gray-400 {
   --tw-border-opacity: 0 !important;
 }
+
 .header-part {
-  position: fixed;
+  /* position: fixed; */
   z-index: 9999;
 }
 
@@ -2477,9 +2489,11 @@ input[type="range"]:focus::-moz-range-thumb {
   line-height: 19px;
   background: #ffffff3b;
 }
+
 .switch-container-2 .switch-button:nth-child(2) {
   border-right: none;
 }
+
 .active-2 {
   background-color: blue;
   color: white;
@@ -2497,14 +2511,17 @@ input[type="range"]:focus::-moz-range-thumb {
   position: relative !important;
   z-index: 9 !important;
 }
+
 .profile-permission-screen {
   margin-top: 0 !important;
 }
+
 /* .main-container-new {
   margin-top: 0;
 } */
 
 @media only screen and (min-width: 320px) and (max-width: 405px) {
+
   .varify-card-content h6,
   .varify-card-content .rating-title {
     font-size: 10px !important;
@@ -2548,6 +2565,7 @@ input[type="range"]:focus::-moz-range-thumb {
   from {
     max-height: 0;
   }
+
   to {
     max-height: 500px;
   }
@@ -2558,7 +2576,7 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 .vairify-plans-cards:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .slick-slider .slick-list .slick-track {
@@ -2576,13 +2594,13 @@ input[type="range"]:focus::-moz-range-thumb {
 .service-rates-user-profile::-webkit-scrollbar {
   display: none;
 }
+
 .my-vairipay-request-scroll::-webkit-scrollbar {
   display: none;
 }
 
 .custom-phone-input-class {
   border-width: 2px !important;
-  border-color: #3760cb !important;
   color: "#000" !important;
 }
 
@@ -2592,9 +2610,11 @@ input[type="range"]:focus::-moz-range-thumb {
 
 .custom-phone-input-class:focus {
   outline: none !important;
+  border-color: #3760cb;
 }
 
 @media only screen and (min-width: 406px) and (max-width: 550px) {
+
   .varify-card-content h6,
   .varify-card-content .rating-title {
     font-size: 12px !important;
@@ -2604,5 +2624,9 @@ input[type="range"]:focus::-moz-range-thumb {
 @media only screen and (max-width: 650px) {
   .accordian-header-last {
     height: auto !important;
+  }
+
+  .vairipay-comment {
+    height: 48px;
   }
 }

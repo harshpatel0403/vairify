@@ -8,6 +8,7 @@ import DetectRTC from "detectrtc";
 import { useSelector } from "react-redux";
 import VaridateService from "../../services/VaridateServices";
 import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
 const videoConstraints = {
   width: 400,
   height: 400,
@@ -226,20 +227,14 @@ export default function FaceVerification() {
 
   if (!hasCamara) {
     return (
-      <div className="main-containe faceVerificationContainer">
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-          <div className="w-full mx-auto flex items-center justify-center gap-3 flex-col">
-            <div className="cameraNotfoundImg">
-              <img src="/images/cameraNotFound.png" className="w-full" />
-            </div>
-            <span className="font-bold text-[30px] text-[#ff1919] change-font-family mb-6">
-              Camara not found
-            </span>
-            {/* <button onClick={handleSendRequest}>accept</button> */}
-          </div>
-          <p className="text-[18px] max-w-[90%] md:max-w-[70%]">
+      <div className="container py-[48px]">
+        <div className="w-full mx-auto flex flex-col justify-center items-center sm:gap-[48px] gap-[24px]">
+          <h6 className="text-[28px] text-center font-semibold text-white ">Camera not found</h6>
+          <img src="/images/face-verification/camera-not-found.svg" alt="camera not found" />
+          {/* <button onClick={handleSendRequest}>accept</button> */}
+          <p className="text-[18px] max-w-[90%] md:max-w-[70%] text-center font-medium text-[#E43530]">
             You can not use face verification feature on this device, please
-            retry in your mobile or a davice which has working camara.
+            retry in your mobile or a device which has working camara.
           </p>
         </div>
       </div>
@@ -247,29 +242,33 @@ export default function FaceVerification() {
   }
 
   return (
-    <div className="">
-      <div className="mt-2 bg-[#040C50]/[26%] w-full ">
-        <h2 className="font-extrabold py-2 text-[24px] text-[#02227E] font-inter mulish-font-family">
-          Face Verification
-        </h2>
+    <div className="container my-[48px]">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle isSmall={true} title={"Face Verification"} />
       </div>
-      <div className="inner-content-part mt-4">
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-2 px-4">
+      <div className="">
+        <div className="w-full mx-auto flex flex-col justify-center items-center px-4">
           <div className="w-full mx-auto flex items-center justify-center mt-2">
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex items-center justify-center max-w-[400px]">
               {imgSrc ? (
                 <img src={imgSrc} alt="Date Guard Success Changed Code" />
               ) : (
-                <>
+                <div className="relative">
                   <Webcam
                     audio={false}
-                    height={300}
+                    height={400}
                     ref={webcamRef}
-                    width={300}
+                    width={400}
                     screenshotFormat="image/jpeg"
                     videoConstraints={videoConstraints}
+                    className="rounded-[16px] w-full max-w-[400]"
+                    style={{ transform: "scaleX(-1)" }}
                   />
-                </>
+                  <img src="/images/face-verification/camera-vector.svg" className="left-[5%] top-[5%] absolute z-[100]" />
+                  <img src="/images/face-verification/camera-vector.svg" className="right-[5%] top-[5%] absolute z-[100] rotate-[90deg]" />
+                  <img src="/images/face-verification/camera-vector.svg" className="left-[5%] bottom-[5%] absolute z-[100] rotate-[-90deg]" />
+                  <img src="/images/face-verification/camera-vector.svg" className="right-[5%] bottom-[5%] absolute z-[100]  rotate-[-180deg]" />
+                </div>
               )}
             </div>
           </div>
@@ -277,34 +276,24 @@ export default function FaceVerification() {
             <button
               disabled={faceCompareLoading}
               onClick={capture}
-              className="w-full mx-auto flex items-center justify-center mt-4"
+              className="mx-auto flex items-center justify-center mt-[-34px] relative z-[100] h-[64px] w-[64px] p-2 rounded-full bg-white"
             >
-              <div className="flex-1 flex items-center justify-center">
-                <div className="bg-[#2096f3] items-center justify-center flex rounded-full w-[80px] h-[80px]">
-                  <img
-                    src={"/images/DateGuardCamera.png"}
-                    className="w-[50px]"
-                    alt="Verification Success Mark Icon"
-                  />
-                </div>
-              </div>
+              <img src="/images/face-verification/camera.svg" alt="camera img" />
             </button>
           )}
-          {faceCompareLoading && <p className="">Please wait...</p>}
+          {faceCompareLoading && <p className="text-white text-base text-center">Please wait...</p>}
           {false && imgSrc && (
-            <div className="mt-3 flex gap-3">
+            <div className="mt-3 flex gap-3 w-full">
               <Button
                 disabled={loading}
-                text={loading ? "Loading..." : "Approve"}
-                className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
-                size="41px"
+                text={loading ? <div className="flex items-center	justify-center ">
+                  <Loading />
+                </div> : "Approve"}
                 onClick={handleApprove}
               />
               <Button
-                disabled={loading}
                 text={"Reject"}
-                className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
-                size="41px"
+                className={'secondary-btn !bg-[#FFFFFF29]'}
                 onClick={handleReject}
               />
             </div>
@@ -313,35 +302,31 @@ export default function FaceVerification() {
           <div className="w-full mt-3">
             {isApproved === true && (
               <div className="flex flex-col items-center">
-                <img src="/images/CheckMark.png" className="w-[70px] mb-3" />
-                <button
+                <img src="/images/marketplace/verified.svg" className="w-[30px] mb-3" />
+                <Button
                   onClick={handleSendRequest}
                   disabled={loading}
-                  className="bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1 "
-                >
-                  {loading ? <Loading /> : "Send Request"}
-                </button>
+                  text={loading ? <Loading /> : "Send Request"}
+                  className={'max-w-[500px] mx-auto w-full'}
+                />
               </div>
             )}
 
             {isApproved === false && (
               <div className="flex flex-col items-center">
                 <div className="bg-[#ff0000] rounded-full mb-3">
-                  <img src="/images/close-btn.svg" className="w-[70px]" />
+                  <img src="/images/close-btn.svg" className="w-[30px]" />
                 </div>
-                <button
+                <Button
                   onClick={handleRetry}
-                  className="bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1"
-                >
-                  Retry
-                </button>
-                <button
+                  text={'Retry'}
+                  className={'max-w-[500px] px-4 w-full mx-auto'}
+                />
+                <Button
                   onClick={handleManualSelfie}
-                  disabled={loading}
-                  className="mt-3 bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1"
-                >
-                  {loading ? <Loading /> : "Send as Manual"}
-                </button>
+                  text={loading ? <Loading /> : 'Send as Manual'}
+                  className={'max-w-[500px] px-4 w-full mx-auto mt-3 !bg-[#FFFFFF29] secondary-btn'}
+                />
               </div>
             )}
           </div>

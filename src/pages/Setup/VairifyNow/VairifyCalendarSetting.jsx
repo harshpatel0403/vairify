@@ -210,13 +210,14 @@ const handleClickLocation = event => {
           </div>
           <div className="w-full mx-auto flex flex-row justify-around items-center mt-2">
             <button
+            disabled={isLoading}
               onClick={HandleSaveButton}
               className="w-[120px] bg-gradient-to-t from-[#08FA5A] to-[#0CA36C] rounded-xl font-Roboto font-bold text-[23px] text-[#040C50] py-1"
             >
               {!isLoading ? (
                 "Yes"
               ) : (
-                <div className="flex items-center	justify-center pt-[6px]">
+                <div className="flex items-center	justify-center">
                   <Loading />
                 </div>
               )}
@@ -276,12 +277,13 @@ const handleClickLocation = event => {
             <div className="text-center">
               <button
                 onClick={HandleSaveButton}
+                disabled={isLoading}
                 className="w-[140px] bg-gradient-to-t from-[#08FA5A] to-[#0CA36C] rounded-xl font-Roboto font-bold text-[20px] text-[#040C50] py-1 px-1"
               >
                 {!isLoading ? (
                   "Request only"
                 ) : (
-                  <div className="flex items-center	justify-center pt-[6px]">
+                  <div className="flex items-center	justify-center">
                     <Loading />
                   </div>
                 )}

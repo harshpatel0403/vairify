@@ -3,6 +3,13 @@ import Button from "../../../components/Button";
 import DateGuardService from "../../../services/DateGuardService";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Header from "../../../components/Header/Header";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import Loading from "../../../components/Loading/Index";
+import { MdPersonAdd } from "react-icons/md";
+import PageTitle from "../../../components/PageTitle";
+
 
 export default function DateGuardAddMember() {
   const params = useParams();
@@ -68,125 +75,118 @@ export default function DateGuardAddMember() {
   const handelAddMembers = (e) => {
     e.preventDefault();
     nav(`/dateguard/add-member/${params.groupId}/select-member`, {
-      state: state,
+      state: { body: state?.body }
     });
   };
 
   if (loading) {
     return (
-      <div className="main-container h-full">
-        <div className="text-white h-full flex justify-center items-center">
-          <p>Loading...</p>
-        </div>
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
       </div>
     );
   }
 
   return (
-    <div className="main-container form-field-container px-3">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-        <div className="w-full mx-auto flex items-center justify-center">
-          <span className="font-bold text-[30px] text-[#05B7FD] change-font-family">
-            Date Guard
-          </span>
+    <>
+      <div className="container">
+        <div className="md:hidden block md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={groupDetails?.name} isSmall={true} />
         </div>
-        <div className="w-full mx-auto flex items-center justify-center mt-4">
-          <div className="w-[67px] h-[82px]">
-            <img src={"/images/DateGuardMask.png"} alt="Date Guard Mask" />
+        <div className="relative md:py-0 py-[40px] md:block hidden">
+          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white my-[48px] md:block hidden">{groupDetails?.name}</h3>
+          <div className=" absolute right-0 md:top-0 top-[40px]">
+            <Button
+              onClick={(e) => handelAddMembers(e)}
+              text='+ Add Members'
+              className={
+                "font-medium text-[14px] text-[#060C4D] text-center py-[6px] px-[12px]"
+              }
+            />
           </div>
         </div>
-        <div className="w-full mx-auto flex items-center justify-center mt-6">
-          <span className="font-bold text-[30px] text-white change-font-family">
-            {groupDetails?.name}
-          </span>
-        </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-          <Link onClick={(e) => handelAddMembers(e)} to="#">
-            <div className="relative mt-5">
-              <div style={{ left: "2px" }} className="absolute w-[44px] z-20">
-                <Button
-                  text="+"
-                  className="font-bold text-[35px] rounded-[50%] bg-[#05B7FD] flex items-center justify-center w-[44px] h-[44px]"
-                  size="44px"
-                />
-              </div>
-              <div className="relative w-[245px] h-[45px] bg-[#4200FF] rounded-[25px] border-2 border-[#4200FF]">
-                <span
-                  style={{ left: "20px" }}
-                  className="font-bold text-[24px] text-white relative change-font-family"
-                >
-                  Add/Members
-                </span>
-              </div>
-            </div>
-          </Link>
-        </div>
-        <div className="mark-data flex mt-3">
-          <h4 className="flex-1">Invited</h4>
-          <h4 className="flex-1 accept">Accepted</h4>
-        </div>
-        <div className="mark-table-part mt-10">
-          {groupDetails?.members?.map((member, index) => (
-            <div key={index} className="table-field mt-3">
-              <div
-                className={
-                  member.status == "Invited" ? "mark invited" : "mark accepted"
-                }
-              ></div>
-              <h2 className="">{member?.memberId?.name}</h2>
-              <h2 className="">{member?.memberId?.phoneNumber}</h2>
-              <button
-                onClick={() => handleShowDelete(member)}
-                className="delete-icon"
-              >
-                <img src={"/images/delete-icon.svg"} alt="icon" />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {showModal ? (
-        <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none add-member-modal">
-            <div
-              className="relative w-auto mx-auto max-w-5xl"
-              style={{ width: "25rem" }}
-            >
-              {/*content*/}
-              <form onSubmit={() => {}}>
-                <div className="modal-body-part border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                  {/*header*/}
+
+        <div className="my-[48px] grid sm:grid-cols-2 grid-cols-1 gap-[24px]">
+          {groupDetails?.members?.map((member, index) => {
+            const name = member?.memberId?.name || "";
+            const initials = name
+              .split(" ")
+              .filter(Boolean)
+              .slice(0, 2)
+              .map(word => word[0])
+              .join("")
+              .toUpperCase();
+            return (
+              <div key={index} className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-[50px] h-[50px] rounded-full bg-[#FFFFFF14] flex items-center gap-1 justify-center text-white text-lg font-semibold">
+                    {initials}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <h2 className="text-white text-[14px] font-normal">{member?.memberId?.name}</h2>
+                    <h2 className="text-white text-[14px] opacity-70 font-normal">{member?.memberId?.phoneNumber}</h2>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-white text-[12px] font-normal">{member.status == "Invited" ? (<span className='bg-[#0085B9] py-[8px] px-[16px] rounded-lg'>Invited</span>) : (<span className='bg-[#4700B9] py-[8px] px-[16px] rounded-lg'>Accepted</span>)}</div>
                   <button
-                    className="absolute right-2 top-2 p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => handleShowDelete(member)}
                   >
-                    <img src={"/images/close-btn.svg"} alt="cancle" />
+                    <RiDeleteBin6Line color="#ffffff" size={20} />
                   </button>
-                  {/*body*/}
-                  <div className="relative py-5 flex-auto">
-                    <h2>{memberToDelete?.memberId?.name} </h2>
-                    <p>Remove from the group </p>
-                    <p>{groupDetails.name}</p>
-                    <div className="w-full mx-auto flex flex-col justify-center items-center">
-                      <div className="w-[142px] my-2">
-                        <Button
-                          disabled={deleteInProgress}
-                          text={deleteInProgress ? "Loading.." : "Remove"}
-                          className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family"
-                          size="41px"
-                          onClick={handleDelete}
-                        />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div className="md:hidden block fixed right-[16px] bottom-[32px] z-50">
+          <button className="bg-white rounded-full h-[52px] w-[52px] flex items-center justify-center" onClick={(e) => handelAddMembers(e)}>
+            <MdPersonAdd color="#060C4D" size={20} />
+          </button>
+        </div>
+
+        {showModal ? (
+          <>
+            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div
+                className="relative w-[90%] mx-auto p-[24px] rounded-2xl max-w-[500px] bg-white"
+              >
+                {/*content*/}
+                <form onSubmit={() => { }}>
+                  <div className="">
+                    {/*header*/}
+                    <button
+                      className="absolute right-[18px] top-[18px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                      onClick={() => setShowModal(false)}
+                    >
+                      <IoCloseCircleOutline color="black" size={26} />
+                    </button>
+                    {/*body*/}
+                    <div className="relative">
+                      <h2 className="text-[#212B36] font-medium text-[20px] text-center">{memberToDelete?.memberId?.name} </h2>
+                      <p className="text-[#212B36] font-medium text-[16px] text-center opacity-80 mt-1">Remove from the group {groupDetails.name}</p>
+                      <div className="w-full mx-auto flex flex-col justify-center items-center">
+                        <div className="max-w-[500px] w-full mx-auto mt-[24px]">
+                          <Button
+                            disabled={deleteInProgress}
+                            text={deleteInProgress ? <div className="flex items-center	justify-center">
+                              <Loading />
+                            </div> : "Remove"}
+                            className=" secondary-btn"
+                            onClick={handleDelete}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
-    </div>
+            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+          </>
+        ) : null}
+      </div>
+    </>
   );
 }

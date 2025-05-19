@@ -26,12 +26,12 @@ const ServiceRates = () => {
 
   const userType = userDetails?.market
     ? userDetails?.item?.userId?.user_type ||
-      userDetails?.item?.user_type ||
-      userDetails?.item?.userType
+    userDetails?.item?.user_type ||
+    userDetails?.item?.userType
     : UserData.user_type;
   const rate = userDetails?.market
     ? userDetails?.item?.userId?.averageRating ||
-      userDetails?.item?.averageRating
+    userDetails?.item?.averageRating
     : UserData?.averageRating;
 
   const isFollowed = useCallback(
@@ -80,28 +80,18 @@ const ServiceRates = () => {
             {(
               userDetails?.market
                 ? userDetails?.item?.userId?.profilePic ||
-                  userDetails?.item?.profilePic
+                userDetails?.item?.profilePic
                 : UserData?.profilePic
             ) ? (
               <img
-              src={
-                import.meta.env.VITE_APP_S3_IMAGE +
-                `/${
-                  userDetails?.market
+                src={
+                  import.meta.env.VITE_APP_S3_IMAGE +
+                  `/${userDetails?.market
                     ? userDetails?.item?.userId?.profilePic ||
-                      userDetails?.item?.profilePic
+                    userDetails?.item?.profilePic
                     : UserData?.profilePic
-                }`
-              }
-                // src={
-                //   import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                //   `/${
-                //     userDetails?.market
-                //       ? userDetails?.item?.userId?.profilePic ||
-                //         userDetails?.item?.profilePic
-                //       : UserData?.profilePic
-                //   }`
-                // }
+                  }`
+                }
                 className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
                 alt="Hot Rod"
               />
@@ -111,7 +101,7 @@ const ServiceRates = () => {
                 src={
                   (userDetails?.market
                     ? userDetails?.item?.userId?.gender ||
-                      userDetails?.item?.gender
+                    userDetails?.item?.gender
                     : UserData?.gender) === "Male"
                     ? "/images/male.png"
                     : "/images/female.png"
@@ -132,26 +122,24 @@ const ServiceRates = () => {
                 <img
                   src={import.meta.env.BASE_URL + "images/HotRodIcon2.png"}
                   alt="Hot Rod Icon Second"
-                  className={`${
-                    isFollowed(
-                      userDetails?.item?.userId?._id || userDetails?.item?._id
-                    )
+                  className={`${isFollowed(
+                    userDetails?.item?.userId?._id || userDetails?.item?._id
+                  )
                       ? ""
                       : "grayscale"
-                  }`}
+                    }`}
                 />
               ) : null}
               {userType === "companion-provider" ? (
                 <img
                   src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
                   alt="Sugar Icon Second"
-                  className={`${
-                    isFollowed(
-                      userDetails?.item?.userId?._id || userDetails?.item?._id
-                    )
+                  className={`${isFollowed(
+                    userDetails?.item?.userId?._id || userDetails?.item?._id
+                  )
                       ? ""
                       : "grayscale"
-                  }`}
+                    }`}
                 />
               ) : null}
               {userType === "agency-business" || userType === "super" ? (
@@ -160,13 +148,12 @@ const ServiceRates = () => {
                     import.meta.env.BASE_URL + "images/IntimateMassageIcon2.png"
                   }
                   alt="Sugar Icon Second"
-                  className={`${
-                    isFollowed(
-                      userDetails?.item?.userId?._id || userDetails?.item?._id
-                    )
+                  className={`${isFollowed(
+                    userDetails?.item?.userId?._id || userDetails?.item?._id
+                  )
                       ? ""
                       : "grayscale"
-                  }`}
+                    }`}
                 />
               ) : null}
             </div>

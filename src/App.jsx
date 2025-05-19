@@ -24,6 +24,8 @@ import BussinessVai from "./pages/VAI Module/BussinessVai";
 import VaiCodes from "./pages/VAI Module/VaiCodes";
 import AgencyBusiness from "./pages/Auth/BusinessService/AgencyBusiness";
 import MyVairipay from "./pages/MyVairipay/MyVairipay";
+
+
 import MyVairipayAdd from "./pages/MyVairipay/MyVairipayAdd";
 import BusinessProfileQRCode from "./pages/MyVairipay/MyVairipayQR";
 import MyVairipayRequest from "./pages/MyVairipay/MyVairipayRequest";
@@ -180,7 +182,7 @@ import AboutMe from "./pages/Settings/AboutMe";
 import ChangePasswordPage from "./pages/Auth/ChangePasswordPage";
 import ServiceRates from "./pages/User/ServicesRates";
 import VaridateService from "./services/VaridateServices";
-import { HandleLanguage, HandleSaveNotificationCount } from "./redux/action/Auth";
+import { HandleLanguage, HandleSaveNotificationCount, HandleUser } from "./redux/action/Auth";
 import PublicProfile from "./pages/User/PublicProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UserGallery2 from "./pages/User/UserGallery2";
@@ -198,6 +200,14 @@ import ServiceRoute from "./components/ServiceRoute";
 import PrivacyPolicy from "./pages/privacyPolicy";
 import MutalConsent from "./pages/Setup/MutalConsent";
 import SetupFaceVerification from "./pages/FaceVerification/SetupFaceVerification";
+import ManageProfile from "./pages/Settings/ManageProfile";
+import PushNotifications from "./pages/Settings/PushNotifications";
+import RatesAndServices from "./pages/Settings/RatesAndServices";
+import Permissions from "./pages/Settings/Permissions";
+import ManageVAI from "./pages/Settings/ManageVAI";
+import ManageMembership from "./pages/Settings/ManageMembership";
+import Contracts from "./pages/Settings/Contracts";
+import ViewTransfer from "./pages/MyVairipay/ViewTransfer";
 // import PrivacyPolicy from "./pages/privacyPolicy";
 function App() {
   const stripePromise = loadStripe(
@@ -209,6 +219,7 @@ function App() {
     if (UserData?._id) {
       dispatch(HandleUserCurrentLocation());
     }
+    dispatch(HandleUser(UserData?._id))
   }, []);
 
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -254,7 +265,7 @@ function App() {
   }, [UserData]);
 
   return (
-    <div className="App">
+    <>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />}></Route>
         <Route path="/login" element={
@@ -293,9 +304,9 @@ function App() {
           }
         ></Route>
         <Route path="/change-password" element={
-          // <PublicRoute>
-          <ChangePasswordPage />
-          // </PublicRoute>
+          <PublicRoute>
+            <ChangePasswordPage />
+          </PublicRoute>
         }></Route>
         <Route path="/reset-password" element={
           <PublicRoute>
@@ -326,11 +337,11 @@ function App() {
             </PublicRoute>
           }></Route>
         <Route path="/business/community" element={
-          // <ProtectedRoute step={"Step2"} path="/business/community">
-          <PublicRoute path="/business/community">
-            <Community />
-          </PublicRoute>
-          // </ProtectedRoute>
+          <ProtectedRoute step={"Step2"} path0="/business/community">
+            <PublicRoute path="/business/community">
+              <Community />
+            </PublicRoute>
+          </ProtectedRoute>
         }></Route>
         <Route path="/business/tellus" element={
           <PublicRoute>
@@ -343,7 +354,8 @@ function App() {
           path="/setup-face-verification"
           element={
             <ProtectedRoute level={["login"]}
-              step="Step1" path="/setup-face-verification"
+              step="Step0"
+              path0="/setup-face-verification"
             >
               <SetupFaceVerification />
             </ProtectedRoute>
@@ -354,7 +366,7 @@ function App() {
         <Route
           path="/vai"
           element={
-            <ProtectedRoute level={["login"]} step="Step2" path2="/vai">
+            <ProtectedRoute level={["login"]} step="Step2" >
               <Kyc />
             </ProtectedRoute>
           }
@@ -362,7 +374,7 @@ function App() {
         <Route
           path="/kyc-success"
           element={
-            <ProtectedRoute level={["login"]} step="Step2" path="/kyc-success">
+            <ProtectedRoute level={["login"]} step="Step2">
               <KycSuccess />
             </ProtectedRoute>
           }
@@ -370,7 +382,7 @@ function App() {
         <Route
           path="/get-vai"
           element={
-            <ProtectedRoute level={["login"]} step="Step1" path="/get-vai">
+            <ProtectedRoute level={["login"]} step="Step1">
               <GetVai />
             </ProtectedRoute>
           }
@@ -420,7 +432,7 @@ function App() {
         <Route
           path="/payment-success"
           element={
-            <ProtectedRoute level={["login"]} step="Step1" path1="/payment-success">
+            <ProtectedRoute level={["login"]} step="Step1" path2="/payment-success">
               <PaymentSuccess />
             </ProtectedRoute>
           }
@@ -428,7 +440,7 @@ function App() {
         <Route
           path="/self-verification-process"
           element={
-            <ProtectedRoute level={["login"]} step="Step2" path2="/self-verification-process">
+            <ProtectedRoute level={["login"]} step="Step2">
               <SelfVerificationProcess />
             </ProtectedRoute>
           }
@@ -436,7 +448,7 @@ function App() {
         <Route
           path="/self-verification-completed"
           element={
-            <ProtectedRoute level={["login"]} step="Step2" path="/self-verification-completed">
+            <ProtectedRoute level={["login"]} step="Step2" path3="/self-verification-completed">
               <SelfVerificationCompleted />
             </ProtectedRoute>
           }
@@ -474,9 +486,9 @@ function App() {
           }
         ></Route>
         <Route
-          path="/bussiness-vai-codes"
+          path="/settings/bussiness-vai-codes"
           element={
-            <ProtectedRoute level={["login"]} path="/bussiness-vai-codes">
+            <ProtectedRoute level={["login"]} path="/settings/bussiness-vai-codes">
               <VaiCodes />
             </ProtectedRoute>
           }
@@ -491,6 +503,16 @@ function App() {
             </ProtectedRoute>
           }
         ></Route>
+
+        <Route
+          path="/view-transfer"
+          element={
+            <ProtectedRoute level={["login"]} path="/view-transfer">
+              <ViewTransfer />
+            </ProtectedRoute>
+          }
+        ></Route>
+
         <Route
           path="/vairipay-add"
           element={
@@ -595,7 +617,7 @@ function App() {
         <Route
           path="/setup"
           element={
-            <ProtectedRoute level={["login"]} path="/setup">
+            <ProtectedRoute level={["login"]}>
               <SetupProfile />
             </ProtectedRoute>
           }
@@ -611,9 +633,9 @@ function App() {
         <Route
           path="/language"
           element={
-            // <PublicRoute>
-            <Language />
-            // </PublicRoute>
+            <PublicRoute>
+              <Language />
+            </PublicRoute>
           }
         ></Route>
         <Route
@@ -932,7 +954,7 @@ function App() {
         <Route
           path="/featured"
           element={
-            <ProtectedRoute level={["login"]} >
+            <ProtectedRoute level={["login"]} path4="/featured">
               <Featured />
             </ProtectedRoute>
           }
@@ -1022,18 +1044,18 @@ function App() {
         <Route
           path="/public/profile/:vaiId"
           element={
-            // <ProtectedRoute level={["login"]}>
-            <PublicProfile />
-            // </ProtectedRoute>
+            <ProtectedRoute level={["login"]}>
+              <PublicProfile />
+            </ProtectedRoute>
           }
         ></Route>
         {/* User */}
         <Route
           path="/user/gallery"
           element={
-            // <ProtectedRoute level={["login"]}>
-            <UserGallery />
-            // </ProtectedRoute>
+            <ProtectedRoute level={["login"]}>
+              <UserGallery />
+            </ProtectedRoute>
           }
         ></Route>
         <Route
@@ -1545,6 +1567,70 @@ function App() {
             </ProtectedRoute>
           }
         ></Route>
+
+        <Route
+          path="/settings/manage-profile"
+          element={
+            <ProtectedRoute level={["login"]} path="/settings/manage-profile">
+              <ManageProfile />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/settings/push-notifications"
+          element={
+            <ProtectedRoute level={["login"]} path="/settings/push-notifications">
+              <PushNotifications />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/settings/contracts"
+          element={
+            <ProtectedRoute level={["login"]} path="/settings/contracts">
+              <Contracts />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/settings/rates-services"
+          element={
+            <ProtectedRoute level={["login"]} path="/settings/rates-services">
+              <RatesAndServices />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/settings/permissions"
+          element={
+            <ProtectedRoute level={["login"]} path="/permissions">
+              <Permissions />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/settings/manage-vai"
+          element={
+            <ProtectedRoute level={["login"]} path="/settings/manage-vai">
+              <ManageVAI />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/settings/manage-membership"
+          element={
+            <ProtectedRoute level={["login"]} path="/settings/manage-membership">
+              <ManageMembership />
+            </ProtectedRoute>
+          }
+        ></Route>
+
         <Route
           path="/profile-permissions"
           element={
@@ -1612,9 +1698,9 @@ function App() {
           }
         ></Route>
         <Route
-          path="/user-payment-history"
+          path="/settings/user-payment-history"
           element={
-            <ProtectedRoute level={["login"]} path="/user-payment-history">
+            <ProtectedRoute level={["login"]} path="/settings/user-payment-history">
               <PaymentHistory />
             </ProtectedRoute>
           }
@@ -1698,7 +1784,7 @@ function App() {
           }
         ></Route>
       </Routes>
-    </div>
+    </>
   );
 }
 

@@ -24,6 +24,7 @@ export default function Escort() {
   const [massage, setMassage] = useState(false);
   const [exotic, setExotic] = useState(false);
   const [sensual, setSensual] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
   // Function to handle the toggle for all states
   const handleToggle = (selectedState) => {
@@ -116,6 +117,7 @@ export default function Escort() {
       );
     }
   }, [savedServices]);
+
   const handleServiceType = (type, state) => {
     if (type == "Escort") {
       setEscort(state);
@@ -143,9 +145,45 @@ export default function Escort() {
     }
   };
 
+  const tabs = [
+    { label: "Escort, Sensual Services", component: <SensualServices /> },
+    { label: "Massage", component: <Massage /> },
+    { label: "Exotic Dancer", component: <ExoticDance /> },
+  ];
+
   return (
     <div>
-      <div className="flex w-full inline-table max-w-[400px] flex-col items-center justify-between">
+      <div className="container">
+        <div className="flex gap-[16px] w-full overflow-x-auto scrollbar-hidden">
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveTab(index)}
+              className={`py-[6px] px-[12px] text-white rounded-[8px] text-sm font-bold transition-all duration-300 whitespace-nowrap  ${activeTab === index
+                ? "bg-[#FFFFFF29]"
+                : ""
+                }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div className="w-full pb-[48px] mt-[24px]">
+          {tabs[activeTab].component}
+
+          <div className="flex items-center justify-center max-w-[500px] mx-auto my-[48px]">
+            <Button
+              text={"Save"}
+              onClick={HandleOnClick}
+              disabled={service?.length <= 0}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="flex w-full inline-table max-w-[400px] flex-col items-center justify-between">
         <div className="px-5 w-full mx-auto text-center">
           <div
             className="border-2 border-[#CCCCCC] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-2xl flex flex-row items-center justify-start px-6 pl-16 py-2 h-[60px] relative mt-5"
@@ -153,9 +191,8 @@ export default function Escort() {
           >
             <div className="flex items-center justify-center absolute left-3">
               <button
-                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${
-                  escort ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
-                }`}
+                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${escort ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+                  }`}
               ></button>
             </div>
             <div className="flex items-center w-[100px] leading-4 w-full">
@@ -169,9 +206,8 @@ export default function Escort() {
           >
             <div className="flex items-center justify-center absolute left-3">
               <button
-                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${
-                  massage ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
-                }`}
+                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${massage ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+                  }`}
               ></button>
             </div>
             <div className="flex items-center w-[100px] leading-4 w-full">
@@ -185,9 +221,8 @@ export default function Escort() {
           >
             <div className="flex items-center justify-center absolute left-3">
               <button
-                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${
-                  exotic ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
-                }`}
+                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${exotic ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+                  }`}
               ></button>
             </div>
             <div className="flex items-center w-[100px] leading-4 w-full">
@@ -204,9 +239,8 @@ export default function Escort() {
           >
             <div className="flex items-center justify-center absolute left-3">
               <button
-                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${
-                  sensual ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
-                }`}
+                className={`w-[31px] h-[31px] rounded-[100%] border-2 border-[#0CA36C] ${sensual ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+                  }`}
               ></button>
             </div>
             <div className="flex items-center w-[100px] leading-4  w-full">
@@ -217,20 +251,9 @@ export default function Escort() {
           </div>
         </div>
         {sensual && <SensualServices />}
-        <div className="flex items-center justify-center px-5">
-          <div className="flex items-center justify-center w-full max-w-[420px] my-5">
-            <Button
-              className={
-                "flex items-center w-[249px] mt-[45px] px-[40px] py-2 my-2 w-fit max-w-[270px] justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] py-2 rounded-xl"
-              }
-              text={"Submit>>"}
-              size="42px"
-              onClick={HandleOnClick}
-              disabled={service?.length <= 0}
-            />
-          </div>
-        </div>
-      </div>
+        
+      </div> */}
+
     </div>
   );
 }

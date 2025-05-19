@@ -5,10 +5,12 @@ import { HandleDiscountCoupon } from "../../redux/action/VAI";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading from "../../components/Loading/Index";
+import { useTranslation } from "react-i18next";
 
 const DiscountCoupon = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const { t } = useTranslation();
 
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const [yourValueState, setYourValueState] = useState();
@@ -96,7 +98,7 @@ const DiscountCoupon = () => {
           src={import.meta.env.BASE_URL + "images/V.A.I..png"}
         />
         <p className="text-xl mt-8 font-semibold">
-          Verified Anonymous Identity
+          {t("discountCoupon.title")}
         </p>
       </div>
 
@@ -107,7 +109,7 @@ const DiscountCoupon = () => {
           className="bg-[#CFCFCF] text-center w-[80%] p-2 border-[2px] border-gray-600 mx-auto font-extrabold text-[21px]"
           value={yourValueState}
           onChange={(e) => setYourValueState(e.target.value)}
-          placeholder="#1832-9912-7552"
+          placeholder={t("discountCoupon.placeholder")}
         />
         {error.coupon && (
           <label className="text-red-500 text-lg flex items-baseline pl-[33px] pt-[2px]">
@@ -128,15 +130,15 @@ const DiscountCoupon = () => {
           }
           text={
             !isLoading ? (
-              "Submit Payment"
+              t("discountCoupon.submitButton")
             ) : (
-              <div className="flex items-center	justify-center pt-[6px]">
+              <div className="flex items-center	justify-center">
                 <Loading />
               </div>
             )
           }
-          size="45px"
           onClick={HandleClick}
+          disabled={isLoading}
         />
       </div>
     </div>

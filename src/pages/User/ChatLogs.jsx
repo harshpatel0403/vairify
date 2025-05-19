@@ -4,8 +4,11 @@ import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import Loading from "../../components/Loading/Index";
+import BottomTabbar from "../../components/BottomTabbar/BottomTabbar";
+import PageTitle from "../../components/PageTitle";
 
-const   ChatLogs = () => {
+const ChatLogs = () => {
   const socket = io(import.meta.env.VITE_APP_SOCKET_BASE_URL);
 
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -18,15 +21,15 @@ const   ChatLogs = () => {
 
   useEffect(() => {
 
-      setLoading(true)
-      socket.emit('fetch-all-in-app-messages', { userId: UserDetails?._id },(data) => {
-        console.log(data, ' <=== data....')
-        setLoading(false)
-        setChatsData(data)
-      })
-      return () => {
-        socket.disconnect();
-      };
+    setLoading(true)
+    socket.emit('fetch-all-in-app-messages', { userId: UserDetails?._id }, (data) => {
+      console.log(data, ' <=== data....')
+      setLoading(false)
+      setChatsData(data)
+    })
+    return () => {
+      socket.disconnect();
+    };
   }, [])
 
 
@@ -82,17 +85,19 @@ const   ChatLogs = () => {
   // ]
 
 
-  if(loading) {
+  if (loading) {
     return (
-      <p className="w-full">Loading...</p>
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
+      </div>
     )
   }
 
   if (ChatsData?.length === 0) {
-    return <div className="p-[40px]">
-      <div className="bg-[#ffffff94] max-w-[100%] mx-auto min-h-[calc(100vh-230px)] flex flex-col justify-center rounded-[25px] w-full text-center">
-        <img src={'/images/no-chat-data.png'} className="w-full max-w-[450px] mx-auto"alt="No Data" />
-        <h2 className="text-[22px]">You don't have any chat</h2>
+    return <div className="sm:my-[48px]">
+      <div className="sm:bg-[#FFFFFF0A] mx-auto flex flex-col justify-center items-center rounded-[16px] w-[90%] h-[70vh]">
+        <img src={'/images/home/no-chats.svg'} className="w-full max-w-[450px] mx-auto" alt="No Data" />
+        <h2 className="text-[24px] font-medium text-white text-center">You don't have any chat</h2>
       </div>
     </div>;
   }
@@ -117,50 +122,56 @@ const   ChatLogs = () => {
     return groupedItems;
   }
 
-  
+
   const chatsGroupData = groupItemsByDay(ChatsData || [])
 
 
   return (
-    <div className="p-0 pt-4 m-0 main-container">
-      <div className="pb-1">
-        <div className="bg-[#8691a6]">
-          <span className="text-[#000] text-[25px] font-bold font-serif">Chat Logs</span>
-        </div>
-        <div className="mx-6 inner-content-part-title">
-          {Object.keys(chatsGroupData).map(item => (  
-            <>
-              <p className="text-[#000] py-2 flex flex-row justify-start text-[18px] font-bold font-serif">{item}</p>
-              <div className="border border-black" />
-              {chatsGroupData[item]?.map(items => {
+    <div className="container mb-[48px]">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Message"} />
+      </div>
+      <div className="mb-[16px]  chats-container">
+        {Object.keys(chatsGroupData).map(item => (
+          <>
+            <p className="text-white text-[16px] font-medium mb-[8px]">{item}</p>
+            {chatsGroupData[item]
+              ?.filter(chat => chat?.receiverId && typeof chat.receiverId === 'object')
+              ?.map(items => {
+
                 return (
-                  <div key={items._id} className="my-4" onClick={() => navigate(`/chat/${items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId'] ?._id}`)}>
-                    <div className="bg-[#3760CB] relative justify-center flex flex-row rounded-full border-[3px] border-black h-[80px]">
-                      <div className="absolute m-1 w-[68px] h-[68px] rounded-full left-0 top-0 bg-[#b9bacc] overflow-hidden border-2">
-                        <img className="w-full"
-                          src={
-                            import.meta.env.VITE_APP_S3_IMAGE +
-                            `/${items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId'] ?.profilePic}`
-                          }
-                          // src={
-                          //   import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                          //   `/${items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId'] ?.profilePic}`
-                          // }
-                          alt={items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId'] ?.name}
-                        />
+                  <div key={items._id} onClick={() => navigate(`/chat/${items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId']?._id}`)}>
+                    <div className="bg-[#FFFFFF14] relative justify-between flex rounded-[8px] p-[10px] mb-[16px] cursor-pointer">
+                      <div className="flex items-center gap-[16px]">
+                        <div className="w-[40px] h-[40px] rounded-full bg-[#b9bacc] overflow-hidden">
+                          <img className="w-[40px] h-[40px] rounded-full object-cover"
+                            src={
+                              import.meta.env.VITE_APP_S3_IMAGE +
+                              `/${items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId']?.profilePic}`
+                            }
+                            // src={
+                            //   import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
+                            //   `/${items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId'] ?.profilePic}`
+                            // }
+                            alt={items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId']?.name}
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-white font-medium text-[14px]">{items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId']?.name}</p>
+                          <p className="text-[#919EAB] font-medium text-[14px]">VAI<span className="logoSetupweight">RIFY ID</span> {items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId']?.vaiID}</p>
+                        </div>
                       </div>
-                      <div className="self-center">
-                        <p className="text-[#fff] text-[20px] p-0 m-0 font-bold font-serif">{items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId'] ?.name}</p>
-                        <p className="text-[#fff] p-0 m-0 text-[10px] font-extrabold uppercase">VAI<span className="logoSetupweight">RIFY ID</span> {items?.[items?.senderId?._id !== UserDetails?._id ? 'senderId' : 'receiverId'] ?.vaiID}</p>
-                      </div>
+                      <div></div>
                     </div>
                   </div>
                 )
               })}
-            </>  
-          ))}
-        </div>
+          </>
+        ))}
       </div>
+      <div className="sm:pb-0 pb-[80px]"></div>
+      <BottomTabbar
+      />
     </div>
   );
 };

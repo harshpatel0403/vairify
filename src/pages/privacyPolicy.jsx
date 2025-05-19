@@ -1,75 +1,70 @@
 /* eslint-disable react/no-unescaped-entities */
 
+import PageTitle from "../components/PageTitle";
+
 const PrivacyPolicy = () => {
   return (
-    <div className="main-container flex flex-col justify-start">
-      <div className="w-full flex items-center justify-center pt-5 pb-3">
-        <h2 className="text-[18px] md:text-[22px] text-blue-700 font-extrabold whitespace-nowrap">
-          Privacy Policy
-        </h2>
+    <div className="container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Privacy Policy"} />
       </div>
-
       <div
-        className="w-full py-2 mx-auto inner-content-part text-left"
-        style={{
-          backgroundColor: "rgb(255 255 255 / 100%)",
-          minHeight: "calc(100vh - 500px)",
-        }}
+        className="w-full py-2 mb-[5%] mx-auto inner-content-part text-left text-white max-h-full sm:text-base text-sm"
       >
-        <p className="font-bold px-4 w-full max-w-full mb-1">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-1">
           Last Updated: May 1st, 2023
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           Welcome to Vairify.io. Protecting the privacy and personal data of our
           visitors and members is a cornerstone of our mission. This Privacy
           Policy outlines the types of information we collect, how it is used,
           stored, and protected, and how we adhere to international privacy
           standards, including the GDPR, CCPA, and CalOPPA
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-1 mt-3">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-1 mt-3">
           For inquiries or more information about our Privacy Policy, please
           contact us directly
         </p>
-        <p className="px-4 w-full max-w-full mb-1">
+        <p className="sm:px-4 w-full max-w-full mb-1 opacity-[0.6]">
           This Privacy Policy applies solely to online activities at Vairify.io
           and is valid for visitors to our website regarding the information
           they share and/or collect with us.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-1">Interpretation</p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-1">Interpretation</p>
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           Capitalized terms are defined as follows, with the same meaning in
           both singular and plural forms:
         </p>
 
-        <ul className="inner-list-data">
+        <ul className="inner-list-data opacity-[0.6]">
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">Company: </span>Referred to as "the
               Company," "We," "Us," or "Our" in this document, means Vairify
               Inc.
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">Country: </span>Refers to Panama.
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">Device: </span>Any device that can
               access the Service, including computers, cellphones, or digital
               tablets.
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">Personal Information: </span>
               Information relating to an identified or identifiable individual.
               • Service: The Website.
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">Service Provider: </span>Third-party
               companies or individuals employed by the Company to facilitate the
               Service, provide the Service on behalf of the Company, or assist
@@ -77,7 +72,7 @@ const PrivacyPolicy = () => {
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">
                 Third-party Social Media Service:{" "}
               </span>
@@ -86,19 +81,19 @@ const PrivacyPolicy = () => {
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">Usage Data: </span>Data collected
               automatically, generated by the use of the Service or from the
               Service infrastructure itself.
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">Website: </span>Refers to Vairify.io.
             </p>
           </li>
           <li>
-            <p className="pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               <span className="font-bold">You: </span>The individual using the
               Service, or the company, or other legal entity on behalf of which
               such individual is accessing or using the Service.
@@ -106,15 +101,15 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
 
-        <p className="font-bold px-4 w-full max-w-full mb-1 mt-4">Consent</p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-1 mt-4">Consent</p>
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           By using our website, you consent to our Privacy Policy and agree to
           its terms.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-1 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-1 mt-4">
           Information We Collect
         </p>
-        <p className="px-4 w-full max-w-full mb-1">
+        <p className="sm:px-4 w-full max-w-full mb-1 opacity-[0.6]">
           We collect your driver’s license information for identity verification
           through a third-party KYC process by ComplyCube, based in the UK. This
           AI-validated process, including a selfie, confirms you as the
@@ -126,101 +121,101 @@ const PrivacyPolicy = () => {
           investigations, we may disclose necessary information to authorities,
           prioritizing user anonymity and trust.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-1">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-1">
           Accuracy and Retention of Personal Information
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           We ensure the accuracy and completeness of Personal Information for
           its intended use. Personal Information will be retained as required by
           applicable laws or regulations and securely destroyed when no longer
           needed.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           Protection of Personal Information
         </p>
-        <p className="px-4 w-full max-w-full">
+        <p className="sm:px-4 w-full max-w-full opacity-[0.6]">
           We implement physical, procedural, and technical safeguards to protect
           Personal Information. However, no method of transmission or storage is
           100% secure. We are committed to notifying you and relevant
           authorities of any security breach in compliance with applicable law.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           Data Collection, Use, and Storage
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           Data is collected directly from users to provide and improve our
           website, analyze usage, and develop new features. All data is stored
           under a unique identifier, with industry-standard security practices
           ensuring data confidentiality and integrity.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           Log Files and Analytics
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           Vairify.io uses log files and Google Analytics to analyze trends,
           administer the site, and gather demographic information. These tools
           do not link to personally identifiable information.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           Advertising Partners
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           We may share offers from us and our partners, adhering to our
           partners' privacy policies.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           Advertising Partners
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           We may share offers from us and our partners, adhering to our
           partners' privacy policies.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           CCPA and GDPR Rights
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           We acknowledge and support your rights under the CCPA and GDPR,
           including requests for data access, deletion, and portability. Contact
           us to exercise these rights.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           CalOPPA Compliance
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           Our global internet reach means CalOPPA applies, and we fully comply
           by disclosing the collection and use of personal information.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           Changes to This Privacy Policy
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           We may update our Privacy Policy, notifying users through our website
           and email before changes take effect.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">
           Children’s Information
         </p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           We do not knowingly collect information from children under 13.
           Contact us if you believe we have inadvertently collected such
           information.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-4">Contact Us</p>
-        <p className="px-4 w-full max-w-full mb-2">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-4">Contact Us</p>
+        <p className="sm:px-4 w-full max-w-full mb-2 opacity-[0.6]">
           For more information or to exercise your privacy rights, visit
           Vairify.io or contact us via email.
         </p>
 
-        <p className="font-bold px-4 w-full max-w-full mb-2 mt-5">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2 mt-5">
           Info@Vairify.io
         </p>
       </div>

@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import UserGalleryService from "../../services/UserGalleryService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import GalleryComment from "./GalleryComment";
 const GalleryDetails = () => {
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const navigate = useNavigate();
@@ -9,144 +10,111 @@ const GalleryDetails = () => {
   const [filteredData, setFilteredData] = useState([]);
 
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
-  UserGalleryService.getUserGallery(UserData?._id)
-    .then((res) => {
-      const updatedData = res?.images?.filter((item) => item?.image === state?.item?.image);
-      setFilteredData(updatedData);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+
+  useEffect(() => {
+
+    UserGalleryService.getUserGallery(UserData?._id)
+      .then((res) => {
+        const updatedData = res?.images?.filter((item) => item?.image === state?.item?.image);
+        setFilteredData(updatedData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [])
 
   return (
-    <div
-      className="main-container rounded-2xl flex flex-col"
-      style={{ height: "calc(100vh - 149px)" }}
-    >
-      <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="w-full mx-auto flex flex-row justify-between items-start mt-4">
-          <div className="flex flex-col items-center justify-center leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold font-Roboto-Serif">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold font-Roboto-Serif">
-                  RIFY ID
-                </span>
-              </span>
+    <>
+      <div className="md:hidden block fixed top-0 sm:h-[80px] h-[70px] w-full bg-[#060C4D] z-50"></div>
+      <div className="container">
+        <div className=" w-full sm:flex hidden flex-row sm:justify-around justify-between items-end mt-[102px] sm:p-[16px] sm:bg-[#FFFFFF0A] rounded-[16px]">
+          <div className="flex flex-col items-center justify-center sm:min-w-[120px] min-w-[80px]">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              VAIRIFY ID
             </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold uppercase">
-                {state?.user?.vaiID}
-              </span>
+            <div className="font-bold sm:text-lg text-base text-white uppercase">
+              {state?.user?.vaiID}
             </div>
           </div>
-          <div className="w-[120px] relative">
+          <div className="relative">
             <div
-              style={{ left: "-10px", bottom: "65px" }}
-              className="absolute w-full h-full rounded-full"
+              className="sm:h-[120px] h-[80px] sm:w-[120px] w-[80px] rounded-full mt-[-74px] relative flex justify-center"
             >
               <img
-               src={
-                state?.user?.profilePic
-                  ? import.meta.env.VITE_APP_S3_IMAGE +
-                  `/${state?.user?.profilePic}`
-                  : state?.user?.gender === "male"
-                    ? "/images/male.png"
-                    : "/images/female.png"
-              }
-                // src={
-                //   state?.user?.profilePic
-                //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                //     `/${state?.user?.profilePic}`
-                //     : state?.user?.gender === "male"
-                //       ? "/images/male.png"
-                //       : "/images/female.png"
-                // }
+                src={
+                  state?.user?.profilePic
+                    ? import.meta.env.VITE_APP_S3_IMAGE +
+                    `/${state?.user?.profilePic}`
+                    : state?.user?.gender === "male"
+                      ? "/images/male.png"
+                      : "/images/female.png"
+                }
                 alt="Profile"
-                className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
+                className="sm:w-[100px] sm:h-[100px] w-[80px] h-[80px] rounded-[125px] border-2 border-white"
               />
+              {state?.user?._id !== UserDetails?._id && (
+                <div style={{ right: "0px", bottom: "0px" }} className="absolute">
+                  <img src={"/images/profile-icon.png"} alt="Profile" />
+                </div>
+              )}
             </div>
-            {state?.user?._id !== UserDetails?._id && (
-              <div style={{ right: "15px", top: "25px" }} className="absolute">
-                <img src={"/images/profile-icon.png"} alt="Profile" />
+            <div className="flex-col flex justify-center items-center mt-[24px]">
+              <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+                Name
               </div>
-            )}
-          </div>
-          <div className="leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold font-Roboto-Serif">
-                TruRevu
-              </span>
-            </div>
-            <div className="flex flex-row justify-center items-center">
-              {Array.from(
-                {
-                  length: state?.user?.averageRating || 0,
-                },
-                (_, index) => index
-              )?.map((rating) => (
-                <img
-                  key={rating}
-                  src="/images/Star.svg"
-                  className="drop-shadow-[1px_1px_0px_#111] mr-0.5 w-[10px] h-[10px]"
-                  alt=""
-                />
-              ))}
-              {Array.from(
-                {
-                  length: 5 - Math.floor(state?.user?.averageRating),
-                },
-                (_, index) => index
-              )?.map((rating) => (
-                <img
-                  key={rating}
-                  src="/images/StarUnfilled.svg"
-                  className="drop-shadow-[1px_1px_0px_#111] mr-0.5 w-[10px] h-[10px]"
-                  alt=""
-                />
-              ))}
-              <span className="text-[15px] text-[#040C50] font-bold ml-0.5">
-                {(state?.user?.averageRating || 0).toFixed(1)}
+              <span className="font-bold sm:text-lg text-base text-white">
+                {state?.user?.name}
               </span>
             </div>
           </div>
+          <div className="leading-[18px] sm:min-w-[120px] min-w-[80px] flex flex-col justify-center items-center">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              TruRevu
+            </div>
+            <div className="flex justify-center items-center gap-1">
+              <div className="sm:text-lg text-base text-white font-bold ">
+                {state?.user?.averageRating}
+              </div>
+              <img src="/images/home/star.svg" alt="star" />
+            </div>
+          </div>
         </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-5">
-          <span className="font-bold text-[24px] capitalize">
-            {state?.user?.name}
-          </span>
-        </div>
-      </div>
-      <div className="overflow-y-scroll py-5 flex-auto">
-        <div className="rounded-[15px] bg-[#040C50]/[70%] max-w-[393px] w-full mx-auto ">
-          <img
-            src={`${import.meta.env.VITE_APP_S3_IMAGE}/${state?.item?.image
-              }`}
-            alt={`Image `}
-            className="rounded-t-[15px] max-w-[393px] w-full mx-auto "
-          />
+
+        <div className="pt-[24px]">
+          <div className="rounded-[15px] bg-[#040C50] max-w-[393px] aspect-square w-full mx-auto ">
+            <img
+              src={`${import.meta.env.VITE_APP_S3_IMAGE}/${state?.item?.image
+                }`}
+              alt={`Image `}
+              className="rounded-[15px] max-w-[393px] object-cover w-full h-full mx-auto "
+            />
+          </div>
           <div className="flex items-center justify-center py-3">
-            <div
-              className="flex items-center gap-1"
-              onClick={() =>
-                navigate("/user/gallerycomment", {
-                  state,
-                })
-              }
-            >
-              <span className={"text-[14px] text-white font-bold font-roboto"}>
-                {/* {state?.item?.comments?.length} */}
-                {filteredData[0]?.comments?.length}
-              </span>
-              <span className={"text-[14px] text-white font-bold font-roboto"}>
-                {`Comment${state?.item?.comments?.length > 1 ? "s" : ""}`}
-              </span>
-              <img src="/images/Vector.png" />
-            </div>
+            {/* <div
+                className="flex items-center gap-1"
+                // onClick={() =>
+                //   navigate("/user/gallerycomment", {
+                //     state: state,
+                //   })
+                // }
+              >
+                <span className={"text-[14px] text-white font-bold font-roboto"}>
+                  {filteredData[0]?.comments?.length}
+                </span>
+                <span className={"text-[14px] text-white font-bold font-roboto"}>
+                  {`Comment${state?.item?.comments?.length > 1 ? "s" : ""}`}
+                </span>
+                <img src="/images/home/comment.svg" />
+              </div> */}
           </div>
         </div>
+        <div className="text-white text-lg font-semibold">Comments</div>
+
+        <div>
+          <GalleryComment />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

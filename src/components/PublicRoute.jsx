@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import Loading from './Loading/Index';
 
 function PublicRoute(props) {
     const [isMounted, setIsMounted] = useState(false);
@@ -17,14 +18,16 @@ function PublicRoute(props) {
             navigate("/setup-face-verification");
         }
 
-        if(UserDetails && props.path){
+        if (UserDetails && props.path) {
             navigate("/business/community")
         }
         setIsMounted(true);
     }, []);
 
     if (!isMounted) {
-        return <>Please wait..</>
+        return <div className="text-white text-center mt-10">
+            <Loading />
+        </div>
     }
 
     return props?.children;

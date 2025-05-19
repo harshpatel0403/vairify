@@ -7,6 +7,12 @@ import Button from "../../../components/Button";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
 import { useSelector } from "react-redux";
+import Header from "../../../components/Header/Header";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import Loading from "../../../components/Loading/Index";
+import { MdPersonAdd } from "react-icons/md";
+import PageTitle from "../../../components/PageTitle";
+
 
 export default function InviteMemberToGroup() {
   const params = useParams();
@@ -15,6 +21,7 @@ export default function InviteMemberToGroup() {
   const [loading, setLoading] = useState(false);
   const [createMemberLoading, setCreateMemberLoading] = useState(false)
   const [members, setMembers] = useState([]);
+  const [allMembers, setAllMembers] = useState([]);
   const [groupDetails, setGroupDetails] = useState({});
   const [inviteInprogress, setInviteInprogress] = useState(false)
 
@@ -25,10 +32,11 @@ export default function InviteMemberToGroup() {
 
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
-console.log("ali state: ", state)
+  console.log("ali state: ", state)
   const getMemersDetails = async () => {
     try {
       const res = await DateGuardService.getMembers(UserDetails?._id);
+      setAllMembers(res);
       setMembers(res);
     } catch (error) {
       console.log(error);
@@ -56,7 +64,7 @@ console.log("ali state: ", state)
   };
 
   useEffect(() => {
-    if(!UserDetails) {
+    if (!UserDetails) {
       nav('/login')
       return
     }
@@ -84,10 +92,10 @@ console.log("ali state: ", state)
 
   const handleCreateMember = async (e) => {
     e.preventDefault();
-    if(!name){
+    if (!name) {
       return toast.error('Name is required!')
     }
-    if(!isValidPhoneNumber){
+    if (!isValidPhoneNumber) {
       return toast.error('Valid phone number is required!')
     }
     try {
@@ -96,7 +104,7 @@ console.log("ali state: ", state)
         {
           name,
           phoneNumber: `+${phoneNumber}`,
-          groupToken:state.groupToken
+          groupToken: state?.body?.groupToken
         },
         UserDetails?._id
       );
@@ -106,7 +114,7 @@ console.log("ali state: ", state)
       setLoading(true)
       getMemersDetails().finally(() => {
         setLoading(false)
-      }) 
+      })
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.error || error.message);
@@ -116,19 +124,25 @@ console.log("ali state: ", state)
   };
 
   const handleSearch = (e) => {
-    console.log("Handle Search Event => ", e);
+    if (e != "") {
+      const filtered = allMembers?.filter((member) =>
+        member?.name?.toLowerCase().includes(e.toLowerCase())
+      );
+      setMembers(filtered);
+    }
+    else {
+      setMembers(allMembers)
+    }
   };
 
   if (loading) {
     return (
-      <div className="main-container h-full">
-        <div className="text-white h-full flex justify-center items-center">
-          <p>Loading...</p>
-        </div>
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
       </div>
     );
   }
-  console.log(members, " <=== members...");
+  console.log(allMembers, " <=== members...");
 
   const validatePhoneNumber = (
     inputNumber,
@@ -151,148 +165,184 @@ console.log("ali state: ", state)
   };
 
   return (
-    <div className="main-container form-field-container p-0">
-      <div className="mx-auto flex flex-col justify-center items-center pt-2 form-field-container">
-        <div className="">
-          <span className="font-bold text-[20px] text-white">
-            Invite to Group {groupDetails?.name || ''}
-          </span>
+    <>
+      <div className="container">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px] md:hidden block">
+          <PageTitle title={`Invite to Group ${groupDetails?.name || ''}`} isSmall={true} />
         </div>
-        <div
-          className="flex items-center justify-center bg-[#6e6880] py-2  mt-4 form-field-container"
-          style={{ border: "1px solid #0247FF" }}
-        >
+        <div className="relative md:block hidden">
+          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white sm:my-[48px] mt-[24px]">Invite to Group {groupDetails?.name || ''}</h3>
+          <div className=" absolute right-0 sm:top-0 top-6 sm:block hidden">
+            <Button
+              onClick={() => setShowModal(true)}
+              text='+ Add Contacts'
+              className={
+                "font-medium text-[14px] text-[#060C4D] text-center py-[6px] px-[12px]"
+              }
+            />
+          </div>
+        </div>
+
+
+        {/* <input
+            className='w-full border border-[#919EAB33] text-[18px] focus:outline-none bg-transparent rounded-lg'
+            type="search"
+            onSearch={handleSearch}
+            placeholder='Search Contacts'
+          /> */}
+        <div className="mt-3">
           <SearchBox
             onSearch={handleSearch}
-            bgColor={"[#6e6880]"}
+            bgColor={"transparent"}
             classname={
-              "border-none focus:outline-none focus:shadow-none font-medium text-[25px] py-0 px-0 pr-11 text-white"
+              "focus:outline-none focus:shadow-none !font-normal !text-[14px] py-[14px] px-[16px] text-white !border !rounded-lg !border-[#919EAB33] bg-transparent"
             }
             placeholder="Search Contacts"
           />
         </div>
-        <div className="flex flex-col justify-start items-center pb-12 overflow-scroll form-field-container">
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-[24px] my-[40px]">
           {members.map((member, index) => {
             const isInvited = !!groupDetails?.members?.find(
               (memb) => member._id === memb?.memberId?._id
             );
+            console.log('====================================');
+            console.log(isInvited);
+            console.log('====================================');
+
+            const name = member?.name || "";
+            const initials = name
+              .split(" ")
+              .filter(Boolean)
+              .slice(0, 2)
+              .map(word => word[0])
+              .join("")
+              .toUpperCase();
+
             return (
-              <div key={index} className="w-full mx-auto flex flex-col justify-center items-center mt-2">
-                <div className="w-full flex flex-row justify-between items-center py-4 px-4 h-[77px] hover:bg-[#6e6880]">
+              <div
+                key={index}
+                className=""
+              >
+                <div className="w-full flex justify-between items-center gap-2">
+
                   <div className="flex items-center justify-center">
-                    <div className="mr-4 w-[50px] h-[50px] flex justify-center items-center bg-[#02227E] text-white rounded-full">
-                      <span>{member?.name?.[0]}</span>
+                    {/* Circle with initials */}
+                    <div className="mr-4 w-[50px] h-[50px] flex justify-center items-center bg-[#FFFFFF14] text-white rounded-full text-lg font-semibold">
+                      <span>{initials}</span>
                     </div>
+
+                    {/* Name and Phone */}
                     <div className="text-left">
-                      <span className="font-medium text-[18px] text-white">
+                      <span className="font-medium text-[14px] text-white">
                         {member.name}
                       </span>
                       <br />
-                      <span className="rounded-[10px] text-left font-bold text-[14px] text-[#fff] opacity-50">{member.phoneNumber}</span>
+                      <span className="rounded-[10px] font-bold text-[14px] text-[#fff] opacity-60">
+                        {member.phoneNumber}
+                      </span>
                     </div>
                   </div>
-                  <div className="bg-[#02227E] p-2 text-white rounded-[4px]">
-                    <button
-                      disabled={isInvited || inviteInprogress}
+
+                  {/* Invite Button */}
+                  <div className={`py-[4px] px-[16px]  ${isInvited ? " bg-[#0085B9] text-white" : "text-[#060C4D] bg-white"}  rounded-[8px]`}>
+                    <div
+                      // disabled={isInvited || inviteInprogress}
                       onClick={() => handleInvite(member)}
                     >
-                      <span className="font-black text-[14px] text-[#fff]">
+                      <span className={`text-[12px] font-semibold`}>
                         {isInvited ? "Invited" : "Invite"}
                       </span>
-                    </button>
+                    </div>
                   </div>
+
                 </div>
               </div>
             );
           })}
         </div>
-      </div>
-      <button
-        onClick={() => setShowModal(true)}
-        className="h-[50px] w-[50px] flex justify-center items-center bg-[#02227E] text-white rounded-full fab cursor-pointer"
-      >
-        <i className="fa fa-plus"></i>
-      </button>
+        <div className="md:hidden block fixed right-[16px] bottom-[32px] z-50">
+          <button className="bg-white rounded-full h-[52px] w-[52px] flex items-center justify-center" onClick={() => setShowModal(true)}>
+            <MdPersonAdd color="#060C4D" size={20} />
+          </button>
+        </div>
+        {showModal ? (
+          <>
+            <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto w-[90%] mx-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div
+                className="relative w-auto mx-auto max-w-5xl"
+                style={{ width: "25rem" }}
+              >
+                {/*content*/}
+                <form onSubmit={handleCreateMember}>
+                  <div className="modal-body-part border-0 rounded-2xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    {/*header*/}
+                    <button
+                      className="absolute right-[24px] top-[20px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                      onClick={() => { setShowModal(false); setName(""); setPhoneNumber(""); }}
+                    >
+                      <IoCloseCircleOutline size={26} />
 
-      {showModal ? (
-        <>
-          
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none add-member-modal">
-            <div
-              className="relative w-auto mx-auto max-w-5xl"
-              style={{ width: "25rem" }}
-            >
-              {/*content*/}
-              <form onSubmit={handleCreateMember}>
-                <div className="modal-body-part border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                  {/*header*/}
-                  <button
-                    className="absolute right-2 top-2 p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => {setShowModal(false); setName(""); setPhoneNumber("");}}
-                  >
-                    <img src={"/images/close-btn.svg"} alt="cancle" />
-                  </button>
-                  {/*body*/}
-                  <div className="relative py-5 flex-auto">
-                    <h2>Add to Contacts</h2>
-                    <div className="px-5 pb-3">
+                    </button>
+                    {/*body*/}
+                    <div className="relative p-[24px] flex-auto">
+                      <h2 className="text-center text-[#212B36] text-[20px] font-medium mb-4">Add to Contacts</h2>
                       <input
-                        className="w-full p-3 modal-input"
+                        className=" border border-[#919EAB33] p-[14px] mb-3 placeholder:!text-black text-black text-[14px] font-normal bg-transparent rounded-lg w-full max-w-[500px]"
                         type="text"
                         placeholder="Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                       />
-                    </div>
-                    <div className="px-5 pb-3 ">
-                     
-                      <PhoneInput
-                        inputClass="bg-[transparent] w-[100%]"
-                        buttonClass=""
-                        searchClass=""
-                        dropdownClass=""
-                        containerClass="w-full modal-input custom-flag-part"
-                        country={"in"}
-                        enableSearch={true}
-                        value={phoneNumber}
-                        onChange={(phone) => setPhoneNumber(phone)}
-                        isValid={(inputNumber, country, countries) => {
-                          const phoneLength = Math.ceil(
-                            (countries.filter(
-                              (val) => val.dialCode === country.dialCode
-                            )[0])?.format.length / 2
-                          );
-                          let result = validatePhoneNumber(
-                            inputNumber,
-                            country,
-                            true,
-                            phoneLength
-                          );
-                          setIsValidPhoneNumber(result)
-                          return true
-                        }}
-                      />
-                    </div>
-                    <div className="w-full mx-auto flex flex-col justify-center items-center">
-                      <div className="w-[142px] my-2">
-                        <Button
-                          disabled={createMemberLoading}
-                          text={createMemberLoading ? "Loading.." : "Invite"}
-                          className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family"
-                          size="41px"
-                          // onClick={handleCreateMember}
-                          type="submit"
+                      <div>
+                        <PhoneInput
+                          inputClass="!bg-[transparent] w-[100%] border border-[#919EAB33] !text-black"
+                          buttonClass=""
+                          searchClass=""
+                          dropdownClass=""
+                          containerClass="w-full"
+                          country={"in"}
+                          enableSearch={true}
+                          value={phoneNumber}
+                          onChange={(phone) => setPhoneNumber(phone)}
+                          isValid={(inputNumber, country, countries) => {
+                            const phoneLength = Math.ceil(
+                              (countries.filter(
+                                (val) => val.dialCode === country.dialCode
+                              )[0])?.format.length / 2
+                            );
+                            let result = validatePhoneNumber(
+                              inputNumber,
+                              country,
+                              true,
+                              phoneLength
+                            );
+                            setIsValidPhoneNumber(result)
+                            return true
+                          }}
                         />
+                      </div>
+                      <div className="w-full mx-auto flex flex-col justify-center items-center">
+                        <div className="max-w-[500px] w-full mt-4">
+                          <Button
+                            disabled={createMemberLoading}
+                            text={createMemberLoading ? <div className="flex items-center	justify-center">
+                              <Loading />
+                            </div> : "Invite"}
+                            // onClick={handleCreateMember}
+                            type="submit"
+                            className={'secondary-btn'}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
-    </div>
+            <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+          </>
+        ) : null}
+      </div>
+    </>
   );
 }

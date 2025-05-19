@@ -4,12 +4,16 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Selecter from "../../../components/Selecter/Selecter";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  HandleGetServices,
   HandleSelectServices,
   HandleServices,
 } from "../../../redux/action/Services";
 import { toast } from "react-toastify";
 import Loading from "../../../components/Loading/Index";
 import Button from "../../../components/Button";
+import { FormControl, MenuItem, Select } from "@mui/material";
+import SelectBox from "../../../components/SelectBox";
+import PageTitle from "../../../components/PageTitle";
 
 const HourlyRates = () => {
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -170,6 +174,7 @@ const HourlyRates = () => {
             type: "success",
           });
           dispatch(HandleSelectServices([]));
+          dispatch(HandleGetServices(UserDetails?._id, UserDetails?.user_type));
           navigate(-3)
           setIsLoading(false);
         } else {
@@ -189,100 +194,111 @@ const HourlyRates = () => {
   };
 
   return (
-    <div className="main-container p-0">
-      <div className="flex flex-col justify-center items-center pt-custom-24 mx-auto">
-        <div className="text-[27px] text-[#000] font-bold pt-4">
-          <span>Hourly Rates</span>
-        </div>
-        <div className="data-body" style={{ maxWidth: "95%" }}>
-          <div className="w-full flex flex-row justify-between items-center mt-4">
-            <div className="w-[100px] flex flex-col justify-center items-center">
-              <span className="text-[14px] font-bold text-[#026EFF]">Time</span>
-            </div>
-            <div className="w-[160px] flex flex-col justify-center items-center">
-              <span className="text-[14px] font-bold text-[#026EFF]">
-                Incall
-              </span>
-            </div>
-            <div className="w-[100px] flex flex-col justify-center items-center">
-              <span className="text-[14px] font-bold text-[#026EFF]">
-                Outcall
-              </span>
-            </div>
-            <div className="w-[80px] flex flex-col justify-center items-center currency-part">
-              <Selecter
-                options={currencyOptions}
+    <div className="container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px] md:hidden block">
+        <PageTitle title={'Hourly Rates'} />
+      </div>
+      <div className="flex flex-col justify-center items-center  mx-auto ">
+        
+        <div className="flex justify-center items-center relative w-full md:my-[48px] my-[24px]">
+        <div className="text-center  sm:text-[28px] text-2xl text-white font-semibold md:block hidden">Hourly Rates</div>
+          <div className="absolute right-0 md:top-[-5px] top-[-24px]">
+            {/* <FormControl className='bg-[#040c50] text-white rounded-[30px]' sx={{ minWidth: 160 }}>
+              <Select
                 value={currency}
                 onChange={(e) => changeCurrency(e)}
-                className="text-[8px] text-right font-bold text-[#026EFF] txt-custom-color-4 shadow-none focus-visible:border-0 focus-visible:border-white px-1 py-2"
-                textSize="8px"
-                textColor="#026EFF"
-              />
-            </div>
-          </div>
-          <div className="w-full flex flex-col justify-center items-center data-item">
-            {hourlyData?.length > 0 &&
-              hourlyData?.map((hour, index) => {
-                return (
-                  <div className="w-full flex flex-row justify-between items-center mt-5 text-[13px] text-[#02227E] font-bold service-item-row">
-                    <div className="w-[100px] sm:w-[100px] flex flex-col justify-center items-center">
-                      <span className="text-[14px] font-medium">
-                        {hourss[hour.time]}
-                      </span>
-                    </div>
-                    <div className="w-[160px] flex flex-col justify-center items-center">
-                      <InputText
-                        value={hour?.incall}
-                        placeholder="Enter ammount"
-                        className="w-full text-[12px] font-bold"
-                        size="30px"
-                        onChange={(e) =>
-                          handleChange(index, "incall", e.target.value)
-                        }
-                      />
-                    </div>
-                    <div className="w-[100px] flex flex-col justify-center items-center">
-                      <InputText
-                        value={hour?.outcall}
-                        placeholder="Enter ammount"
-                        className="w-full text-[12px] font-bold"
-                        size="30px"
-                        onChange={(e) =>
-                          handleChange(index, "outcall", e.target.value)
-                        }
-                      />
-                    </div>
-                    <div className="w-[80px]  flex flex-col justify-center items-center">
-                      <span className="text-[14px] font-medium">
-                        {currency}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
+                // displayEmpty
+                // inputProps={{ 'aria-label': 'Without label' }}
+                sx={{ '& .MuiSelect-select': { color: currency ? 'white' : '#aaa', border: '1px solid rgba(255, 255, 255, 0.3)', backgroundColor: '#FFFFFF14', padding: '5px' } }}
+              >
+                <MenuItem value="" disabled selected>
+                   Currency
+                </MenuItem>
+                {currencyOptions?.map((item) => (
+                  <MenuItem value={item}>{item}</MenuItem>
+                ))}
+              </Select>
+            </FormControl> */}
+            <SelectBox
+              options={currencyOptions}
+              value={currency}
+              onChange={(e) => changeCurrency(e)}
+              className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px]"
+              size={"h-[42px]"}
+              textAlign={"text-left"}
+              rounded={"rounded-2xl"}
+              fontWeight={"font-bold"}
+              textColor={"text-white"}
+              textSize={"text-[14px]"}
+            />
           </div>
         </div>
+
+        <div className="sm:w-full w-[calc(100vw-32px)] mx-auto overflow-auto scrollbar-hidden">
+          <div className=" sm:w-full font-[500] text-[18px] mt-[5%] mx-auto w-fit">
+            <div className="flex flex-row text-white items-center mt-4 text-[14px] font-[500]">
+              <div className="w-[100px] flex justify-start items-center">Time</div>
+              <div className="flex-1 px-5">Incall</div>
+              <div className="flex-1 px-2">Outcall</div>
+              <div className="w-[100px] flex justify-center items-center">Currency</div>
+            </div>
+
+            <div className="flex flex-col gap-4 mt-4 text-white text-[13px] font-[400]">
+              {hourlyData?.length > 0 &&
+                hourlyData.map((hour, index) => (
+                  <div
+                    key={index}
+                    className="w-full flex flex-row items-center service-item-row"
+                  >
+                    <div className="w-[100px] flex justify-start items-center">
+                      <span>{hourss[hour.time]}</span>
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <InputText
+                        value={hour?.incall}
+                        placeholder="Enter amount"
+                        className="w-full text-[12px] border border-[#919EAB33] rounded-[10px] py-2 px-2 min-w-[100px]"
+                        onChange={(e) => handleChange(index, "incall", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex-1 px-2 min-w-0">
+                      <InputText
+                        value={hour?.outcall}
+                        placeholder="Enter amount"
+                        className="w-full text-[12px] border border-[#919EAB33] rounded-[10px] py-2 px-2 min-w-[100px]"
+                        onChange={(e) => handleChange(index, "outcall", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="w-[100px] flex justify-center items-center">
+                      <span className="text-[14px]">{currency}</span>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+
 
         {errors?.message && (
           <label className="text-red-500 text-lg pt-5 flex items-baseline ">
             {errors.message}
           </label>
         )}
-        <div className="mt-0 mb-2 flex justify-center items-center py-5 w-full">
+        <div className="flex justify-center w-full max-w-[500px] mx-auto pb-20 mt-[24px]">
           <Button
-            className={
-              "flex items-center justify-center max-w-[270px] bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-            }
             text={
               !isLoading ? (
                 "Submit"
               ) : (
-                <div className="flex items-center	justify-center pt-[6px]">
+                <div className="flex items-center	justify-center">
                   <Loading />
                 </div>
               )
             }
-            size="45px"
+            disabled={isLoading}
             onClick={handleSubmit}
           />
         </div>

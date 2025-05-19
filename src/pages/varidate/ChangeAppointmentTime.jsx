@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 import { combineDateTime, generateTimeSlots } from "../../utils";
 import moment from "moment";
 
-export default function ChangeAppointmentTime() {
+export default function ChangeAppointmentTime(props) {
   const navigate = useNavigate();
   const params = useParams();
   const [staff, setStaff] = useState("");
@@ -63,7 +63,7 @@ export default function ChangeAppointmentTime() {
       state: {
         ...payload,
         companionData: varidateData?.companionData,
-        appointmentId: params.appointmentId,
+        appointmentId: params.appointmentId || props?.state?.params?.appointmentId,
         from: "modify",
       },
     });
@@ -71,10 +71,10 @@ export default function ChangeAppointmentTime() {
 
   const location = useLocation();
   useEffect(() => {
-    if (location?.state) {
-      setVaridateData(location?.state);
+    if (location?.state || props?.state) {
+      setVaridateData(location?.state || props?.state);
     }
-  }, [location]);
+  }, [location, props]);
 
   useEffect(() => {
     console.log(varidateData, " <=== vairdate data...");
@@ -87,7 +87,7 @@ export default function ChangeAppointmentTime() {
   return (
     <div className="main-container">
       <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="w-full mx-auto flex flex-row justify-between items-start mt-2">
+        {/* <div className="w-full mx-auto flex flex-row justify-between items-start mt-2">
           <div className="flex flex-col items-center justify-center">
             <div>
               <span className="text-[18px] text-[#040C50] font-extrabold">
@@ -129,7 +129,6 @@ export default function ChangeAppointmentTime() {
                 className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
               />
             </div>
-            {/* <div style={{ right: '0px', top: '25px' }} className='absolute'><img src={'/images/SugarIcon2.png'} alt="Sugar Icon Second" /></div> */}
           </div>
           <div>
             <div>
@@ -172,12 +171,15 @@ export default function ChangeAppointmentTime() {
           <span className="font-bold text-[24px]">
             {varidateData?.companionData?.name}
           </span>
+        </div> */}
+        <div className="text-center text-lg font-medium text-white sm:mt-[48px] mt-[24px]">
+          Select Slot
         </div>
 
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-10 mb-10 gap-4">
+        <div className="w-full grid grid-cols-2 sm:gap-[24px] gap-[16px] mt-[24px]">
           {slots?.map((slot) => (
             <div className="w-full ">
-              {staff == slot ? (
+              {/* {staff == slot ? (
                 <div className="w-full mx-auto flex flex-row justify-center items-center">
                   <div className="max-w-[50%] w-[100%] mr-2 mb-2">
                     <Button
@@ -199,15 +201,13 @@ export default function ChangeAppointmentTime() {
                     />
                   </div>
                 </div>
-              ) : (
-                <Button
-                  onClick={() => handleClick(slot)}
-                  text={slot}
-                  className={
-                    "bg-[#9099BB] border-2 border-[#02227E] rounded-md font-bold text-[24px] text-[#01195C]"
-                  }
-                />
-              )}
+              ) : ( */}
+              <Button
+                onClick={() => handleClick(slot)}
+                text={slot}
+                className={'secondary-btn !bg-[#FFFFFF14] focus:!bg-[#405FC4] hover:!bg-[#405FC4]'}
+              />
+              {/* )} */}
             </div>
           ))}
           {/* <div className='w-full mt-4'>
@@ -256,26 +256,26 @@ export default function ChangeAppointmentTime() {
                     </div> */}
         </div>
 
-        <div className="w-full d-block mb-10 px-4">
+        <div className="w-full d-block ">
           <div className="w-full mx-auto flex flex-row justify-center items-center mt-2">
-            <span className="font-bold text-[20px]">
+            {/* <div className="text-center text-sm text-white mt-[24px]">
               {moment(varidateData?.date).format("dddd DD/MM/YYYY")}
-            </span>
+            </div> */}
           </div>
           {staff != "" && (
             <div className="w-full">
-              <div className="w-full mx-auto flex flex-row justify-center items-center mt-2">
-                <span className="font-bold text-[16px]">{`${staff}`} </span>
+              <div className="w-full mx-auto flex flex-row justify-center items-center mt-[8px]">
+                <div className="text-center text-sm text-white">{`${staff}`} </div>
               </div>
-              <div className="w-full mx-auto flex flex-row justify-center items-center mt-2">
-                <span className="font-bold text-[16px]">
+              <div className="w-full mx-auto flex flex-row justify-center items-center mt-[8px]">
+                <div className="text-center text-sm text-white">
                   Escort {varidateData?.type}
-                </span>
+                </div>
               </div>
-              <div className="w-full mx-auto flex flex-row justify-center items-center mt-2">
+              <div className="w-full mx-auto flex flex-row justify-center items-center mt-[24px]">
                 <textarea
                   rows="3"
-                  className="block p-2.5 w-full text-[15px] text-gray-900 rounded-md border-2 border-[#02227E] focus:ring-blue-500 dark:placeholder-gray-400 dark:text-white bg-[#a5adce] focus-visible:border-0 mt-2"
+                  className="w-full border-2 border-[#919EAB33] rounded-[8px] py-[10px] px-[14px] bg-transparent text-white font-normal text-[14px] mt-1 !placeholder-white "
                   value={varidateData?.address}
                   onChange={(event) =>
                     setVaridateData((prevValue) => ({
@@ -286,24 +286,23 @@ export default function ChangeAppointmentTime() {
                   placeholder="Address"
                 ></textarea>
               </div>
-              <div className="w-full mx-auto flex flex-row justify-center items-center mt-2 flex-wrap">
-                <span className="max-w-[50%] w-[100%] font-bold text-[16px] text-left">
+              <div className="mx-auto flex flex-row justify-center items-center gap-[8px] mt-[16px]">
+                <div className="text-center text-base text-white opacity-[0.7]">
                   Agreed Price
-                </span>
-                <div className="max-w-[50%] w-[100%] text-right">
-                  <Button
-                    onClick={() => navigateToSelectTime()}
-                    text={
-                      varidateData?.hours?.[varidateData?.type?.toLowerCase()] +
-                      " " +
-                      varidateData?.hours?.currency
-                    }
-                    bgColor="[#a5adce]"
-                    className={
-                      "w-24 bg-[#01195C] border-2 border-[#02227E] rounded-md font-bold text-[18px] text-[#000] !h-[35px]"
-                    }
-                  />
                 </div>
+                <Button
+                  // onClick={() => navigateToSelectTime()}
+                  text={
+                    varidateData?.hours?.[varidateData?.type?.toLowerCase()] +
+                    " " +
+                    varidateData?.hours?.currency
+                  }
+                  className={'!w-fit px-4 py-[4px] !bg-[#FFFFFF29] secondary-btn'}
+                  size={'32px'}
+                />
+              </div>
+              <div className="max-w-[500px] w-full mx-auto mb-[48px]">
+                <Button onClick={() => navigateToServicesRates()} text={'Save'} size={'48px'} className={'mt-[20px]'} />
               </div>
             </div>
           )}

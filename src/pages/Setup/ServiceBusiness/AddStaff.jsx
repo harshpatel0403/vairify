@@ -113,66 +113,17 @@ export default function AddStaff() {
 
 
     return (
-        <div className='main-container px-0 '>
-            <div className='w-full mx-auto flex flex-col justify-center items-center'>
-
-
-                <div className='w-full mx-auto flex flex-row justify-between items-start mt-2 px-[25px]'>
-                    <div className='flex flex-col items-center justify-center'>
-                        <div><span className='text-[18px] text-[#040C50] font-extrabold'>VAI<span className='text-[18px] text-[#040C50] font-semibold'>RIFY ID</span></span></div>
-                        <div><span className='text-[15px] text-[#040C50] font-bold'>{UserDetails?.vaiID}</span></div>
-                    </div>
-                    <div className='w-[120px] relative'>
-                        <div style={{ left: '10px', bottom: '65px' }} className='absolute w-full h-full rounded-full'>
-                            <div className='w-[110px] h-[110px] border-2 rounded-full overflow-hidden'>
-                                <img
-                                    // src={
-                                    //   import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                                    //   `/${appointment?.[ userType === 'client-hobbyist' ? 'companionId' : 'clientId']?.profilePic}`
-                                    // }
-                                    src={
-                                        UserDetails?.profilePic ? (import.meta.env.VITE_APP_S3_IMAGE + UserDetails?.profilePic) : UserDetails?.gender === "Male"
-                                            ? "/images/male.png"
-                                            : "/images/female.png"
-                                    }
-                                    // src={
-                                    //     UserDetails?.profilePic ? (import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL + UserDetails?.profilePic) : UserDetails?.gender === "Male"
-                                    //         ? "/images/male.png"
-                                    //         : "/images/female.png"
-                                    // }
-                                    alt="Intimate Massage"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div><span className='text-[18px] text-[#040C50] change-font-family'>TruRevu</span></div>
-                        <div className='flex flex-row justify-center items-center'>
-                            <FontAwesomeIcon icon={faStar} color={UserDetails?.averageRating >= 1 ? "#E1AB3F" : "#111"} className='text-[10px] margin-right-5' />
-                            <FontAwesomeIcon icon={faStar} color={UserDetails?.averageRating >= 2 ? "#E1AB3F" : "#111"} className='text-[10px] margin-right-5' />
-                            <FontAwesomeIcon icon={faStar} color={UserDetails?.averageRating >= 3 ? "#E1AB3F" : "#111"} className='text-[10px] margin-right-5' />
-                            <FontAwesomeIcon icon={faStar} color={UserDetails?.averageRating >= 4 ? "#E1AB3F" : "#111"} className='text-[10px] margin-right-5' />
-                            <FontAwesomeIcon icon={faStar} color={UserDetails?.averageRating >= 5 ? "#E1AB3F" : "#111"} className='text-[10px] margin-right-5' />
-                            <span className='text-[15px] text-[#040C50] font-bold'>{(UserDetails?.averageRating || 0).toFixed(1)}</span></div>
-                    </div>
+        <div className='container'>
+            <div className='w-full mx-auto '>
+                <div className="text-center md:my-[48px] mt-[-34px] mb-[24px]  text-[28px] text-white font-semibold">
+                    Add Staff
                 </div>
 
-
-                {/* <div className="mt-3 flex flex-col justify-center items-center relative bottom-3">
-                    <div>
-                        <img
-                            src={"/images/varify_logo.png"}
-                            alt="Varify Logo"
-                            className="mt-5"
-                        />
-                    </div>
-                </div> */}
-                <div className='w-full mx-auto flex flex-row justify-baseline items-center mt-5'>
-                    <div className='flex items-center justify-center px-[15px]'><span className='font-bold text-[15px]'>Enter Email</span></div>
-                    <div className='table items-center justify-center px-[15px]'>
+                <div className='flex justify-between items-start mt-5 gap-4'>
+                    <div className='w-1/2'>
                         <InputText
-                            className="rounded-md h-[26px] mb-2 bg-white"
-                            placeholder="Email"
+                            className="w-full rounded-md border-[2px] border-[#919EAB33] mb-2 py-[20px]"
+                            placeholder="Enter Email"
                             size="35px"
                             onChange={(e) => handleChange("email", e.target.value)}
                         />
@@ -182,14 +133,11 @@ export default function AddStaff() {
                             </label>
                         )}
                     </div>
-                </div>
 
-                <div className='w-full mx-auto flex flex-row justify-baseline items-center mt-5'>
-                    <div className='flex items-center justify-center px-[15px]'><span className='font-bold text-[15px]'>Enter Name</span></div>
-                    <div className='table items-center justify-center px-[15px]'>
+                    <div className='w-1/2'>
                         <InputText
-                            className="rounded-md h-[26px] mb-2 bg-white"
-                            placeholder="Name"
+                            className="w-full rounded-md border-[2px] border-[#919EAB33] mb-2 py-[20px]"
+                            placeholder="Enter Name"
                             size="35px"
                             onChange={(e) => handleChange("name", e.target.value)}
                         />
@@ -201,17 +149,48 @@ export default function AddStaff() {
                     </div>
                 </div>
 
-                <div className='max-w-[350px] w-full mx-auto flex flex-row justify-around items-center flex-wrap-nowrap mt-4'>
-                    <div className='max-w-[230px] w-[100%] pr-2 option-selected' ><Button onClick={() => handleChange("userType", "admin")} text="Administrative" className={`font-semobold text-[16px] text-white ${staff?.userType === "admin" ? 'bg-gradient-to-b from-[#6db268] to-[#6db268] border-[3px] border-[#fff]' : 'bg-gradient-to-b from-[#02227E] to-[#0247FF]'} rounded-md px-1`} /></div>
-                    <div className='max-w-[230px] w-[100%] pl-2 option-selected' ><Button onClick={() => handleChange("userType", "staff")} text="Service" className={`font-semobold text-[16px] text-white ${staff?.userType === "staff" ? 'bg-gradient-to-b from-[#6db268] to-[#6db268] border-[3px] border-[#fff]' : 'bg-gradient-to-b from-[#02227E] to-[#0247FF]'} rounded-md px-1`} /></div>
+
+                <div className="text-left mt-[20px] sm:text-[20px] text-lg text-white font-medium">
+                    Select Staff
+                </div>
+
+
+                <div className="text-left text-[16px] text-white font-[400] flex flex-row gap-[5%] mt-[10px]">
+                    <label class="flex items-center gap-[10px]">
+                        <input
+                            id="default-radio-1"
+                            type="radio"
+                            value="Incall"
+                            name="default-radio"
+                            class="peer hidden"
+                            checked={staff?.userType === "admin"}
+                            onChange={() => handleChange("userType", "admin")}
+                        />
+                        <div class="w-5 h-5 rounded-full border-2 border-white peer-checked:after:content-[''] after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-transparent peer-checked:after:bg-[#ffffff] after:mx-auto after:my-auto after:mt-[3px]"></div>
+                        <span className="text-base font-normal text-white">Administrative</span>
+                    </label>
+
+                    <label class="flex items-center gap-[10px]">
+                        <input
+                            id="default-radio-2"
+                            type="radio"
+                            name="default-radio"
+                            class="peer hidden"
+                            checked={staff?.userType === "staff"}
+                            onChange={() => handleChange("userType", "staff")}
+                        />
+                        <div class="w-5 h-5 rounded-full border-2 border-white peer-checked:after:content-[''] after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-transparent peer-checked:after:bg-[#ffffff] after:mx-auto after:my-auto after:mt-[3px]"></div>
+                        <span className="text-base font-normal text-white">Service</span>
+                    </label>
                 </div>
                 {error.userType && (
                     <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[2px]">
                         {error.userType}
                     </label>
                 )}
-                <div className="w-full max-w-[250px] flex flex-col justify-center items-center image-upload-data px-4 mt-8 mb-5">
-                    <div className="overflow-hidden bg-gradient-to-b from-blue-400 flex flex-col justify-center items-center w-[140px] h-[130px] image-upload-box">
+
+                <div className="w-full flex flex-col justify-center items-center image-upload-data mt-8 mb-5">
+                    <div className="overflow-hidden bg-gradient-to-b from-blue-400 flex flex-col p-[30px] justify-center items-center w-full text-white image-upload-box font-[400] text-[14px]">
                         {staff?.userProfilePic ? (
                             <img
                                 src={imagePreview} className='object-cover w-[140px] h-[auto] min-h-[100%]'
@@ -222,11 +201,12 @@ export default function AddStaff() {
                                 <img
                                     id="imagePreview"
                                     style={{ overflow: "hidden" }}
-                                    className="w-[68px] h-[56px] mt-5"
-                                    src={"/images/VectorCamera.png"}
+                                    className="w-[56px] h-[56px]"
+                                    src={"/images/upload_icon.svg"}
                                     alt="Vector Camera" width={'88px'} height={'73px'}
                                 />
-                                <p className="mt-2 text-[14px] font-bold">Photos</p>
+                                <p className="mt-2 text-[14px]">Upload file here</p>
+                                <p className="mt-2 text-[14px] underline" onClick={handleBrowseClick}>Browse</p>
                             </>
                         )}
                     </div>
@@ -235,6 +215,7 @@ export default function AddStaff() {
                             {error.userProfilePic}
                         </label>
                     )}
+
                     <div className="custom-select-border px-4">
                         <button onClick={handleBrowseClick} className="photo-upload-btn text-white text-[20px] font-extrabold" >
                             Browse
@@ -250,25 +231,14 @@ export default function AddStaff() {
                             onChange={handleFileInputChange}
                         />
                     </div>
-
-
-                    <div className="flex flex-row justify-between items-center px-5">
-                        <Button
-                            className={
-                                "px-5 flex items-center justify-center bg-gradient-to-b from-[#0247FF] to-[#0247FF] text-[#fff] font-bold text-[18px] py-0 shadow-[0px_10px_22px_rgba(0,0,0,0.5)] mt-3"
-                            }
-                            size="35px"
-                            text="Browse" />
-                    </div>
                 </div>
 
 
-                <div className='max-w-[350px] w-full mx-auto flex flex-col justify-around flex-wrap-nowrap mt-2'>
-                    <div className='flex items-left justify-left mb-2'><span className='font-bold text-[18px]'>Description</span></div>
+                <div className='w-full mx-auto flex flex-col justify-around flex-wrap-nowrap mt-2 text-white'>
                     <textarea
-                        className="w-full bg-[#fff] text-left font-[500] p-[10px]"
+                        className="w-full !bg-[#9b9a9a0a] text-left font-[500] p-[10px] border-[2px] border-[#919EAB33] rounded-md !placeholder-white"
                         rows={4}
-                        placeholder="enter description"
+                        placeholder="Description"
                         onChange={(e) => handleChange("description", e.target.value)}
                     ></textarea>
                     {error.description && (
@@ -278,22 +248,22 @@ export default function AddStaff() {
                     )}
                 </div>
 
-                <div className="flex flex-row justify-between items-center px-5">
-                    {!isLoading ? (
-                        <Button
-                            className={
-                                "mb-5 px-5 flex items-center justify-center bg-gradient-to-b from-[#02227E] to-[#0247FF] text-[#fff] font-bold text-[18px] py-0 shadow-[0px_10px_22px_rgba(0,0,0,0.5)] mt-7"
-                            }
-                            onClick={handleSubmit}
-                            type='submit'
-                            size={"40px"}
-                            text="Add Staff" />
-                    ) : (
-                        <div className="flex items-center justify-center pt-[6px]">
-                            <Loading />
-                        </div>
-                    )}
+                <div className=" max-w-[500px] mx-auto w-full mt-[24px] mb-[48px]">
+                    <Button
+                        text={
+                            !isLoading ? (
+                                "Add Staff"
+                            ) : (
+                                <div className="flex items-center justify-center pt-[6px]">
+                                    <Loading />
+                                </div>
+                            )
+                        }
+                        disabled={isLoading}
+                        onClick={handleSubmit}
+                    />
                 </div>
+
             </div>
         </div>
     );

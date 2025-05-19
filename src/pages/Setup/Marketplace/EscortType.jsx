@@ -8,7 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { HandleInvitation } from "../../../redux/action/MarketplaceSearch";
 import SelectBox_ from "../../../components/SelectBox_";
 import moment from "moment";
-
+import { CaretDown } from "phosphor-react";
+import Loading from "../../../components/Loading/Index";
+import PageTitle from "../../../components/PageTitle";
 const Independant = [];
 const Radius = [
   "Within 15 mi (25 km)",
@@ -57,6 +59,7 @@ const EscortType = () => {
   const [searchOpen, setsearchOpen] = useState(false);
   const [update, setUpdate] = useState(false);
   const [addSearchLocation, setAddSearchLocation] = useState(false);
+  const [loading, setLoading] = useState(false);
   const AdvanceServices = useSelector(
     (state) => state.AdvanceServices.services
   );
@@ -420,176 +423,130 @@ const EscortType = () => {
   }, [selectedLocation]);
 
   return (
-    <div className="flex flex-col justify-start h-full">
-      <p className="max-w-full text-[30px] md:text-[33px] text-center text-[#000] change-font-family font-bold py-4">
-        {state.title}
-      </p>
-      <div className="bg-linear-gradient h-[30px] text-[24px] text-[#fff] font-bold change-font-family flex justify-center items-center">
-        {" "}
-        Type
+    <div className="container mb-[48px]">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={`${state.title}`} />
       </div>
-      <div className=" flex justify-center items-center">
-        <div className="relative">
+      {/*  */}
+      <div className="w-full sm:mb-[24px] mb-[16px]">
+        <h4 className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
+          Type
+        </h4>
+        <div className="relative w-full">
           <select
-            className="mb-4 pr-8 appearance-none  py-0.5 mt-4 px-5 bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter flex justify-center items-center"
+            className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
             name="independant"
             onChange={handleTypeonChange}
             value={selectedType}
             size="35px"
           >
             {type.map((item) => {
-              return <option value={item}>{item}</option>;
+              return <option value={item} className="text-black">{item}</option>;
             })}
           </select>
-          <div className="absolute right-1 top-6">
-            <svg
-              className={`w-6 h-6 fill-current text-white`}
-              viewBox="0 0 20 20"
-            >
-              <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-            </svg>
-          </div>
+          <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
         </div>
       </div>
-      <div className="bg-linear-gradient h-[30px] text-[24px] text-[#fff] font-bold change-font-family flex items-center justify-center  ">
-        Search
-      </div>
-      <div className="px-5 flex flex-col items-center">
-        {
-          //   <p className="text-[24px] md:text-[26px] text-center text-[#000] font-roboto-serif font-bold py-3">
-          //     Location
-          //   </p>
-        }
-        <div className="flex flex-col items-start w-full max-w-[420px] mt-2 mb-1">
-          <p className="text-[18px] text-[#000] text-start font-bold font-inter">
+      {/*  */}
+      <div className="w-full sm:mb-[24px] mb-[16px]">
+        <div className="flex justify-between items-center w-full">
+          <h4 className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
             Favorite Locations
-          </p>
-          <div className="flex items-center w-full gap-2 justify-center">
-            <div className="relative flex items-center rounded-xl">
-              <select
-                className="w-full h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl appearance-none pl-7 sm:pl-10 pr-8 text-[20px] text-[#fff] font-bold font-inter"
-                name="location"
-                onChange={(e) => {
-                  setSelectedLocation(
-                    UserData?.savedLocations.find(
-                      (item) => item._id === e.target.value
-                    )?.country || CurrentLocation.country_name
-                  );
-                  setSelectedCity(
-                    UserData?.savedLocations.find(
-                      (item) => item._id === e.target.value
-                    )?.city || CurrentLocation.city
-                  );
-                }}
-                // value={selectedLocation}
-                size="35px"
-              >
-                <option value={CurrentLocation?.country_name}>
-                  Current Location ({CurrentLocation?.country_name})
-                </option>
-                {(UserData?.savedLocations || []).map((item) => {
-                  return (
-                    <option key={item._id} value={item._id}>
-                      {item.country} {item.city}
-                    </option>
-                  );
-                })}
-              </select>
-              <img
-                src="images/location.png"
-                alt=""
-                className="absolute w-[23px] pl-1 ml-1 z-10"
-              />
-              <div className="absolute top-2 right-2">
-                <svg
-                  className={`w-6 h-6 fill-current text-white`}
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                </svg>
-              </div>
-            </div>
-            <div className="relative">
-              <select
-                className="w-[120px] h-[35px] appearance-none px-2 pr-5 bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter  "
-                name="radius"
-                onChange={(e) => setSelectedRadius(e.target.value)}
-                value={selectedRadius}
-                size="35px"
-              >
-                <option selected disabled>
-                  Radius
-                </option>
-                {Radius?.map((item) => {
-                  return <option value={item}>{item}</option>;
-                })}
-              </select>
-              <div className="absolute top-2 right-2">
-                <svg
-                  className={`w-6 h-6 fill-current text-white`}
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-center mt-2 items-center w-[80%] max-w-[250px]">
+          </h4>
           <Button
-            className={
-              "flex items-center h-[35px] max-w-[420px] mt-3 py-2 my-2 justify-center bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-[#fff] font-bold text-[20px] rounded-xl  "
-            }
-            text={"Add/Search Location"}
-            size="35px"
+            text={"+ Add"}
+            className={'!w-fit px-[8px] !py-[0px] mb-1 !text-[14px]'}
             onClick={() => setAddSearchLocation(!addSearchLocation)}
           />
         </div>
+        <div className="flex items-center w-full gap-[24px] justify-center sm:flex-nowrap flex-wrap">
+          <div className="relative w-full">
+            <select
+              className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
+              name="location"
+              onChange={(e) => {
+                setSelectedLocation(
+                  UserData?.savedLocations.find(
+                    (item) => item._id === e.target.value
+                  )?.country || CurrentLocation.country_name
+                );
+                setSelectedCity(
+                  UserData?.savedLocations.find(
+                    (item) => item._id === e.target.value
+                  )?.city || CurrentLocation.city
+                );
+              }}
+            // value={selectedLocation}
+            >
+              <option value={CurrentLocation?.country_name} disabled>
+                Current Location ({CurrentLocation?.country_name})
+              </option>
+              {(UserData?.savedLocations || []).map((item) => {
+                return (
+                  <option key={item._id} value={item._id} className="text-black">
+                    {item.country} {item.city}
+                  </option>
+                );
+              })}
+            </select>
+            <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+          </div>
+          <div className="relative w-full">
+            <select
+              className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
+              name="radius"
+              onChange={(e) => setSelectedRadius(e.target.value)}
+              value={selectedRadius}
+            >
+              <option selected disabled>
+                Radius
+              </option>
+              {Radius?.map((item) => {
+                return <option value={item} className="text-black">{item}</option>;
+              })}
+            </select>
+            <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+          </div>
+        </div>
+      </div>
+      {/*  */}
+      <div className="w-full sm:mb-[24px] mb-[16px]">
         {addSearchLocation && (
-          <div className="flex flex-col items-start w-full max-w-[420px] mb-1">
-            <p className="text-[18px] text-[#000] text-start font-bold font-inter">
+          <div className=" w-full">
+            <p className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
               Search
             </p>
-            <div className="flex items-center justify-center w-full gap-4 sm:gap-5">
+            <div className="flex items-center justify-center gap-[24px] w-full mb-2">
               <div className="relative w-full">
                 <select
-                  className="w-full appearance-none pl-2 pr-7 h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter  "
+                  className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
                   name="location"
                   onChange={(e) => {
                     setAddLocation(e.target.value);
                     setSelectedLocation(e.target.value);
                   }}
-                  size="35px"
                 >
                   <option selected disabled>
                     Country
                   </option>
                   {Location?.map((item) => {
-                    return <option key={item} selected={selectedLocation === item} value={item}>{item}</option>;
+                    return <option className="text-black" key={item} selected={selectedLocation === item} value={item}>{item}</option>;
                   })}
                 </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
               </div>
               <div className="relative w-full">
                 <select
-                  className="w-full appearance-none pl-2 pr-7 h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter  "
+                  className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
                   name="city"
                   onChange={(e) => setSelectedCity(e.target.value)}
                   value={selectedCity}
-                  size="35px"
                 >
-                  <option selected={selectedCity === ""}>City</option>
+                  <option selected={selectedCity === ""} disabled>City</option>
                   {City.map((item) => {
                     return (
                       <option
+                        className="text-black"
                         key={item}
                         selected={selectedCity === item}
                         value={item}
@@ -599,433 +556,309 @@ const EscortType = () => {
                     );
                   })}
                 </select>
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
               </div>
             </div>
-            <div className="w-full flex justify-center items-center">
-              <div className="flex justify-center items-center">
-                <Button
-                  className={
-                    "flex items-center pr-4 pl-4 mt-4 py-2 my-2 justify-center bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-[#fff] font-bold text-[24px] rounded-xl  "
-                  }
-                  text={"Save location "}
-                  size="35px"
-                  onClick={() => {
-                    HandleLocation();
-                    setAddSearchLocation(!addSearchLocation);
-                  }}
-                />
-              </div>
-            </div>
+            <Button
+              text={"Save location "}
+              className={'!w-fit px-[8px] !py-[2px] mb-1 !text-[14px]'}
+              onClick={() => {
+                HandleLocation();
+                setAddSearchLocation(!addSearchLocation);
+              }}
+            />
           </div>
         )}
-
+      </div>
+      {/*  */}
+      <div className="w-full sm:mb-[24px] mb-[16px]">
         {!state.status && (
-          <div className="flex flex-col items-start w-[80%] max-w-[250px] mt-1">
-            <p className="text-[18px] text-[#000] text-start font-bold font-roboto-serif w-full">
+          <div className="w-full">
+            <p className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
               Specialty
             </p>
             <div className="relative w-full">
               <select
-                className="w-full pr-8 appearance-none px-2 h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter  "
+                className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
                 name="Add/Search Location"
                 value={selectedSpecialtyOption}
                 onChange={(e) => setSelectedSpecialtyOption(e.target.value)}
-                size="35px"
               >
                 {specialtyOption?.map((item) => {
-                  return <option value={item}>{item}</option>;
+                  return <option className="text-black" value={item}>{item}</option>;
                 })}
               </select>
-              <div className="absolute top-3 right-2">
-                <svg
-                  className={`w-6 h-6 fill-current text-white`}
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                </svg>
-              </div>
+              <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
             </div>
           </div>
         )}
+      </div>
+      {/*  */}
+      <div className="w-full sm:mb-[24px] mb-[16px]">
         {state.status && (
-          <div className="flex justify-between items-center w-full max-w-[420px] mt-2">
-            <div className="flex flex-col items-start w-[45%] ">
-              <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pb-0">
+          <div className="flex items-center w-full gap-[24px] justify-center">
+            <div className="w-full">
+              <p className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
                 Sex
               </p>
-              <div className="relative flex flex-wrap items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
+              <div className="relative w-full">
                 <select
-                  className="pl-8 h-[35px] appearance-none sm:pl-10 pr-8 bg-[#02227E] bg-gradient-to-b from-[#02227E] text-center to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter min-w-[fit] w-full"
+                  className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
                   onChange={handleGenderChange}
                   name="gender"
                   value={selectedGender}
-                  size="35px"
                 >
                   {genderOptions.map((gender) => (
-                    <option value={gender}>{gender}</option>
+                    <option className="text-black" value={gender}>{gender}</option>
                   ))}
                 </select>
-                <img
-                  src="images/Mask group (1).png"
-                  alt=""
-                  className="absolute pl-1 top-1 left-1 z-10"
-                />
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
               </div>
             </div>
-            <div className="flex flex-col items-start w-[45%]">
-              <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pl-0 pb-0">
+            <div className="w-full">
+              <p className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
                 Orientation
               </p>
               <div className="relative flex flex-wrap items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
                 <select
-                  className="pl-2 h-[35px] text-center appearance-none sm:pl-10 pr-1.5 bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter min-w-[fit] w-full"
+                  className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
                   name="orientation"
                   value={selectedOrientation}
-                  onChange={handleOrientationChange} // Add this line
-                  size="35px"
+                  onChange={handleOrientationChange}
                 >
                   {orientationOptions.map((orientation) => (
-                    <option key={orientation} value={orientation}>
+                    <option className="text-black" key={orientation} value={orientation}>
                       {orientation}
                     </option>
                   ))}
                 </select>
-                <img
-                  src="images/Mask-group-icons.png"
-                  alt=""
-                  className="absolute top-1 left-2 z-10"
-                />
-                <div className="absolute top-2 right-2">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
               </div>
             </div>
           </div>
         )}
-        <div
-          className={`w-full max-w-[420px] flex justify-${
-            state.status ? "between" : "center"
-          }  items-center gap-2 sm:gap-5`}
-        >
-          {state.status && (
-            <div className="flex justify-center items-center w-[45%] max-w-[420px] mt-1">
-              <div className="flex flex-col items-start w-full">
-                <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pb-0">
-                  Venue
-                </p>
-                <div className="flex flex-wrap relative items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
-                  <select
-                    className="px-2 pl-6 h-[35px] appearance-none bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter min-w-[fit] w-full"
-                    onChange={handleVenueonChange}
-                    value={selectedVenue}
-                    size="35px"
-                  >
-                    {Venue.map((orientation) => (
-                      <option key={orientation} value={orientation}>
-                        {orientation}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
-                </div>
+      </div>
+      {state.status && (
+        <div className="w-full sm:mb-[24px] mb-[16px]">
+          <p className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
+            Venue
+          </p>
+          <div className="flex flex-wrap relative items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
+            <select
+              className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
+              onChange={handleVenueonChange}
+              value={selectedVenue}
+            >
+              {Venue.map((orientation) => (
+                <option className="text-black" key={orientation} value={orientation}>
+                  {orientation}
+                </option>
+              ))}
+            </select>
+            <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+          </div>
+        </div>
+
+      )}
+      <div className="w-full sm:mb-[24px] mb-[16px]">
+        <p className="sm:text-[18px] text-[16px] text-white font-medium mb-[8px]">
+          TruRevu
+        </p>
+        <div className="w-full flex justify-center items-center sm:gap-[24px] gap-2">
+          <div className="relative w-full">
+            <select
+              className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
+              onChange={(e) =>
+                setSelectedTruRevuStart({
+                  ...selectedTruRevuStart,
+                  from: e.target.value,
+                })
+              }
+              value={selectedTruRevuStart.from}
+            >
+              <option value="0.0" selecterd className="text-black">
+                0.0
+              </option>
+              <option value="1.0" selecterd className="text-black">
+                1.0
+              </option>
+              <option className="text-black" value="1.5">1.5</option>
+              <option className="text-black" value="2.0">2.0</option>
+              <option className="text-black" value="2.5">2.5</option>
+              <option className="text-black" value="3.0">3.0</option>
+              <option className="text-black" value="3.5">3.5</option>
+              <option className="text-black" value="4.0">4.0</option>
+              <option className="text-black" value="4.5">4.5</option>
+              <option className="text-black" value="5.0">5.0</option>
+            </select>
+            <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+          </div>
+          <p className="sm:text-[18px] text-[14px] text-white font-medium">To</p>
+          <div className="relative w-full">
+            <select
+              className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
+              onChange={(e) =>
+                setSelectedTruRevuStart({
+                  ...selectedTruRevuStart,
+                  to: e.target.value,
+                })
+              }
+              value={selectedTruRevuStart.to}
+            >
+              <option className="text-black" value="1.0" selecterd>
+                1.0
+              </option>
+              <option className="text-black" value="1.5">1.5</option>
+              <option className="text-black" value="2.0">2.0</option>
+              <option className="text-black" value="2.5">2.5</option>
+              <option className="text-black" value="3.0">3.0</option>
+              <option className="text-black" value="3.5">3.5</option>
+              <option className="text-black" value="4.0">4.0</option>
+              <option className="text-black" value="4.5">4.5</option>
+              <option className="text-black" value="5.0">5.0</option>
+            </select>
+            <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+          </div>
+        </div>
+      </div>
+      {state.status && (
+        <div className="relative w-full sm:mb-[24px] mb-[16px]">
+          <select
+            className="bg-transparent appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "
+            name="Invitation"
+            onChange={(e) => setSelectedInvitation(e.target.value)}
+            value={selectedInvitation}
+          >
+            {Invitation.map((item) => {
+              return <option className="text-black" value={item}>{item}</option>;
+            })}
+          </select>
+          <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+        </div>
+      )}
+      {state.status && (
+        <div className="w-full sm:mb-[24px] mb-[16px]">
+          <div className="flex sm:gap-[24px] gap-2 justify-center items-center w-full flex-wrap sm:flex-nowrap">
+            <div className="flex gap-2 justify-center items-center w-full">
+              <div className="relative w-full">
+                <SelectBox_
+                  onChange={(e) => setFromMonth(e.target.value)}
+                  options={months}
+                  value={fromMonth}
+                  className={"bg-transparent min-w-[100px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "}
+                />
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+              </div>
+              <div className="relative">
+                <SelectBox_
+                  onChange={(e) => setFromDay(e.target.value)}
+                  options={days}
+                  value={fromDay}
+                  className={"bg-transparent min-w-[50px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "}
+                />
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
               </div>
             </div>
-          )}
-          <div className="flex flex-col items-start w-[45%] mt-1">
-            <p className="text-[18px] text-[#000] text-start font-bold change-font-family w-full pl-0 pb-0">
-              TruRevu
-            </p>
-            <div className="w-full flex justify-center items-center gap-2 ">
-              <div className="flex relative flex-wrap items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
-                <select
-                  className="w-full px-2 appearance-none h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter min-w-[70px] w-[60px]"
-                  onChange={(e) =>
-                    setSelectedTruRevuStart({
-                      ...selectedTruRevuStart,
-                      from: e.target.value,
-                    })
-                  }
-                  value={selectedTruRevuStart.from}
-                  size="35px"
-                >
-                  <option value="0.0" selecterd>
-                    0.0
-                  </option>
-                  <option value="1.0" selecterd>
-                    1.0
-                  </option>
-                  <option value="1.5">1.5</option>
-                  <option value="2.0">2.0</option>
-                  <option value="2.5">2.5</option>
-                  <option value="3.0">3.0</option>
-                  <option value="3.5">3.5</option>
-                  <option value="4.0">4.0</option>
-                  <option value="4.5">4.5</option>
-                  <option value="5.0">5.0</option>
-                </select>
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+            <p className="sm:text-[18px] text-[14px] text-white font-medium">To</p>
+            <div className="flex gap-2 justify-center items-center w-full">
+              <div className="relative w-full">
+                <SelectBox_
+                  onChange={(e) => setToMonth(e.target.value)}
+                  options={months}
+                  value={toMonth}
+                  className={"bg-transparent min-w-[100px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "}
+
+                />
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
               </div>
-              <p className="text-[14px] font-bold text-[#01195C] px-0">to</p>
-              <div className="relative flex flex-wrap items-center justify-between w-full gap-2 sm:gap-5   rounded-2xl">
-                <select
-                  className="w-full px-2 appearance-none h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter min-w-[70px] w-[60px]"
-                  onChange={(e) =>
-                    setSelectedTruRevuStart({
-                      ...selectedTruRevuStart,
-                      to: e.target.value,
-                    })
-                  }
-                  value={selectedTruRevuStart.to}
-                  size="35px"
-                >
-                  <option value="1.0" selecterd>
-                    1.0
-                  </option>
-                  <option value="1.5">1.5</option>
-                  <option value="2.0">2.0</option>
-                  <option value="2.5">2.5</option>
-                  <option value="3.0">3.0</option>
-                  <option value="3.5">3.5</option>
-                  <option value="4.0">4.0</option>
-                  <option value="4.5">4.5</option>
-                  <option value="5.0">5.0</option>
-                </select>
-                <div className="absolute top-2 right-1">
-                  <svg
-                    className={`w-6 h-6 fill-current text-white`}
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                  </svg>
-                </div>
+              <div className="relative">
+                <SelectBox_
+                  onChange={(e) => setToDay(e.target.value)}
+                  options={days}
+                  value={toDay}
+                  className={"bg-transparent min-w-[50px] appearance-none pl-2 cursor-pointer rounded-lg text-[14px] text-[#ffffff] font-normal px-0 py-2 w-full border border-[#919EAB33] focus:border-[#ffffff] "}
+
+                />
+                <div className="absolute top-[10px] right-2 text-white z-[-1]"><CaretDown size={16} /></div>
+
               </div>
             </div>
           </div>
         </div>
-        {state.status && (
-          <div className="flex justify-center items-center w-full">
-            <div className="relative mb-7 mt-7">
-              <select
-                className="w-fit appearance-none mx-auto pl-5 pr-8 h-[35px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-xl text-[20px] text-[#fff] font-bold font-inter   flex justify-center items-center"
-                name="Invitation"
-                onChange={(e) => setSelectedInvitation(e.target.value)}
-                value={selectedInvitation}
-                size="35px"
-              >
-                {Invitation.map((item) => {
-                  return <option value={item}>{item}</option>;
-                })}
-              </select>
-              <div className="absolute top-2 right-1">
-                <svg
-                  className={`w-6 h-6 fill-current text-white`}
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        )}
-        {state.status && (
-          <div className="w-full max-w-[420px] flex flex-row justify-between items-center">
-            <div className="flex gap-1 justify-between items-center w-full">
-              <div className="flex flex-row justify-center items-center w-[45%]">
-                <div className="relative w-full">
-                  <SelectBox_
-                    onChange={(e) => setFromMonth(e.target.value)}
-                    options={months}
-                    value={fromMonth}
-                    className={
-                      "appearance-none rounded-[10px] text-[#fff] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] border-r-2 border-[#CCCCCC] rounded-r-none text-[16px] font-bold px-0 pl-2 max-[350px]:pl-1 sm:pl-4 pr-3 py-1 w-full  h-[37px]"
-                    }
-                  />
-                  <div className="absolute top-2 right-[5px]">
-                    <svg
-                      className={`w-6 h-6 fill-current text-[#fff]`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <SelectBox_
-                    onChange={(e) => setFromDay(e.target.value)}
-                    options={days}
-                    value={fromDay}
-                    className={
-                      "appearance-none rounded-[10px] text-[#fff] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-l-none text-[16px] font-bold px-0 pl-1 max-[350px]:pr-4 pr-5 py-1 h-[37px]"
-                    }
-                  />
-                  <div className="absolute top-2 max-[400px]:right-[2px] right-[5px] left-5">
-                    <svg
-                      className={`w-6 h-6 fill-current text-[#fff]`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-row justify-center items-center w-[45%]">
-                <div className="relative w-full">
-                  <SelectBox_
-                    onChange={(e) => setToMonth(e.target.value)}
-                    options={months}
-                    value={toMonth}
-                    className={
-                      "appearance-none rounded-[10px] text-[#fff] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] border-r-2 border-[#CCCCCC] rounded-r-none text-[16px] font-bold px-0 pl-2 max-[350px]:pl-1 sm:pl-4 pr-3 py-1 w-full h-[35px]"
-                    }
-                  />
-                  <div className="absolute top-2 right-[5px]">
-                    <svg
-                      className={`w-6 h-6 fill-current text-[#fff]`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="relative">
-                  <SelectBox_
-                    onChange={(e) => setToDay(e.target.value)}
-                    options={days}
-                    value={toDay}
-                    className={
-                      "appearance-none rounded-[10px] text-[#fff] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-l-none text-[16px] font-bold px-0 pl-1 max-[350px]:pr-4 pr-5 py-1 h-[35px]"
-                    }
-                  />
-                  <div className="absolute top-2 max-[400px]:right-[2px] right-[5px] left-5">
-                    <svg
-                      className={`w-6 h-6 fill-current text-[#fff]`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        {state.status && (
-          <>
-            <div className="flex items-center justify-center w-full max-w-[420px] mt-5">
+      )}
+      {state.status && (
+        <>
+          <div className="flex w-full gap-[24px] items-center sm:mb-[24px] mb-[16px] flex-wrap sm:flex-nowrap">
+            <div className="w-full">
               <Button
-                className={
-                  "flex items-center w-fit max-w-[331px] mt-4 py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[20px] rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.3)]"
-                }
                 text={"Review and Save To Favorites "}
-                size="35px"
                 onClick={() => HandleReviewButton(true)}
               />
             </div>
-            <div className="flex items-center justify-center w-full max-w-[420px]">
+            <div className="w-full">
               <Button
-                className={
-                  "flex items-center w-fit max-w-[331px] mt-2 py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[20px] rounded-xl shadow-[0px_10px_30px_rgba(0,0,0,0.3)]"
-                }
                 text={"Review and Submit"}
                 onClick={() => HandleReviewButton()}
-                size="35px"
               />
             </div>
-            <div className="flex items-center justify-center mb-4">
+          </div>
+          <div className="flex items-center justify-center w-full sm:mb-[24px] mb-[16px] max-w-[500px] mx-auto">
+            <Button
+              text={"Advanced Search"}
+              onClick={HandleAdvancedSearch}
+            />
+          </div>
+        </>
+      )}
+      {!state.status && (
+        <>
+          <div className="flex items-center justify-center gap-[24px] mb-[48px] flex-wrap sm:flex-nowrap">
+            <div className="flex items-center justify-center w-full">
               <Button
-                className={
-                  "items-center inline-flex px-4 mt-4 w-auto py-2 my-2 justify-center bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-[#fff] font-bold text-[20px] rounded-xl  "
-                }
-                text={"Advanced Search"}
-                size="40px"
-                onClick={HandleAdvancedSearch}
-              />
-            </div>
-          </>
-        )}
-        {!state.status && (
-          <>
-            <div className="flex mt-5 items-center justify-center w-full max-w-[420px]">
-              <Button
-                className={
-                  "flex items-center w-fit mt-4 py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] py-2 rounded-xl  "
-                }
                 text={"Search and Save To Favorites"}
-                size="35px"
                 onClick={() => {
                   setUpdate(true);
                   setFavoriteStatus(true);
                 }}
               />
             </div>
-            <div className="flex mt-2 items-center justify-center w-full mb-3 max-w-[420px]">
+            <div className="flex items-center justify-center w-full">
               <Button
-                className={
-                  "flex items-center mt-4 py-2 w-[50%] max-w-[150px] my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] py-2 rounded-xl  "
-                }
-                text={"Search"}
-                size="35px"
+                text={loading ? (<div className="flex items-center	justify-center">
+                  <Loading />
+                </div>) : "Search"}
+                disabled={loading}
                 onClick={async () => {
-                  await dispatch(HandleInvitation(AllData));
-                  navigate("/results");
+                  setLoading(true);
+                  try {
+                    await dispatch(HandleInvitation(AllData));
+                    navigate("/results");
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
               />
             </div>
-          </>
-        )}
-        <MarketPlaceModale
-          open={open}
-          setOpen={setOpen}
-          setsearchOpen={setsearchOpen}
-          searchOpen={searchOpen}
-          EditData={state?.EditData}
-          update={update}
-          setUpdate={setUpdate}
-          AllData={AllData}
-          state={state}
-          favoriteStatus={favoriteStatus}
-          fromMonth={fromMonth}
-          fromDay={fromDay}
-          toMonth={toMonth}
-          toDay={toDay}
-        />
-      </div>
+          </div>
+        </>
+      )}
+      <MarketPlaceModale
+        open={open}
+        setOpen={setOpen}
+        setsearchOpen={setsearchOpen}
+        searchOpen={searchOpen}
+        EditData={state?.EditData}
+        update={update}
+        setUpdate={setUpdate}
+        AllData={AllData}
+        state={state}
+        favoriteStatus={favoriteStatus}
+        fromMonth={fromMonth}
+        fromDay={fromDay}
+        toMonth={toMonth}
+        toDay={toDay}
+      />
+
     </div>
   );
 };

@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../components/Button";
 import CalendarService from "../../../services/CalendarService";
-
+import Header from "../../../components/Header/Header";
+import PageTitle from "../../../components/PageTitle";
 export default function SyncCalendar() {
   const navigate = useNavigate();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
-
   const userType = UserDetails?.user_type; //'companion-provider'
 
   const navigateToCalendar = () => {
@@ -40,45 +40,41 @@ export default function SyncCalendar() {
     }
   };
   return (
-    <div className="main-container">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-5">
-        <div className="w-full mx-auto flex flex-row justify-center items-center max-w-[310px]">
-          <span>
-            <span className="w-full font-bold text-[18px] text-black">
-              Select the popular calendar you would like to sync your
-            </span>
-            <br />
-            <span className="font-extrabold text-[18px] text-black">VAI</span>
-            <span className="font-light text-[18px] text-black">RIFY</span>
-            <span className="ml-2 font-extrabold text-[18px] text-black">
-              CALENDAR
-            </span>
-          </span>
-        </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-          <img
-            onClick={() => {
-              syncApi(1);
-            }}
-            src={"/images/GoogleSync.png"}
-            width={170}
-            alt="Google Sync Logo"
-          />
+    <div>
+      <div className="container pb-[48px]">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={"Sync Calendar"} />
         </div>
         <div className="w-full mx-auto flex flex-col justify-center items-center">
-          <img
-            onClick={() => {
-              syncApi(2);
-            }}
-            src={"/images/MicrosoftSync.png"}
-            width={170}
-            alt="Microsoft Sync Logo"
-          />
-        </div>
-        {/* <div className="w-full mx-auto flex flex-col justify-center items-center">
+          <div className="w-full mx-auto text-[#919EAB] text-lg text-center">
+            Select the popular calendar you would like to sync your<br /> VAIRIFY CALENDAR
+          </div>
+          <div className="flex gap-[16px] mt-6">
+            <div className="w-full mx-auto flex flex-col justify-center items-center ">
+              <img
+                onClick={() => {
+                  syncApi(1);
+                }}
+                src={"/images/setup/google-sync.png"}
+                alt="Google Sync Logo"
+              />
+              <p className="mt-[8px] text-lg font-normal text-white">Google</p>
+            </div>
+            <div className="w-full mx-auto flex flex-col justify-center items-center">
+              <img
+                onClick={() => {
+                  syncApi(2);
+                }}
+                src={"/images/setup/microsoft-sync.png"}
+                alt="Microsoft Sync Logo"
+              />
+              <p className="mt-[8px] text-lg font-normal text-white">Microsoft</p>
+            </div>
+          </div>
+          {/* <div className="w-full mx-auto flex flex-col justify-center items-center">
           <img src={"/images/AppleSync.png"} width={170} alt="Apple Sync Logo" />
         </div> */}
-        {/* <div className="mt-3 px-5 w-[200px] mb-5 form-field-container">
+          {/* <div className="mt-3 px-5 w-[200px] mb-5 form-field-container">
           <Button
             className={
               "bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] text-[26px] font-bold shadow-2xl"
@@ -88,6 +84,7 @@ export default function SyncCalendar() {
             size={"45px"}
           />
         </div> */}
+        </div>
       </div>
     </div>
   );

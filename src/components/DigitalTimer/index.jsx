@@ -8,6 +8,7 @@ import OtpInput from "react-otp-input";
 import Button from "../Button";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import Loading from "../Loading/Index";
 
 const initialState = {
   isTimerRunning: false,
@@ -243,24 +244,23 @@ class DigitalTimer extends Component {
     const { isTimerRunning } = this.state;
 
     return (
-      <div className="mt-2 flex flex-row justify-center items-center relative gap-3">
+      <div className="flex flex-row justify-center items-center relative gap-3">
         <button
           disabled={
             !isTimerRunning || this.state.alarmTimerStarted || this.state.freeze
           }
           onClick={() => this.setState({ pauseMode: true })}
-          className="w-[67px] h-[67px] rounded-[100%] bg-[#4200FF] flex items-center justify-center text-[#ffffff]"
+          className="w-[48px] h-[48px] rounded-[100%] bg-[#ffffff] flex items-center justify-center text-[#000000]"
         >
           <i className="fa fa-pause"></i>
         </button>
         {this?.state?.alarmData?.timerStartTime || this.state.timerStarted ? (
-          <div>
+          <div className="flex items-center justify-center flex-col">
             <button
               style={{ userSelect: "none", WebkitTouchCallout: "none" }}
               // disabled={this.state.freeze}
-              className={`w-[125px] h-[125px] rounded-[100%] bg-[#DB3002] border-4 border-[#DB3002]  ${
-                this.state.mouseDownStarted && "start-animation"
-              }`}
+              className={`w-[140px] h-[140px] rounded-[100%] bg-[#E43530]  ${this.state.mouseDownStarted && "start-animation"
+                }`}
               // onClick={() => this.handleActivateAlarm(true)}
               onMouseDown={this.mouseDown.bind(this)}
               onMouseUp={this.mouseUp.bind(this)}
@@ -278,12 +278,12 @@ class DigitalTimer extends Component {
                   MozUserSelect: "none",
                 }}
                 onSelect={() => false}
-                className="font-bold text-[40px] text-white position-relative"
+                className="font-semibold sm:text-[24px] text-[20px] text-white position-relative"
               >
                 {"Alarm"}
               </span>
             </button>
-            <p className="text-[#D9D9D9] mt-3">
+            <p className="text-[#D9D9D9] mt-3 text-center">
               {this.state.alarmLoader
                 ? "Please wait..."
                 : "Tap and hold to activate"}
@@ -291,11 +291,11 @@ class DigitalTimer extends Component {
           </div>
         ) : (
           <button
-            className="w-[125px] h-[125px] rounded-[100%] bg-[#0C8A02] border-4 border-[#4200FF]"
+            className="w-[140px] h-[140px] rounded-[100%] bg-[#008F34]"
             onClick={this.handleStartTimer}
             type="button"
           >
-            <span className="font-bold text-[40px] text-white">
+            <span className="font-semibold text-[24px] text-white">
               {isTimerRunning ? "Pause" : "Start"}
             </span>
           </button>
@@ -309,7 +309,7 @@ class DigitalTimer extends Component {
               !this?.state?.alarmData?.timerStartTime)
           }
           onClick={this.onStartOrPauseTimer}
-          className="w-[67px] h-[67px] rounded-[100%] bg-[#4200FF] flex items-center justify-center text-[#ffffff]"
+          className="w-[48px] h-[48px] rounded-[100%] bg-[#ffffff] flex items-center justify-center text-[#000000]"
         >
           <i className="fa fa-refresh"></i>
         </button>
@@ -317,10 +317,9 @@ class DigitalTimer extends Component {
         {!this?.state?.alarmData?.proof?.file && (
           <button
             onClick={this.handleImageUpload}
-            style={{ right: "15%", bottom: "-50px" }}
-            className="w-[67px] h-[67px] rounded-[100%] bg-[#4200FF] flex items-center justify-center absolute"
+            className="w-[48px] h-[48px] rounded-[100%] bg-white flex items-center justify-center absolute sm:right-[-75px] right-0 top-[-6px] sm:top-auto"
           >
-            <img src={"/images/CameraIcon.png"} alt="Camera Icon" />
+            <img src={"/images/setup/camera.svg"} alt="Camera Icon" className="w-[26px] h-[26px]" />
           </button>
         )}
         {/* <button
@@ -406,7 +405,9 @@ class DigitalTimer extends Component {
       return (
         <div className="h-full min-h-[calc(100vh-230px)] flex items-center justify-center">
           <div className="text-white h-full flex justify-center items-center">
-            <p>Loading...</p>
+            <div className="flex items-center	justify-center">
+              <Loading />
+            </div>
           </div>
         </div>
       );
@@ -414,11 +415,11 @@ class DigitalTimer extends Component {
 
     if (!moment(state.appointmentData.startDateTime).isSame(moment(), "day")) {
       return (
-        <div className="h-full min-h-[calc(100vh-230px)] flex items-center justify-center">
+        <div className="flex items-center justify-center py-[48px]">
           <div className="text-white h-full flex justify-center items-center">
-            <h3 className="text-[20px]">
+            <h3 className="text-[20px] text-center">
               This appointment is scheduled for <br />
-              <span className="text-[26px] font-bold text-[#405fc4]">
+              <span className="text-[26px] font-medium text-center opacity-90">
                 {moment(state.appointmentData.startDateTime).format(
                   "DD/MM/YYYY"
                 )}
@@ -433,8 +434,8 @@ class DigitalTimer extends Component {
       <div className="w-full mx-auto flex items-center justify-center">
         <div className="digital-timer-container">
           <div className="timer-display-container">
-            <div className="elapsed-time-container">
-              <p className="timer-state change-font-family">
+            <div className="elapsed-time-container bg-[#1A1F5B] border-[#434a8e]">
+              <p className="timer-state text-white font-medium text-20px">
                 {state.isTimerRunning
                   ? state.alarmTimerStarted
                     ? "Alarm Delay"
@@ -442,37 +443,36 @@ class DigitalTimer extends Component {
                   : "Paused"}
               </p>
               <h1
-                className={`elapsed-time ${
-                  state.alarmTimerStarted && "text-[#DB3002]"
-                }`}
+                className={`elapsed-time font-semibold text-white sm:text-[50px] text-[32px] ${state.alarmTimerStarted && "text-[#DB3002]"
+                  }`}
               >
                 {this.getElapsedSecondsInTimeFormat()}
               </h1>
             </div>
           </div>
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-3">
-            <div className="w-full mx-auto flex flex-row justify-around items-center">
+          <div className="w-full mx-auto flex flex-col justify-center items-center mt-3 bg-[#FFFFFF14] rounded-[16px] p-[16px] max-w-[500px] sm:my-[48px] my-[20px]">
+            <div className="w-full mx-auto flex justify-between items-center">
               <div>
-                <span className="font-bold text-[20px] text-[#D9D9D9] change-font-family">
+                <span className=" font-medium text-[18px] text-white">
                   Group
                 </span>
               </div>
               <div>
-                <span className="font-bold text-[20px] text-[#D9D9D9] change-font-family">
+                <span className=" font-normal text-[14px] text-white">
                   {state?.groupData?.name}
                 </span>
               </div>
             </div>
-            <div className="w-full mx-auto flex flex-row justify-around items-center mt-3">
+            <div className="w-full mx-auto flex justify-between items-center mt-[12px]">
               <div>
-                <span className="font-bold text-[20px] text-[#D9D9D9] change-font-family">
+                <span className="font-medium text-[18px] text-white">
                   Delay
                 </span>
               </div>
               <div>
-                <span className="font-bold text-[20px] text-[#D9D9D9] change-font-family">
+                <span className="font-normal text-[14px] text-white">
                   {state?.alarmData?.alarmDelay}:00
-                  <span className="font-normal text-[14px] text-[#D9D9D9] change-font-family">
+                  <span className="font-normal text-[14px] text-white">
                     min
                   </span>
                 </span>
@@ -493,9 +493,8 @@ class DigitalTimer extends Component {
                   renderInput={(props) => (
                     <input
                       {...props}
-                      className={`flex-1 mr-2 border-2 bg-[#d5d6e0] h-14 w-9 text-center form-control otp_input bg-transparent text-[30px] text-white "
-                  type="text`}
-                      // style={{ borderColor: errorMessage.otp ? `#ef4444` : "#0247FF" }}
+                      className={`flex-1 mr-2 border-2 bg-[#D5D6E0] !h-[40px] !w-[40px] rounded-lg text-center  bg-transparent text-[20px] text-white "
+                        type="text`}
                     />
                   )}
                 />
@@ -504,8 +503,7 @@ class DigitalTimer extends Component {
                 <Button
                   onClick={() => this.handleActivateAlarm()}
                   text="Enter"
-                  className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family p-3"
-                  size="41px"
+                  className="bg-[#05B7FD] rounded-[10px] font-bold text-[18px] h-[41px] flex items-center justify-center change-font-family px-10 py-4"
                 />
               </div>
             </>

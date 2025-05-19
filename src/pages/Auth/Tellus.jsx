@@ -135,6 +135,7 @@ export default function Tellus() {
                 </div>
               )
             }
+            disabled={isLoading}
             onClick={handleRegister}
             size={"45px"}
           />

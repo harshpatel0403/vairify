@@ -5,13 +5,18 @@ import VaridateService from "../../services/VaridateServices";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import moment from "moment";
-
+import HotRodAnalysis from "./HotRodAnalysis";
+import Modal from 'react-modal'
+import { IoCloseCircleOutline } from "react-icons/io5";
+import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
 const PastInvitations = () => {
   const navigate = useNavigate();
   const navigateToviewall = (appointment) => {
     navigate("/varidate/appointment-details", { state: appointment });
   };
-
+  const [openModal, setOpenModal] = useState(false);
+  const [particularItem, setParticularItem] = useState({});
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
 
@@ -20,6 +25,10 @@ const PastInvitations = () => {
   console.log(UserDetails, " logged in user");
 
   const userType = UserDetails?.user_type; //'companion-provider'
+
+  const closeModal = () => {
+    setOpenModal(false);
+  }
 
   const fetchAppointments = async () => {
     setLoading(true);
@@ -59,12 +68,11 @@ const PastInvitations = () => {
     navigate(`/chat/${id}`);
   };
 
+
   if (loading) {
     return (
-      <div className="main-container h-full">
-        <div className="h-full flex justify-center items-center">
-          <p>Loading...</p>
-        </div>
+      <div className="flex justify-center align-center items-center pt-[48px] h-[50vh]">
+        <Loading />
       </div>
     );
   }
@@ -81,19 +89,16 @@ const PastInvitations = () => {
 
   return (
     <div
-      className="main-content py-4 rounded-2xl pb-[20px] bg-[#D5D6E0]"
-      style={{ maxHeight: "calc(100vh - 160px)" }}
+      className="container mb-[48px]"
     >
-      <div className="flex flex-col justify-between">
-        <div className="mt-2 bg-[#040C50]/[26%] w-full ">
-          <h2 className="font-bold py-2 text-[24px] text-[#02227E] font-inter ">
-            Past appointments
-          </h2>
-        </div>
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle isSmall={true} title={"Past Appointment"} />
+      </div>
+      <div className="w-full">
         {!appointments?.length && (
-          <div className="text-[32px] text-[#4b4b4b] font-bold text-center h-[500px] flex flex-col justify-center items-center">
+          <div className="text-xl text-white font-bold text-center flex flex-col justify-center items-center my-[48px] gap-[24px]">
             <div className="image-not">
-              <img src="/images/notFound.png" alt="logo" />
+              <img src="/images/home/result-not-found.svg" alt="not found" />
             </div>
             Result not found
           </div>
@@ -104,9 +109,131 @@ const PastInvitations = () => {
               {appointments.map((appointment) => (
                 <div
                   key={appointment._id}
-                  className="sm:w-[100%] max-w-[440px] bg-[#3760CB]  py-[12px] rounded-[20px] border border-gray-100 h-[auto] "
+                  className="w-full p-[16px] bg-[#919EAB33] rounded-[16px] cursor-pointer"
                 >
-                  <div className="flex gap-2 sm:gap-4 pl-[10px] pr-[10px]">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex gap-[8px] flex-grow">
+                      <div>
+                        <img
+                          src={
+                            appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.profilePic
+                              ?
+                              `${import.meta.env
+                                .VITE_APP_S3_IMAGE
+                              }/${appointment?.[
+                                userType == "client-hobbyist"
+                                  ? "companionId"
+                                  : "clientId"
+                              ]?.profilePic
+                              }`
+                              : appointment?.[
+                                userType == "client-hobbyist"
+                                  ? "companionId"
+                                  : "clientId"
+                              ]?.gender === "Male"
+                                ? "/images/male.png"
+                                : "/images/female.png"
+                          }
+                          className="w-[48px] h-[48px] rounded-full object-cover"
+                          alt=""
+                        />
+
+                      </div>
+                      <div>
+                        <div className="sm:text-base text-sm text-white font-medium">
+                          {
+                            appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.name
+                          }
+                        </div>
+                        <div className="sm:text-sm text-xs font-normal text-[#919EAB] uppercase">
+                          {
+                            appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.vaiID
+                          }
+                        </div>
+
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex gap-[4px]">
+                        <p className="sm:text-base text-sm text-white font-semibold">
+                          {
+                            appointment?.[
+                              userType === "client-hobbyist" ? "companionId" : "clientId"
+                            ]?.avgRating || 0
+                          }
+                        </p>
+                        <img src="/images/home/star.svg" alt="rating" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-[16px]">
+                    <div className="flex justify-between gap-2">
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Date/Time</div>
+                      <p className="text-white sm:text-sm text-xs font-medium text-right">
+                        {moment(appointment?.startDateTime).format(
+                          "DD/MM/YY"
+                        )}{' '}
+                        {moment(appointment?.startDateTime).format(
+                          "hh.mma"
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-[16px] flex gap-[8px]">
+                    <Button
+                      text={'View'}
+                      size={'36px'}
+                      className={'py-[4px]'}
+                      onClick={() => navigateToviewall(appointment)}
+                    />
+
+                    {appointment?.companionStatus === "Scheduled" &&
+                      appointment?.clientStatus === "Scheduled" && (
+                        <Button
+                          disabled={appointment?.[
+                            userType == "client-hobbyist"
+                              ? "companionId"
+                              : "clientId"
+                          ]?.reviews?.find(
+                            (review) => review?.appointment === appointment?._id
+                          )}
+                          onClick={() => {
+                            setOpenModal(true);
+                            setParticularItem(appointment)
+                          }
+                            // navigate("/varidate/post/review", {
+                            //   state: appointment,
+                            // })
+                          }
+                          className={'py-[4px] !bg-transparent secondary-btn border-2 border-[#919EAB33] hover:!bg-[#919EAB33]'}
+                          text={appointment?.[
+                            userType == "client-hobbyist"
+                              ? "companionId"
+                              : "clientId"
+                          ]?.reviews?.find(
+                            (review) => review?.appointment === appointment?._id
+                          )
+                            ? "Reviewed"
+                            : "Post Review"}
+                        />
+
+                      )}
+                  </div>
+                  {/* <div className="flex gap-2 sm:gap-4 pl-[10px] pr-[10px]">
                     <div className="w-[20%] justify-center">
                       <img
                         src={
@@ -116,15 +243,13 @@ const PastInvitations = () => {
                               : "clientId"
                           ]?.profilePic
                             ?
-                            `${
-                              import.meta.env
-                                .VITE_APP_S3_IMAGE
-                            }/${
-                              appointment?.[
-                                userType == "client-hobbyist"
-                                  ? "companionId"
-                                  : "clientId"
-                              ]?.profilePic
+                            `${import.meta.env
+                              .VITE_APP_S3_IMAGE
+                            }/${appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.profilePic
                             }`
                             //  `${
                             //     import.meta.env
@@ -137,24 +262,17 @@ const PastInvitations = () => {
                             //     ]?.profilePic
                             //   }`
                             : appointment?.[
-                                userType == "client-hobbyist"
-                                  ? "companionId"
-                                  : "clientId"
-                              ]?.gender === "Male"
-                            ? "/images/male.png"
-                            : "/images/female.png"
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.gender === "Male"
+                              ? "/images/male.png"
+                              : "/images/female.png"
                         }
                         className="w-[60px] h-[60px] rounded-full"
                         alt=""
                       />
-                      {/* <div className="mt-3">
-                      <span className="block text-[12px] font-bold font-roboto text-white whitespace-nowrap">
-                        Request Type
-                      </span>
-                      <span className="text-white block text-[16px]">
-                        <span className="font-bold">VAI</span>RIDATE
-                      </span>
-                    </div> */}
+                  
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-center">
@@ -243,12 +361,7 @@ const PastInvitations = () => {
                         </div>
                         <div className="user-information"></div>
 
-                        {/* <button>
-                        <img src="/images/phone-rounded.svg" />
-                      </button> */}
-                        {/* <button onClick={() => handleChatIcon(appointment?.[userType == 'client-hobbyist' ? 'companionId' : 'clientId']?._id)}>
-                        <img src="/images/massege-rounded.svg" />
-                      </button> */}
+                  
                         <button
                           onClick={() => navigateToviewall(appointment)}
                           className="font-roboto font-bold text-[16px] text-white px-3 py-[3px]  border rounded-[25px] border-white bg-[#02227E]"
@@ -285,7 +398,7 @@ const PastInvitations = () => {
                           ? "Reviewed"
                           : "Post Review"}
                       </button>
-                    )}
+                    )} */}
                 </div>
               ))}
             </div>
@@ -383,6 +496,21 @@ const PastInvitations = () => {
               </div>
             </div>
           </div> */}
+
+            <Modal
+              isOpen={openModal}
+              onRequestClose={closeModal}
+              className=" max-w-[550px] sm:max-h-[800px] max-h-[600px] h-full mx-auto bg-white overflow-auto fixed rounded-2xl sm:p-[24px] p-[16px] w-[90%]"
+              contentLabel="#"
+            >
+              <button
+                className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                onClick={closeModal}
+              >
+                <IoCloseCircleOutline size={26} />
+              </button>
+              <HotRodAnalysis state={particularItem} />
+            </Modal>
           </div>
         </div>
       </div>

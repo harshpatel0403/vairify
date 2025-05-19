@@ -9,22 +9,24 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import MyVairifyService from "../../services/MyVairifyService";
 import { HandleUpdateFollowers } from "../../redux/action/Auth";
+import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
 
-export default function Reviews() {
+export default function Reviews(props) {
   const location = useLocation();
-  const appointment = location.state;
+  const appointment = props?.location?.state || location?.state;
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
   const usrToShowDetails =
     appointment?.from === "manual"
       ? appointment?.appointment[
-          appointment?.userType === "client-hobbyist"
-            ? "companionId"
-            : "clientId"
-        ]
+      appointment?.userType === "client-hobbyist"
+        ? "companionId"
+        : "clientId"
+      ]
       : appointment?.userId
-      ? appointment
-      : UserDetails;
+        ? appointment
+        : UserDetails;
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -36,6 +38,12 @@ export default function Reviews() {
   };
 
   const [followLoading, setFollowLoading] = useState(false);
+  const [isFromProp, setIsFromProp] = useState(true);
+
+  useEffect(() => {
+    const fromProps = props?.location;
+    setIsFromProp(fromProps);
+  }, [props?.location]);
 
   const isFollowed = (id) => {
     let result = UserDetails?.followers?.find(
@@ -111,7 +119,8 @@ export default function Reviews() {
           setLoading(false);
         });
     }
-  }, [appointment, UserDetails]);
+  }, []);
+
   const reviewed = reviews.filter(
     (item) =>
       item?.reviewee?._id ===
@@ -124,250 +133,90 @@ export default function Reviews() {
   );
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center pt-[48px] mt-7">
+        <Loading />
+      </div>
+    );
   }
 
-  console.log(appointment, " <=== I am ppt...");
 
   return (
-    <div className="main-container flex flex-col justify-start">
-      <div className="w-full mx-auto flex flex-col justify-center items-center ">
-        <div className="w-full mx-auto flex flex-row justify-between items-start pt-2">
-          <div className="flex flex-col items-center justify-center leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold font-Roboto-Serif">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold font-Roboto-Serif">
-                  RIFY ID
-                </span>
-              </span>
-            </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold uppercase">
-                {usrToShowDetails?.vaiID}
-              </span>
-            </div>
+    <div className={`container pb-[48px] ${!isFromProp ? "" : "lg:p-0 "}`}>
+      <div className={`${!isFromProp && "min-h-[calc(100vh-380px)]"}`}>
+        {!isFromProp &&
+          <div className="md:mb-0 sm:mb-[30px] mb-[16px] ">
+            <PageTitle title={"TruRevu"} />
           </div>
-          <div className="w-[120px] relative">
-            <div
-              style={{ left: "0px", bottom: "65px" }}
-              className="absolute w-full h-full rounded-full"
-            >
-              <img
-                src={
-                  usrToShowDetails?.profilePic
-                    ? import.meta.env.VITE_APP_S3_IMAGE +
-                      `/${usrToShowDetails?.profilePic}`
-                    : usrToShowDetails?.gender === "Male"
-                    ? "/images/male.png"
-                    : "/images/female.png"
-                }
-                // src={
-                //   usrToShowDetails?.profilePic
-                //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                //       `/${usrToShowDetails?.profilePic}`
-                //     : usrToShowDetails?.gender === "Male"
-                //     ? "/images/male.png"
-                //     : "/images/female.png"
-                // }
-                className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
-                alt="Hot Rod"
-              />
-            </div>
-            {usrToShowDetails?._id !== UserDetails?._id &&
-              usrToShowDetails?.userId !== UserDetails?._id && (
-                <div
-                  style={{ right: "0px", top: "25px" }}
-                  className="absolute"
-                  onClick={() => {
-                    followLoading ? null : handleFollow();
-                  }}
-                >
-                  {followLoading ? (
-                    <div
-                      className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                      role="status"
-                    ></div>
-                  ) : (
-                    <img
-                      src={"/images/SugarIcon2.png"}
-                      alt="Sugar Icon Second"
-                      className={`${
-                        isFollowed(
-                          usrToShowDetails?._id || usrToShowDetails?.userId
-                        )
-                          ? ""
-                          : "grayscale"
-                      }`}
-                    />
-                  )}
-                </div>
-              )}
-          </div>
-          <div className="leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold font-Roboto-Serif">
-                TruRevu
-              </span>
-            </div>
-            <div className="flex flex-row justify-center items-center">
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  usrToShowDetails?.averageRating >= 1 ? "#E1AB3F" : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  usrToShowDetails?.averageRating >= 2 ? "#E1AB3F" : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  usrToShowDetails?.averageRating >= 3 ? "#E1AB3F" : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  usrToShowDetails?.averageRating >= 4 ? "#E1AB3F" : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  usrToShowDetails?.averageRating >= 5 ? "#E1AB3F" : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <span className="text-[15px] text-[#040C50] font-bold ml-0.5">
-                {(usrToShowDetails?.averageRating || 0).toFixed(1)}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-4">
-          <span className="font-bold text-[20px] capitalize">
-            {usrToShowDetails?.name}
-          </span>
-        </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-0">
-          <span className="font-bold text-[24px]">TruRevu</span>
-        </div>
-        <div className="w-full mx-auto flex flex-row justify-around items-center mt-7">
-          {staff == "Reviewed" ? (
+        }
+        <div className="w-full mx-auto flex flex-col justify-center items-center lg:mt-0 mt-[24px]">
+          <div className="w-full mx-auto flex flex-row justify-start items-center gap-[16px]">
             <div
               onClick={() => toggle("Reviewed")}
-              className="px-4 rounded-tr-md rounded-tl-md bg-[#A0AACD] border-b-4 border-b-[#0247FF]"
+              className={`py-[6px] px-[12px] rounded-[8px] font-bold text-white text-sm cursor-pointer ${staff === "Reviewed" ? "bg-[#FFFFFF29]" : "bg-[#FFFFFF14]"}`}
             >
-              <span className="font-extrabold text-[24px] text-[#02227E]">
-                Reviewed
-              </span>
+              Reviewed
             </div>
-          ) : (
-            <div onClick={() => toggle("Reviewed")} className="px-4">
-              <span className="font-extrabold text-[24px] text-[#02227E]">
-                Reviewed
-              </span>
-            </div>
-          )}
-          {staff == "Reviews" ? (
+
             <div
               onClick={() => toggle("Reviews")}
-              className="px-4 rounded-tr-md rounded-tl-md bg-[#A0AACD] border-b-4 border-b-[#0247FF]"
+              className={`py-[6px] px-[12px] rounded-[8px] font-bold text-white text-sm cursor-pointer ${staff === "Reviews" ? "bg-[#FFFFFF29]" : "bg-[#FFFFFF14]"}`}
             >
-              <span className="font-extrabold text-[24px] text-[#02227E]">
-                Reviews
-              </span>
+              Reviews
             </div>
-          ) : (
-            <div onClick={() => toggle("Reviews")} className="px-4">
-              <span className="font-extrabold text-[24px] text-[#02227E]">
-                Reviews
-              </span>
-            </div>
-          )}
+          </div>
         </div>
-        {/* <div style={{border:'1px solid black'}} className='w-[100vw]'></div> */}
         <div
-          className="w-full overflow-hidden overflow-y-auto pr-1"
-          style={{ maxHeight: "calc(100vh - 400px)" }}
+          className="w-full mt-[24px]"
         >
           {/* TODO: make these dynamic once we implement the TruRevu */}
-          <div className="w-full mt-7">
-            {staff === "Reviewed" ? (
-              reviewed && reviewed.length ? (
-                reviewed.map((item) => (
-                  <>
+          <div className="w-full">
+            <div className="grid lg:grid-cols-2 gap-[20px]">
+              {staff === "Reviewed" ? (
+                reviewed && reviewed.length ? (
+                  reviewed.map((item) => (
+
                     <PersonalReview
-                      vairifyId={item?.["reviewer"]?.vaiID}
+                      vairifyId={item?.["reviewee"]?.vaiID}
                       userAvatar={
-                        item?.["reviewer"]?.profilePic
+                        item?.["reviewee"]?.profilePic
                           ? import.meta.env.VITE_APP_S3_IMAGE +
-                            `/${item?.["reviewer"]?.profilePic}`
-                          : item?.["reviewer"]?.gender === "Male"
-                          ? "/images/male.png"
-                          : "/images/female.png"
+                          `/${item?.["reviewee"]?.profilePic}`
+                          : item?.["reviewee"]?.gender === "Male"
+                            ? "/images/male.png"
+                            : "/images/female.png"
                       }
-                      // userAvatar={
-                      //   item?.["reviewer"]?.profilePic
-                      //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                      //       `/${item?.["reviewer"]?.profilePic}`
-                      //     : item?.["reviewer"]?.gender === "Male"
-                      //     ? "/images/male.png"
-                      //     : "/images/female.png"
-                      // }
-                      userName={item?.["reviewer"]?.name}
+                      userName={item?.["reviewee"]?.name}
                       date={moment(item?.createdAt).format("DD/MM/YYYY")}
                       rate={item?.rating?.toFixed(1)}
                     />
-                  </>
-                ))
-              ) : (
-                <> No Reviews </>
-              )
-            ) : reviewee && reviewee.length ? (
-              reviewee.map((item) => (
-                <>
+                  ))
+                ) : (
+                  <div className="text-white text-base font-normal col-span-2"> No Reviews </div>
+                )
+              ) : reviewee && reviewee.length ? (
+                reviewee.map((item) => (
                   <PersonalReview
                     vairifyId={item?.["reviewee"]?.vaiID}
                     userAvatar={
                       item?.["reviewee"]?.profilePic
                         ? import.meta.env.VITE_APP_S3_IMAGE +
-                          `/${item?.["reviewee"]?.profilePic}`
+                        `/${item?.["reviewee"]?.profilePic}`
                         : item?.["reviewee"]?.gender === "Male"
-                        ? "/images/male.png"
-                        : "/images/female.png"
+                          ? "/images/male.png"
+                          : "/images/female.png"
                     }
-                    // userAvatar={
-                    //   item?.["reviewee"]?.profilePic
-                    //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                    //       `/${item?.["reviewee"]?.profilePic}`
-                    //     : item?.["reviewee"]?.gender === "Male"
-                    //     ? "/images/male.png"
-                    //     : "/images/female.png"
-                    // }
                     userName={item?.["reviewee"]?.name}
                     date={moment(item?.createdAt).format("DD/MM/YYYY")}
                     rate={item?.rating?.toFixed(1)}
                   />
-                </>
-              ))
-            ) : (
-              <>No Reviews</>
-            )}
+                ))
+              ) : (
+                <div className="text-white text-base font-normal col-span-2">No Reviews</div>
+              )}
+
+            </div>
           </div>
-          {/* <div className='w-full mt-7'><PersonalReview userAvatar="Ellipse 155(2).png" userName="Sugar" date="01/03/2023" rate="5.0" /></div>
-                <div className='w-full mt-7'><PersonalReview userAvatar="Ellipse 155(2).png" userName="Sugar" date="01/03/2023" rate="5.0" /></div>
-                <div className='w-full mt-5'><PersonalReview userAvatar="Ellipse 157(2).png" userName="Crystal" date="01/03/2023" rate="5.0" /></div>
-                <div className='w-full mt-5'><PersonalReview userAvatar="Ellipse 158(2).png" userName="Baby 98" date="01/03/2023" rate="5.0" /></div>
-                <div className='w-full mt-5'><PersonalReview userAvatar="Ellipse 156(2).png" userName="Faye Love" date="01/03/2023" rate="5.0" /></div> */}
         </div>
       </div>
     </div>

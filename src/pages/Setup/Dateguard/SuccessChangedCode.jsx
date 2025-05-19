@@ -6,6 +6,10 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import DetectRTC from "detectrtc";
 import { useSelector } from "react-redux";
+import Header from "../../../components/Header/Header";
+import Loading from "../../../components/Loading/Index";
+import PageTitle from "../../../components/PageTitle";
+
 const videoConstraints = {
   width: 400,
   height: 400,
@@ -17,7 +21,6 @@ export default function SuccessChangedCode() {
   const [imgSrc, setImgSrc] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [faceCompareLoading, setFaceCompareLoading] = React.useState(false)
-
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
   const nav = useNavigate();
@@ -35,7 +38,7 @@ export default function SuccessChangedCode() {
       const resp = await DateGuardService.verifyUserFace(UserDetails._id, data)
       console.log(resp, ' <=== I am user verify api call response')
       handleApprove()
-    } catch(error) {
+    } catch (error) {
       console.log(error, ' <=== Error while verifing user face')
       handleReject()
     } finally {
@@ -45,16 +48,16 @@ export default function SuccessChangedCode() {
 
   useEffect(() => {
     console.log('1. coming here....')
-    if(!UserDetails) {
+    if (!UserDetails) {
       nav('/login')
       return
     }
     console.log('2. coming here....')
     const decoy = localStorage.getItem("decoy");
     const disarm = localStorage.getItem("disarm");
-    if(!decoy || !disarm) {
+    if (!decoy || !disarm) {
       nav('/dateguard/codes')
-      return 
+      return
     }
     console.log('3. coming here....')
     DetectRTC.load(() => {
@@ -90,28 +93,33 @@ export default function SuccessChangedCode() {
   };
 
   return (
-    <div className="main-container">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-        <div className="w-full mx-auto flex items-center justify-center">
-          <span className="font-bold text-[30px] text-[#05B7FD] change-font-family">
-            Date Guard
-          </span>
-        </div>
+    <div className="container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Date Guard"} />
+      </div>
+      <div className="mb-[48px]">
+
         <div className="w-full mx-auto flex items-center justify-center mt-2">
           <div className="flex-1 flex items-center justify-center">
             {imgSrc ? (
               <img src={imgSrc} alt="Date Guard Success Changed Code" />
             ) : (
-              <>
+              <div className="relative">
                 <Webcam
                   audio={false}
                   height={400}
                   ref={webcamRef}
                   width={400}
+                  className="rounded-[16px] w-full max-w-[400]"
                   screenshotFormat="image/jpeg"
                   videoConstraints={videoConstraints}
+                  style={{ transform: "scaleX(-1)" }}
                 />
-              </>
+                <img src="/images/face-verification/camera-vector.svg" className="left-[5%] top-[5%] absolute z-[100]" />
+                <img src="/images/face-verification/camera-vector.svg" className="right-[5%] top-[5%] absolute z-[100] rotate-[90deg]" />
+                <img src="/images/face-verification/camera-vector.svg" className="left-[5%] bottom-[5%] absolute z-[100] rotate-[-90deg]" />
+                <img src="/images/face-verification/camera-vector.svg" className="right-[5%] bottom-[5%] absolute z-[100]  rotate-[-180deg]" />
+              </div>
             )}
           </div>
         </div>
@@ -127,15 +135,9 @@ export default function SuccessChangedCode() {
         <button
           disabled={faceCompareLoading}
           onClick={capture}
-          className="w-full mx-auto flex items-center justify-center mt-10"
+          className="mx-auto flex items-center justify-center mt-[-40px] relative z-[100] h-[64px] w-[64px] p-2 rounded-full bg-white"
         >
-          <div className="flex-1 flex items-center justify-center">
-            <img
-              src={"/images/DateGuardCamera.png"}
-              className="w-[50px]"
-              alt="Verification Success Mark Icon"
-            />
-          </div>
+          <img src="/images/face-verification/camera.svg" alt="camera img" />
         </button>
         {faceCompareLoading && (
           <p className="text-[#ffffff]">Please wait...</p>
@@ -144,13 +146,14 @@ export default function SuccessChangedCode() {
           <div className="mt-3 flex gap-3">
             <Button
               disabled={loading}
-              text={loading ? "Loading..." : "Approve"}
+              text={loading ? <div className="flex items-center	justify-center">
+                <Loading />
+              </div> : "Approve"}
               className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
               size="41px"
               onClick={handleApprove}
             />
             <Button
-              disabled={loading}
               text={"Reject"}
               className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
               size="41px"

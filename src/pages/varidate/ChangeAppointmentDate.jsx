@@ -13,6 +13,9 @@ import DateGuardService from "../../services/DateGuardService";
 import moment from "moment";
 import { HandleGetCalendarSchedule } from "../../redux/action/CalendarSchedule";
 import { toast } from "react-toastify";
+import ChangeAppointmentTime from "./ChangeAppointmentTime";
+import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
 
 export default function ChangeAppointmentDate() {
   const navigate = useNavigate();
@@ -173,7 +176,7 @@ export default function ChangeAppointmentDate() {
     });
   };
 
-  const getUserServices = async (userId) => {};
+  const getUserServices = async (userId) => { };
 
   useEffect(() => {
     fetchAppointment();
@@ -217,298 +220,220 @@ export default function ChangeAppointmentDate() {
     }
   };
 
+
+
   if (loading) {
     return (
-      <div className="main-container">
-        <div className="w-full mx-auto flex flex-col justify-center items-center">
-          Please wait...
-        </div>
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
       </div>
     );
   }
 
   return (
-    <div className="main-container pb-2">
-      <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="w-full mx-auto flex flex-row justify-between items-start mt-2">
-          <div className="flex flex-col items-center justify-center">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold">
-                  RIFY ID
-                </span>
-              </span>
-            </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold">
-                {companionData?.vaiID}
-              </span>
-            </div>
+    <div className="container pb-[48px]">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle isSmall={true} title={"Modify Appointment"} />
+      </div>
+      <div className="w-full flex flex-row sm:justify-around justify-between items-end mt-[110px] p-[16px] bg-[#FFFFFF0A] rounded-[16px]">
+        <div className="flex flex-col items-center justify-center sm:min-w-[120px] min-w-[80px]">
+          <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+            VAIRIFY ID
           </div>
-          <div className="w-[120px] relative">
-            <div
-              className="border-2 w-[120px] rounded-full"
-              style={{ marginTop: "-67px", zIndex: "99" }}
-            >
-              <img
-                className="rounded-full"
-                src={
-                  companionData?.profilePic
-                    ? import.meta.env.VITE_APP_S3_IMAGE +
-                      `/${companionData?.profilePic}`
-                    : companionData?.gender === "Male"
+          <div className="font-bold sm:text-lg text-base text-white uppercase">
+            {companionData?.vaiID}
+          </div>
+        </div>
+        <div className=" relative">
+          <div
+            className="sm:h-[120px] h-[80px] sm:w-[120px] w-[80px] rounded-full mt-[-74px] relative flex justify-center"
+          >
+            <img
+              className="sm:w-[120px] w-[80px] sm:h-[120px] h-[80px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
+              src={
+                companionData?.profilePic
+                  ? import.meta.env.VITE_APP_S3_IMAGE +
+                  `/${companionData?.profilePic}`
+                  : companionData?.gender === "Male"
                     ? "/images/male.png"
                     : "/images/female.png"
-                }
-                // src={
-                //   companionData?.profilePic
-                //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                //       `/${companionData?.profilePic}`
-                //     : companionData?.gender === "Male"
-                //     ? "/images/male.png"
-                //     : "/images/female.png"
-                // }
-                alt="Intimate Massage"
-              />
-            </div>
-            {/* <div
-              style={{ right: "0px", top: "25px", zIndex: "999" }}
-              className="absolute"
-            >
-              <img
-                src={"/images/IntimateMassageIcon2.png"}
-                alt="Intimate Massage Icon Second"
-              />
-            </div> */}
+              }
+              alt="Intimate Massage"
+            />
+
           </div>
-          <div>
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold">
-                TruRevu
-              </span>
+          <div className="flex-col flex justify-center items-center mt-[24px]">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              Name
             </div>
-            <div className="flex flex-row justify-center items-center">
-              {Array.from(
-                { length: companionData?.avgRating || 0 },
-                (_, index) => index
-              )?.map((rating) => (
-                <FontAwesomeIcon
-                  icon={faStar}
-                  color="#E1AB3F"
-                  className="text-[10px] margin-right-5"
-                />
-              ))}
-              {Array.from(
-                { length: 5 - Math.floor(companionData?.avgRating || 0) },
-                (_, index) => index
-              )?.map((rating) => (
-                <FontAwesomeIcon
-                  icon={faStar}
-                  color="#111"
-                  className="text-[10px] margin-right-5"
-                />
-              ))}
-              <span className="text-[15px] text-[#040C50] font-bold">
-                {companionData?.avgRating}
-              </span>
-            </div>
+            <span className="font-bold sm:text-lg text-base text-white">
+              {companionData?.name}
+            </span>
           </div>
         </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center">
-          <span className="font-bold text-[24px]">{companionData?.name}</span>
+        <div className="leading-[18px] sm:min-w-[120px] min-w-[80px] flex flex-col justify-center items-center">
+          <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+            TruRevu
+          </div>
+          <div className="flex justify-center items-center gap-1">
+            <div className="sm:text-lg text-base text-white font-bold ">
+              {companionData?.avgRating}
+            </div>
+            <img src="/images/home/star.svg" alt="star" />
+          </div>
         </div>
-        <div
-          className="inner-content-part-medium form-field-container"
-          style={{ maxWidth: "100%" }}
-        >
-          <div className="w-full mx-auto flex flex-row justify-around items-center mt-4">
-            {staff == "1st Available" ? (
-              <div
-                onClick={() => toggle("1st Available")}
-                className="px-7 rounded-[10px] bg-[#a0a0a0] border-2 border-solid border-[#707076]"
-              >
-                <span className="font-bold text-[20px] text-[#060b44]">
-                  1st Available
-                </span>
-              </div>
-            ) : (
-              <div
-                onClick={() => toggle("1st Available")}
-                className="px-7 rounded-[10px] bg-gradient-to-t from-lime-500 to-emerald-500 border-2 border-solid border-[#707076]"
-              >
-                <span className="font-bold text-[20px] text-[#060b44]">
-                  1st Available
-                </span>
-              </div>
-            )}
-            {/* {
-                        staff == "Schedule" ?
-                        <div onClick={() => toggle("Schedule")} className='px-4 rounded-tr-md rounded-tl-md bg-[#A0AACD] border-b-4 border-b-[#0247FF]'><span className='font-extrabold text-[24px] text-[#02227E]'>Schedule</span></div>
-                        :
-                        <div onClick={() => toggle("Schedule")} className='px-4'><span className='font-extrabold text-[24px] text-[#02227E]'>Schedule</span></div>
-                    }  */}
-          </div>
-          <div className="w-full mx-auto flex flex-row justify-around items-center flex-wrap-nowrap mt-4">
-            <div className="max-w-[254px] w-[100%] px-2 option-selected">
-              <SelectBox
-                disabled
-                size={"h-[40px]"}
-                // options={typeOptions}
-                options={
-                  activeScheduleData?.venue === "Both"
-                    ? typeOptions
-                    : typeOptions.filter(
-                        (type) => activeScheduleData?.venue === type
-                      )
-                }
-                value={selectedType}
-                onChange={(e) => handleChangeSelect(e, setSelectedType)}
-                className={"rounded-full"}
-                shadowNone="shadow-none"
-                borderWidth="border-none"
-                backgroundColor={"bg-gradient-to-b from-[#02227E] to-[#0247FF]"}
-                textSize={"18px"}
-                fontWeight={"font-bold"}
-                textColor={"text-white"}
-                arrowColor={"text-white"}
-              />
-            </div>
-            <div className="max-w-[254px] w-[100%] px-2 option-selected">
-              <SelectBox
-                size={"h-[40px]"}
-                options={servicesOptions}
-                value={selectedService}
-                onChange={(e) =>
-                  handleChangeSelect(
-                    e,
-                    setSelectedService
-                    // true,
-                    // services,
-                    // "servicesName"
-                  )
-                }
-                className={"rounded-full"}
-                borderWidth="border-none"
-                backgroundColor={"bg-gradient-to-b from-[#02227E] to-[#0247FF]"}
-                textSize={"18px"}
-                fontWeight={"font-bold"}
-                textColor={"text-white"}
-                arrowColor={"text-white"}
-              />
-            </div>
-          </div>
-          <div className="w-full mx-auto flex flex-row justify-around items-center flex-wrap-nowrap mt-2">
-            <div className="max-w-[254px] w-[100%] mb-3 px-2 option-selected">
-              <SelectBox
-                size={"h-[40px]"}
-                options={hoursOptions}
-                value={selectedHours?.value}
-                onChange={(e) =>
-                  handleChangeSelect(e, setSelectedHours, true, hours, "value")
-                }
-                className={"rounded-full"}
-                borderWidth="border-none"
-                backgroundColor={"bg-gradient-to-b from-[#02227E] to-[#0247FF]"}
-                textSize={"18px"}
-                fontWeight={"font-bold"}
-                textColor={"text-white"}
-                arrowColor={"text-white"}
-              />
-            </div>
-            <div className="max-w-[254px] w-[100%] mb-3 px-2 option-selected">
-              <div className="max-w-[254px] w-[100%] mb-3 px-2 option-selected relative rounded-2xl w-full  bg-gradient-to-b from-[#02227E] to-[#0247FF] border-none   border-2 border-[#fff] custom-select-dropdown">
-                <select
-                  // disabled={selectedType !== "Incall"}
-                  disabled
-                  className="custom-select-btn appearance-none block w-full  px-4 pr-8 h-[40px] shadow leading-tight rounded-2xl focus:outline-none focus:shadow-outline h-[100%] bg-transparent text-white undefined 18px font-bold   undefined focus:outline-none focus:ring-0 text-center"
-                  onChange={(e) => {
-                    e.target.value === "add-new-addr"
-                      ? navigate("/manage-incall-addresses")
-                      : handleChangeSelect(
-                          e,
-                          setSelectedCountry,
-                          true,
-                          UserDetails?.incallAddresses,
-                          "_id"
-                        );
-                  }}
-                >
-                  <option selected={!selectedCountry}>Select Address</option>
-                  {!UserDetails?.incallAddresses.length && (
-                    <option
-                      value={"add-new-addr"}
-                      selected={false}
-                      onClick={() => navigate("/manage-incall-addresses")}
-                    >
-                      Add new address
-                    </option>
-                  )}
-                  {UserDetails?.incallAddresses?.map((addr) => (
-                    <option
-                      selected={addr?._id === selectedCountry?._id}
-                      value={addr?._id}
-                      key={addr?._id}
-                    >
-                      {addr.addressLine1}
-                    </option>
-                  ))}
-                </select>
-                <div
-                  className="border-none border-[#CFCFCF] border-t-0 border-r-0 border-b-0 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 bg-transparent"
-                  // style="top: 2px;"
-                >
-                  <svg
-                    className="w-8 h-8 fill-current text-blue-500 text-white undefined"
-                    viewBox="0 0 20 20"
-                  >
-                    <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z"></path>
-                  </svg>
-                </div>
-                {/* <SelectBox
+      </div>
+
+      <div className="w-full mx-auto flex flex-row justify-around items-center mt-4">
+        {staff == "1st Available" ? (
+          <Button
+            onClick={() => toggle("1st Available")}
+            className="secondary-btn !bg-[#FFFFFF29] w-full opacity-[0.7] cursor-not-allowed max-w-[500px]"
+            text='Book 1st Available'
+          />
+        ) : (
+          <Button
+            onClick={() => toggle("1st Available")}
+            className="secondary-btn !bg-[#FFFFFF29] w-full max-w-[500px]"
+            text='Book 1st Available'
+          />
+        )}
+      </div>
+
+      <div className="w-full sm:mt-[48px] mt-[24px]">
+        <div className="w-full mx-auto flex flex-row  items-center flex-wrap-nowrap sm:gap-[24px] gap-[16px]">
+          <div className="w-full">
+            <SelectBox
+              disabled
               size={"h-[40px]"}
-              options={UserData?.incallAddresses}
-              value={selectedCountry?.value}
+              // options={typeOptions}
+              options={
+                activeScheduleData?.venue === "Both"
+                  ? typeOptions
+                  : typeOptions.filter(
+                    (type) => activeScheduleData?.venue === type
+                  )
+              }
+              value={selectedType}
+              onChange={(e) => handleChangeSelect(e, setSelectedType)}
+              className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px] h-[54px]"
+              textAlign={"text-left"}
+              rounded={"rounded-2xl"}
+              fontWeight={"font-bold"}
+              textColor={"text-white"}
+              textSize={"text-[14px]"}
+            />
+          </div>
+          <div className="w-full">
+            <SelectBox
+              size={"h-[40px]"}
+              options={servicesOptions}
+              value={selectedService}
               onChange={(e) =>
                 handleChangeSelect(
                   e,
-                  setSelectedCountry,
-                  true,
-                  countries,
-                  "value"
+                  setSelectedService
+                  // true,
+                  // services,
+                  // "servicesName"
                 )
               }
-              className={"rounded-full border-0"}
-              borderWidth="border-none"
-              backgroundColor={"bg-gradient-to-b from-[#02227E] to-[#0247FF]"}
-              textSize={"18px"}
+              className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px] h-[54px]"
+              textAlign={"text-left"}
+              rounded={"rounded-2xl"}
               fontWeight={"font-bold"}
               textColor={"text-white"}
-              arrowColor={"text-white"}
-            /> */}
-              </div>
-            </div>
+              textSize={"text-[14px]"}
+            />
           </div>
-          <div className="w-full mx-auto mt-1 calendar-design">
-            <Calendar onChange={setDate} value={date} />
+        </div>
+        <div className="w-full mx-auto flex flex-row  items-center flex-wrap-nowrap sm:mt-[24px] mt-[16px] sm:gap-[24px] gap-[16px]">
+          <div className=" w-[100%] ">
+            <SelectBox
+              size={"h-[40px]"}
+              options={hoursOptions}
+              value={selectedHours?.value}
+              onChange={(e) =>
+                handleChangeSelect(e, setSelectedHours, true, hours, "value")
+              }
+              className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px] h-[54px]"
+              textAlign={"text-left"}
+              rounded={"rounded-2xl"}
+              fontWeight={"font-bold"}
+              textColor={"text-white"}
+              textSize={"text-[14px]"}
+            />
           </div>
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-            <p className="text-center">
-              <span className="bold">Selected Date:</span> {date.toDateString()}
-            </p>
-          </div>
-          <div className="w-full mx-auto flex items-center justify-center mt-2">
-            <div className="w-[154px]">
-              <Button
-                onClick={() => navigateToSelectDate()}
-                text="Select Time"
-                className={
-                  "h-[45px] font-bold text-[18px] text-white rounded-[25px] border-2 border-white bg-grandient-to-b from-[#02227E] to-[#0247FF]"
-                }
-              />
+          <div className=" w-[100%] ">
+            <div className="w-full select-arrow">
+              <select
+                // disabled={selectedType !== "Incall"}
+                disabled
+                className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                onChange={(e) => {
+                  e.target.value === "add-new-addr"
+                    ? navigate("/manage-incall-addresses")
+                    : handleChangeSelect(
+                      e,
+                      setSelectedCountry,
+                      true,
+                      UserDetails?.incallAddresses,
+                      "_id"
+                    );
+                }}
+              >
+                <option selected={!selectedCountry}>Select Address</option>
+                {!UserDetails?.incallAddresses.length && (
+                  <option
+                    value={"add-new-addr"}
+                    selected={false}
+                    onClick={() => navigate("/manage-incall-addresses")}
+                  >
+                    Add new address
+                  </option>
+                )}
+                {UserDetails?.incallAddresses?.map((addr) => (
+                  <option
+                    selected={addr?._id === selectedCountry?._id}
+                    value={addr?._id}
+                    key={addr?._id}
+                  >
+                    {addr.addressLine1}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
+        <div className="w-full mx-auto mt-[24px] calendar-design max-w-[550px] ">
+          <Calendar onChange={setDate} value={date} />
+        </div>
+        <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
+          <p className="text-center text-sm text-white mt-[24px]">Selected Date: {date.toDateString()}</p>
+        </div>
+        {/* <div className="w-full mx-auto flex items-center justify-center mt-2">
+          <div className="w-[154px]">
+            <Button
+              onClick={() => navigateToSelectDate()}
+              text="Select Time"
+              className={
+                "h-[45px] font-bold text-[18px] text-white rounded-[25px] border-2 border-white bg-grandient-to-b from-[#02227E] to-[#0247FF]"
+              }
+            />
+          </div>
+        </div> */}
+
+        <ChangeAppointmentTime state={{
+          type: selectedType,
+          hours: selectedHours,
+          service: { servicesName: selectedService },
+          country: selectedCountry,
+          date,
+          allServices,
+          availableHours: hours,
+          companionData,
+          params: params
+        }} />
       </div>
     </div>
   );

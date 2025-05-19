@@ -3,44 +3,46 @@ import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import Loading from "../../components/Loading/Index";
+import Header from "../../components/Header/Header";
 const SetupProfile = () => {
   const navigate = useNavigate();
 
-  const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
-  const UserProfile = useSelector((state) => state?.Profile);
-  const CalendarSchedule = useSelector((state) => state?.Calendar?.getschedule);
-  const GallaryData = useSelector((state) => state?.Gallary)
-  const ServicesData = useSelector((state) => state?.Services?.getservices);
+  const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user) || {};
+  const GallaryData = useSelector((state) => state?.Gallary) || [];
+  const ServicesData = useSelector((state) => state?.Services?.getservices) || [];
   const LanguagesData = useSelector((state) => state?.Auth?.language);
-  const SocialData = useSelector((state) => state?.Social);
+  const SocialData = useSelector((state) => state?.Social) || [];
+  const GallaryDataLoading = useSelector((state) => state?.Gallary?.loading)
+  const ServicesDataLoading = useSelector((state) => state?.Services?.loading);
+  const UserDetailsLoading = useSelector((state) => state?.Auth?.loading);
+  const SocialDataLoading = useSelector((state) => state?.Social?.loading);
 
-  const rateAndServices = useMemo(() => {
-    let HourllyRate;
-    let Services;
+  const { HourllyRate, Services } = useMemo(() => {
+    let HourllyRate = false;
+    let Services = false;
 
     if (Object.keys(UserData).length > 0) {
-      if (UserData?.user_type == "client-hobbyist") {
-        HourllyRate = true;
-        Services = true;
-      } else if (UserData?.user_type == "agency-business") {
-        // HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-        // Services = true;
-        HourllyRate = true;
-        Services = true;
-      } else if (UserData?.user_type == "companion-provider") {
-        // HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-        // Services = ServicesData?.find((item) => item)?.services?.length > 0;
-        HourllyRate = true;
-        Services = true;
-      } else if (UserData?.user_type == "influencer-affiliate") {
-        // HourllyRate = ServicesData?.find((item) => item)?.hourlyRates?.length > 0;
-        // Services = ServicesData?.find((item) => item)?.services?.length > 0;
+      if (UserData?.user_type === "client-hobbyist") {
         HourllyRate = true;
         Services = true;
       }
-      return HourllyRate || Services
+
+      if (UserData?.user_type === "agency-business") {
+        HourllyRate = ServicesData?.some((item) => item?.businessHourlyRates?.length > 0);
+        Services = true;
+      }
+
+      if (
+        UserData?.user_type === "companion-provider" ||
+        UserData?.user_type === "influencer-affiliate"
+      ) {
+        HourllyRate = ServicesData?.some((item) => item?.hourlyRates?.length > 0);
+        Services = ServicesData?.some((item) => item?.services?.length > 0);
+      }
     }
-  }, [ServicesData, UserData]);
+
+    return { HourllyRate, Services };
+  }, [UserData, ServicesData]);
 
   console.log(
     "🚀 ~ file: SetupProfile.jsx:8 ~ SetupProfile ~ UserData:",
@@ -48,7 +50,8 @@ const SetupProfile = () => {
   );
 
   const handleLanguage = () => {
-    navigate("/language", { state: { from: "/setup" } });
+    const sendFromState = (LanguagesData || UserData?.language) && UserData?.gender && UserData?.mutualContractSigned && UserData?.varipayActivity && (HourllyRate && Services) && UserData?.vaiNowAvailable?.availableFrom && UserData?.dateGuardActivity && GallaryData?.userGallary?.images?.length > 0 && !SocialData?.socialData?.find((item) => item)?.message && UserData?.incallAddresses?.length > 0
+    navigate("/language", { state: { from: "setup", showLayoutHeader: sendFromState ? true : false } });
   };
   const handelPersonalProfile = () => {
     navigate("/personal-information", {
@@ -72,7 +75,7 @@ const SetupProfile = () => {
     navigate("/services");
   };
   const handelDateGiardSetup = () => {
-    navigate("/dateguard-setup");
+    navigate("/dateguard-setup", { state: { from: "setup" } });
   };
 
   const handelSocial = () => {
@@ -85,288 +88,252 @@ const SetupProfile = () => {
   const handelCalander = () => {
     navigate("/cal-setting");
   };
-  const handelUploadProfile = () => {
-    navigate("/uploadProfile");
-  };
 
   const handelSetupFacial = () => {
     navigate("/setup-facial");
   };
 
   return (
-    <div className="main-container pt-8 pb-3">
-      <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="congratulation-title mb-2">
-          <span className="text-[#040b47] !text-[25px] font-bold">
-            Congratulations!
-          </span>
+    <>
+    <div className="md:hidden block fixed top-0 sm:h-[80px] h-[70px] w-full bg-[#060C4D] z-50"></div>
+      <div className="container">
+        
+        {/* <Header /> */}
+        <div className="sm:py-[48px] py-[24px]">
+          <div className="mb-2 flex items-center justify-center">
+            <span className="text-white sm:text-[28px] text-[24px] font-semibold">
+              Congratulations!
+            </span>
+            <span className="text-[#FF7913] ml-1 sm:text-[28px] text-[24px] font-semibold">
+              {Object.keys(UserData).length > 0 && UserData?.name}
+            </span>
+          </div>
+          <p className="font-normal sm:text-[18px] text-[14px] text-white text-center opacity-70">Your verification was successful</p>
+          <p className="font-normal text-[16px] text-white text-center">Time to set up your profile</p>
 
-          <span className="text-[#0636C1] !text-[25px] font-bold ml-1">
-            {Object.keys(UserData).length > 0 && UserData?.name}
-          </span>
-        </div>
-        <div>
-          <span className="text-black">Your Verification was successful</span>
-        </div>
-      </div>
-      <div className="w-full mx-auto flex flex-col justify-center items-start mb-6">
-        <div className="w-full mx-auto flex flex-col justify-center items-center cong-time-setup mt-2">
-          <span className="text-black text-[22px] font-bold">
-            Time to set up your profile
-          </span>
-        </div>
-        <div className="w-full">
-          <div className="w-full mt-4">
-            <Button
-              onClick={handleLanguage}
-              text={
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span>Language</span>
-                  {Object.keys(UserData).length > 0 || LanguagesData ?
-                    (
-                      LanguagesData && LanguagesData || UserData?.language ?
+          <div className="sm:mt-[48px] mt-[24px] grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-[24px]">
+            <div onClick={handleLanguage} className="relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {Object.keys(UserData).length > 0 || LanguagesData ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon1.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Language</span>
+                      {LanguagesData && LanguagesData || UserData?.language ?
                         ("") :
                         (<span style={{ color: "red" }}>*</span>)
-
-                    ) :
-                    (<Loading />)
-                  }
-                </div>
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (<Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />)
               }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelPersonalProfile}
-              text={
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span>Personal Profile</span>
-                  {Object.keys(UserProfile).length > 0 && UserProfile.loading ?
-                    (
-                      UserProfile?.profiledata?.orientation && UserProfile?.profiledata?.gender ?
-                        ("") :
-                        (<span style={{ color: "red" }}>*</span>)
-
-                    ) :
-                    (<Loading />)
-                  }
-                </div>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelUploadProfile}
-              text={
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span>Upload Profile Pic</span>
-                  {Object.keys(UserData).length > 0 ?
-                    (
-                      UserData?.profilePic != "" && UserData?.profilePic !== undefined ?
-                        ("") :
-                        (<span style={{ color: "red" }}>*</span>)
-
-                    ) :
-                    (<Loading />)
-                  }
-                </div>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handecontract}
-              text={
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span>Mutual Consent Contract</span>
-                  {Object.keys(UserData).length > 0 ?
-                    (
-                      UserData?.mutualContractSigned ?
-                        ("") :
-                        (<span style={{ color: "red" }}>*</span>)
-
-                    ) :
-                    (<Loading />)
-                  }
-                </div>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelVaripays}
-              text={
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span>VAIRIPAY</span>
-                  {Object.keys(UserData).length > 0 ?
-                    (
-                      UserData?.varipayActivity ?
-                        ("") :
-                        (<span style={{ color: "red" }}>*</span>)
-
-                    ) :
-                    (<Loading />)
-                  }
-                </div>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelPhotoGallery}
-              text={
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span>Gallery Photo</span>
-                  {Object.keys(GallaryData).length > 0 && GallaryData.loading ?
-                    (
-                      GallaryData?.userGallary?.images?.length > 0 ?
-                        ("") :
-                        (<span style={{ color: "red" }}>*</span>)
-
-                    ) :
-                    (<Loading />)
-                  }
-                </div>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelSetupFacial}
-              text="In-App Facial Recognition"
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] flex flex-row justify-start items-center px-5 py-3 border-2 border-gray-300"
-            />
-          </div>
-          {Object.keys(UserData).length > 0 && UserData?.user_type !== "client-hobbyist" ? (
-            <>
-              {" "}
-              <div className="w-full mt-4">
-                <Button
-                  onClick={handelServices}
-                  text={
-                    <>
-                      <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
-                        <span>Rates/Services</span>
-                        {rateAndServices ?
-                          ("") :
-                          (<span style={{ color: "red" }}>*</span>)
-                        }
-                      </div>
-                    </>
-                  }
-                  className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-                />
-              </div>{" "}
-            </>
-          ) : null}
-
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelCalander}
-              text={
-                <>
-                  <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
-                    <span>Calender</span>
-                    {Object.keys(CalendarSchedule).length > 0 ?
-                      (
-                        CalendarSchedule?.schedule.length > 0 ?
-                          ("") :
-                          (<span style={{ color: "red" }}>*</span>)
-
-                      ) :
-                      (<Loading />)
-                    }
-                  </div>
-                </>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelDateGiardSetup}
-              text={
-                <>
-                  <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
-                    <span>DateGuard</span>
-                    {Object.keys(UserData).length > 0 ?
-                      (
-                        UserData?.dateGuardActivity ?
-                          ("") :
-                          (<span style={{ color: "red" }}>*</span>)
-
-                      ) :
-                      (<Loading />)
-                    }
-                  </div>
-                </>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelSocial}
-              text={
-                <>
-                  <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
-                    <span>Social</span>
-                    {Object.keys(SocialData).length > 0 ?
-                      (
-                        !SocialData?.socialData?.find((item) => item)?.message ?
-                          ("") :
-                          (<span style={{ color: "red" }}>*</span>)
-
-                      ) :
-                      (<Loading />)
-                    }
-                  </div>
-                </>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <Button
-              onClick={handelIncallAddress}
-              text={
-                <>
-                  <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}>
-                    <span>Incall Addresses</span>
-                    {Object.keys(UserData).length > 0 ?
-                      (
-                        UserData?.incallAddresses.length > 0 ?
-                          ("") :
-                          (<span style={{ color: "red" }}>*</span>)
-
-                      ) :
-                      (<Loading />)
-                    }
-                  </div>
-                </>
-              }
-              className="btn-res max-w-[400px] mx-auto text-[20px] text-bold text-white bg-gradient-to-b from-[#02227E] to-[#0247FF] px-5 py-2 border-2 border-gray-300"
-            />
-          </div>
-          <div className="w-full mt-4">
-            <div className="px-6 w-full pt-2.5 pb-3.5 mt-5">
-              <button
-                onClick={() => navigate("/featured")}
-                className=" bg-gradient-to-t max-w-[400px] px-1 w-full from-[#08FA5A] to-[#0CA36C] rounded-xl font-bold text-[30px] text-[#02227E] py-1 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
-              >
-                HOME
-              </button>
             </div>
+            <div onClick={handelPersonalProfile} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {Object.keys(UserData).length > 0 ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon2.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Personal Profile</span>
+                      {UserData?.gender ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (<Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />)
+              }
+            </div>
+            {/* <div onClick={handelUploadProfile} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              <img src="/images/setup/setup-icon6.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+              <div className="flex items-center">
+                <span className="text-[14px] text-normal text-white text-center">Upload Profile Pic</span>
+                {Object.keys(UserData).length > 0 ?
+                  (
+                    UserData?.profilePic != "" && UserData?.profilePic !== undefined ?
+                      ("") :
+                      (<span style={{ color: "red" }}>*</span>)
+
+                  ) :
+                  (<Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2"  />)
+                }
+              </div>
+              <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden"/>
+            </div> */}
+            <div onClick={handecontract} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {Object.keys(UserData).length > 0 ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon3.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Mutual Consent Contract</span>
+                      {UserData?.mutualContractSigned ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (<Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />)
+              }
+            </div>
+            <div onClick={handelVaripays} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {Object.keys(UserData).length > 0 ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon4.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">VAIRIPAY</span>
+                      {UserData?.varipayActivity ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (<Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />)
+              }
+            </div>
+            <div onClick={handelPhotoGallery} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {!GallaryDataLoading ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon5.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Gallery Photo</span>
+                      {GallaryData?.userGallary?.images?.length > 0 ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (<Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />)
+              }
+            </div>
+            {/* <div onClick={handelSetupFacial} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              <img src="/images/setup/setup-icon6.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+              <div className="flex items-center">
+                <span className="text-[14px] text-normal text-white text-center">In-App Facial Recognition</span>
+              </div>
+              <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+            </div> */}
+            {Object.keys(UserData).length > 0 && UserData?.user_type !== "client-hobbyist" ? (
+              <div onClick={handelServices} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+                {!ServicesDataLoading ? (
+                  <>
+                    <img src="/images/setup/setup-icon7.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Rates/Services</span>
+                      {HourllyRate && Services ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)}
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                  (<Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />)
+                }
+              </div>
+            ) : null}
+            <div onClick={handelCalander} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {Object.keys(UserData).length > 0 ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon8.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Calendar</span>
+                      {UserData?.vaiNowAvailable?.availableFrom ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (
+                  <Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />
+                )
+              }
+            </div>
+            <div onClick={handelDateGiardSetup} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {Object.keys(UserData).length > 0 ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon9.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">DateGuard</span>
+                      {UserData?.dateGuardActivity ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (
+                  <Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />
+                )
+              }
+            </div>
+            <div onClick={handelSocial} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {!SocialDataLoading ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon10.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Social</span>
+                      {!SocialData?.socialData?.find((item) => item)?.message ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (
+                  <Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />
+                )
+              }
+            </div>
+            <div onClick={handelIncallAddress} className=" relative setup-card sm:hover:scale-[1.02] sm:hover:border-[#ffffff7a] border border-transparent transition-all duration-200 cursor-pointer sm:max-w-[384px] w-full sm:min-h-[114px] rounded-[8px] sm:bg-[#FFFFFF29] sm:py-[24px] py-[15px] flex items-center sm:justify-center sm:flex-col gap-[12px]">
+              {!UserDetailsLoading ?
+                (
+                  <>
+                    <img src="/images/setup/setup-icon11.svg" alt="img" className="w-[22px] h-[22px] sm:w-[32px] sm:h-[32px]" />
+                    <div className="flex items-center">
+                      <span className="text-[14px] text-normal text-white text-center">Incall Addresses</span>
+                      {UserData?.incallAddresses?.length > 0 ?
+                        ("") :
+                        (<span style={{ color: "red" }}>*</span>)
+                      }
+                    </div>
+                    <img src="/images/setup/arrow.svg" alt="icon" className="absolute w-[20px] h-[20px] top-[16px] right-[0px] sm:hidden" />
+                  </>
+                ) :
+                (
+                  <Loading className="!w-[20px] !h-[20px] mb-[-5px] ml-[10px] !border-2" />
+                )
+              }
+            </div>
+
+          </div>
+          <div className="flex-1 w-full h-fit mx-auto max-w-[500px] sm:mt-[48px] mt-[24px]">
+            <Button
+              text={'Home'}
+              onClick={() => navigate("/featured")}
+            />
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

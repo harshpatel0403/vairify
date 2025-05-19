@@ -1,35 +1,28 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+
+import PageTitle from "../components/PageTitle";
+
 
 const TermsCondition = () => {
   return (
-    <div className="main-container flex flex-col justify-start">
-      <div className="w-full flex items-center justify-center pt-5 pb-3">
-        <h2 className="text-[18px] md:text-[22px] text-blue-700 font-extrabold whitespace-nowrap">
-          TERMS AND CONDITIONS
-        </h2>
+    <div className="container">
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"Terms & Conditions"} isSmall={true} />
       </div>
 
       <div
-        className="w-full py-2 mx-auto inner-content-part text-left"
-        style={{
-          backgroundColor: "rgb(255 255 255 / 100%)",
-          minHeight: "calc(100vh - 500px)",
-        }}
+        className="w-full py-2 mb-[5%] mx-auto inner-content-part text-left text-white max-h-full sm:space-y-5 space-y-2 sm:text-base text-sm"
       >
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Terms and Conditions
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Effective Date: May 1, 2023
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Welcome to VAIRIFY.IO.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           These Terms and Conditions ("Terms") form a legally binding agreement
           between you (either an individual or a legal entity) ("you") and
           VAIRIFY.IO ("Company," “we,” “us,” or “our”), regarding your access to
@@ -43,26 +36,26 @@ const TermsCondition = () => {
           acknowledge that you have read, understood, and agree to be bound by
           these Terms.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           If you do not agree with these Terms in their entirety, you are
           expressly prohibited from using the Site, and you must discontinue use
           immediately.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           We reserve the right to update or modify these Terms at any time
           without prior notice. Your continued use of the Site after any such
           changes indicates your acceptance of the new Terms. Therefore, we
           encourage you to review the Terms periodically for updates.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">Access and Use</p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">Access and Use</p>
+        <p className="sm:px-4 w-full max-w-full mb-2">
           The Site is intended for users who are 18 years of age or older.
           Minors under 18 are not permitted to use the Site.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Intellectual Property Rights
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           The Site and its entire contents, features, and functionality
           (including but not limited to all information, software, text,
           displays, images, video, and audio, and the design, selection, and
@@ -70,15 +63,15 @@ const TermsCondition = () => {
           providers of such material and are protected by international
           copyright and other intellectual property or proprietary rights laws.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           We grant you a limited, non-exclusive, non-transferable, revocable
           license to access and use the Site for your personal, non-commercial
           use, in accordance with these Terms.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           User Contributions
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           The Site may contain message boards, chat rooms, personal web pages or
           profiles, forums, bulletin boards, and other interactive features
           (collectively, "Interactive Services") that allow users to post,
@@ -86,63 +79,63 @@ const TermsCondition = () => {
           (hereinafter, "post") content or materials (collectively, "User
           Contributions") on or through the Site.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           By providing any User Contribution on the Site, you grant us and our
           affiliates a perpetual, worldwide, non-exclusive, royalty-free,
           transferable license to use, reproduce, modify, perform, display,
           distribute, and otherwise disclose to third parties any such material
           for any purpose.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           You represent and warrant that:
         </p>
         <ul className="inner-list-data">
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               You own or control all rights in and to your User Contributions
               and have the right to grant the license granted above to us and
               our affiliates and service providers.
             </p>
           </li>
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               All of your User Contributions do and will comply with these
               Terms.
             </p>
           </li>
         </ul>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Prohibited Activities
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           You agree not to:
         </p>
         <ol className="inner-list-data-ol">
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               Use the Site in any way that violates any applicable federal,
               state, local, or international law or regulation.
             </p>
           </li>
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               Engage in any behavior that restricts or inhibits anyone's use or
               enjoyment of the Site, or which, as determined by us, may harm the
               Company or users of the Site
             </p>
           </li>
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               Use the Site to transmit, or procure the sending of, any
               advertising or promotional material without our prior written
               consent.
             </p>
           </li>
         </ol>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Content Standards
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           These content standards apply to all User Contributions and use of
           Interactive Services. User Contributions must comply with all
           applicable federal, state, local, and international laws and
@@ -151,39 +144,39 @@ const TermsCondition = () => {
         </p>
         <ul className="inner-list-data">
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               Contain any material that is defamatory, obscene, indecent,
               abusive, offensive, harassing, violent, hateful, inflammatory, or
               otherwise objectionable.
             </p>
           </li>
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               Promote sexually explicit or pornographic material, violence, or
               discrimination based on race, sex, religion, nationality,
               disability, sexual orientation, or age.
             </p>
           </li>
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               Infringe any copyright, trademark, patent, trade secret, or other
               intellectual property or other rights of any other person.
             </p>
           </li>
         </ul>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Changes to the Site
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           We reserve the right to withdraw or amend this Site, and any service
           or material we provide on the Site, in our sole discretion without
           notice. We will not be liable if, for any reason, all or any part of
           the Site is unavailable at any time or for any period.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Disclaimer of Warranties
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           You understand that we cannot and do not guarantee or warrant that
           files available for downloading from the internet or the Site will be
           free of viruses or other destructive code. You are responsible for
@@ -192,10 +185,10 @@ const TermsCondition = () => {
           input and output, and for maintaining a means external to our site for
           any reconstruction of any lost data.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           LIMITATION OF LIABILITY
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           In no event will VAIRIFY.IO, or our directors, employees, or agents be
           liable to you or any third party for any direct, indirect,
           consequential, exemplary, incidental, special, or punitive damages,
@@ -211,8 +204,8 @@ const TermsCondition = () => {
           or limitations may not apply to you, and you might have additional
           rights.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">MISCELLANEOUS</p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2">MISCELLANEOUS</p>
+        <p className="font-bold sm:px-4 w-full max-w-full mb-2">
           These Terms and Conditions, along with any policies or operating rules
           posted by us on VAIRIFY.IO, constitute the entire agreement and
           understanding between you and us. Our failure to exercise or enforce
@@ -232,8 +225,8 @@ const TermsCondition = () => {
           waive any and all objections to the electronic form of these Terms and
           the lack of signing by the parties hereto to execute these Terms.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">INDEMNIFICATION</p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">INDEMNIFICATION</p>
+        <p className="sm:px-4 w-full max-w-full mb-2">
           You agree to defend, indemnify, and hold harmless VAIRIFY.IO, our
           affiliates, and our respective officers, agents, partners, and
           employees, from any loss, damage, liability, claim, or demand,
@@ -250,10 +243,10 @@ const TermsCondition = () => {
           notify you of any such claim, action, or proceeding upon becoming
           aware of it.
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
         </p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">
           Engaging with the Site, sending us emails, and completing online forms
           constitute electronic communications. You consent to receive
           electronic communications, and you agree that all agreements, notices,
@@ -268,14 +261,14 @@ const TermsCondition = () => {
           or to payments or the granting of credits by any means other than
           electronic means.
         </p>
-        <p className="font-extrabold px-4 w-full max-w-full mb-2">CONTACT US</p>
-        <p className="font-bold px-4 w-full max-w-full mb-2">
+        <p className="sm:px-4 w-full max-w-full mb-2">CONTACT US</p>
+        <p className="sm:px-4 w-full max-w-full mb-2">
           For any concerns or inquiries regarding the Site, please contact us
           through:
         </p>
         <ul className="inner-list-data">
           <li>
-            <p className="font-bold pl-0 px-4 w-full max-w-full mb-2">
+            <p className="pl-0 sm:px-4 w-full max-w-full mb-2">
               Email: Info@Vairify.io
             </p>
           </li>

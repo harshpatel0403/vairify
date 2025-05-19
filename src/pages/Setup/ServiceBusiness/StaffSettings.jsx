@@ -6,9 +6,9 @@ import IndividualTab from './IndividualTab';
 
 const StaffSettings = () => {
     return (
-        <div> 
-            <div className='w-full mx-auto flex flex-col justify-center items-center pt-3 px-3'>
-                <span className='font-bold text-[24px]'>Staff Settings</span>
+        <div className='container'>
+            <div className="text-[26px] font-bold text-center text-white mt-10 mb-10">
+                Staff Settings
             </div>
             <IndividualTab />
         </div>

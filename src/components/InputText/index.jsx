@@ -15,7 +15,7 @@ export default function InputText({
 }) {
   return (
     <input
-      className={`w-full text-[16px] border-2 border-[${
+      className={`w-full text-[14px] text-white border-2 border-[${
         border ? border : `#3760CB`
       }] rounded-2xl py-2 px-4 ${className ? className : ""} ${
         size ? `h-[${size}]` : "h-[50px]"

@@ -8,9 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   HandleEditMarketPlace,
   HandleResultMarketPlace,
+  HandleMyInvitation,
+  HandleUpdateInvitationStatus,
 } from "../../../redux/action/MarketplaceSearch";
 import { toast } from "react-toastify";
 import Loading from "../../../components/Loading/Index";
+import PageTitle from "../../../components/PageTitle";
 
 export default function ActiveInvitation() {
   const { state } = useLocation();
@@ -18,8 +21,8 @@ export default function ActiveInvitation() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false); // State to track loading
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
   const startTime = moment(state?.invitationtime.from, "hh:mm A");
   const endTime = moment(state?.invitationtime.to, "hh:mm A");
   // Calculate the duration between the two moments
@@ -66,301 +69,191 @@ export default function ActiveInvitation() {
       status = invitee.status;
     }
   });
+
+  const handleCancelInvite = (invitationId) => {
+    setCancelLoading(true);
+    const userId = UserDetails?._id;
+    dispatch(HandleUpdateInvitationStatus(invitationId, userId, "cancel"));
+    dispatch(HandleMyInvitation(UserDetails?._id));
+    navigate("/marketplace/invitation");
+    setCancelLoading(false);
+  };
+
+  console.log(state, '<======')
+
+
   return (
     <div
-      className="main-container py-0 px-5 min-[385px]:px-7"
-      style={{ maxHeight: "calc(100vh - 160px)" }}
+      className="container pb-[48px]"
     >
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={`${state?.status} invitation`} />
+      </div>
       <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="w-full mx-auto flex flex-row justify-between items-start mt-2">
-          <div className="flex flex-col items-center justify-center">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold">
-                  RIFY ID
-                </span>
-              </span>
+        <div className="w-full flex flex-row sm:justify-around justify-between items-end mt-[60px] sm:p-[16px] sm:bg-[#FFFFFF0A] rounded-[16px]">
+          <div className="flex flex-col items-center justify-center sm:min-w-[120px] min-w-[80px]">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              VAIRIFY ID
             </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold">
-                {state?.userId?.vaiID}
-              </span>
+            <div className="font-bold sm:text-lg text-base text-white uppercase">
+              {state?.userId?.vaiID}
             </div>
           </div>
-          <div className="w-[120px] relative z-[5000000000]">
+          <div className=" relative">
             <div
-              style={{ left: "10px", bottom: "72px" }}
-              className="absolute w-full h-full rounded-full"
+              className="sm:h-[120px] h-[80px] sm:w-[120px] w-[80px] rounded-full mt-[-74px] relative flex justify-center"
             >
               <img
-                className="w-[120px] h-[120px] bg-[#fff] rounded-full border-2 overflow-hidden"
+                className="sm:w-[120px] w-[80px] sm:h-[120px] h-[80px] bg-[#fff] rounded-full border-2 overflow-hidden"
                 src={
                   state?.userId?.profilePic !== ""
-                    ? `${import.meta.env.VITE_APP_S3_IMAGE}/${
-                        state?.userId?.profilePic
-                      }`
+                    ? `${import.meta.env.VITE_APP_S3_IMAGE}/${state?.userId?.profilePic
+                    }`
                     : state?.userId?.gender === "Male"
-                    ? "/images/male.png"
-                    : "/images/female.png"
+                      ? "/images/male.png"
+                      : "/images/female.png"
                 }
-                // src={
-                //   state?.userId?.profilePic !== ""
-                //     ? `${import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL}/${
-                //         state?.userId?.profilePic
-                //       }`
-                //     : state?.userId?.gender === "Male"
-                //     ? "/images/male.png"
-                //     : "/images/female.png"
-                // }
                 alt={state?.userId?.name}
               />
+              <div style={{ right: "0px", bottom: "0px" }} className="absolute">
+                <img
+                  src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
+                  alt="Sugar Icon Second"
+                />
+              </div>
             </div>
-            <div style={{ right: "0px", top: "25px" }} className="absolute">
-              <img
-                src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
-                alt="Sugar Icon Second"
-              />
-            </div>
-          </div>
-          <div>
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold">
-                TruRevu
+            <div className="flex-col flex justify-center items-center mt-[24px]">
+              <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+                Name
+              </div>
+              <span className="font-bold sm:text-lg text-base text-white">
+                {state?.userId?.name}
               </span>
             </div>
-            <div className="flex flex-row justify-center items-center">
-              <FontAwesomeIcon
-                icon={faStar}
-                color="#E1AB3F"
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color="#E1AB3F"
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color="#E1AB3F"
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color="#E1AB3F"
-                className="text-[10px] margin-right-5"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color="#E1AB3F"
-                className="text-[10px] margin-right-5"
-              />
-              <span className="text-[15px] text-[#040C50] font-bold">5.0</span>
+          </div>
+          <div className="leading-[18px] sm:min-w-[120px] min-w-[80px] flex flex-col justify-center items-center">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              TruRevu
+            </div>
+            <div className="flex justify-center items-center gap-1">
+              <div className="sm:text-lg text-base text-white font-bold ">
+                {state?.userId?.averageRating}
+              </div>
+              <img src="/images/home/star.svg" alt="star" />
             </div>
           </div>
         </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-0">
-          <span className="font-bold text-[24px]">{state?.userId?.name}</span>
-        </div>
-        <div className="w-[100vw] flex flex-col justify-center items-center mt-2 bg-[#797E9E] py-2 h-[51px]">
-          <span className="font-bold text-[26px] text-[#040C50]">
-            Active Invitations
-          </span>
-        </div>
-        <div className="inner-content-part-country w-full">
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-            <div className="w-full mx-auto flex flex-row justify-center items-center">
-              <span className="font-extrabold text-[16px]">
-                {state?.status} invitation
-              </span>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-start gap-5 items-center px-5 mt-2">
-              <div>
-                <span className="font-bold text-[14px] text-[#0247FF]">
-                  Date/Time
-                </span>
-              </div>
-              <div>
-                <span className="font-normal text-[14px]">
-                  {moment(state?.createdAt).format("DD/mm/yy")} at{" "}
-                  {state?.invitationtime?.from} - {state?.invitationtime?.to}
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-2">
-              <div className="flex flex-row justify-center items-center">
-                <div>
-                  <span className="font-bold text-[16px] text-[#0247FF] mr-2">
-                    Service
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold text-[14px]">
-                    {state?.service}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-row justify-center items-center">
-                <div>
-                  <span className="font-bold text-[14px] text-[#0247FF] mr-2">
-                    Duration
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold text-[14px]">
-                    {hours} hr {minutes} m
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-row justify-center items-center">
-                <div>
-                  <span className="font-bold text-[14px] text-[#0247FF] mr-2">
-                    Rate
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold text-[14px]">
-                    ${state?.priceoffered}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-start gap-5 items-center px-5 mt-2">
-              <div>
-                <span className="font-bold text-[14px] text-[#0247FF]">
-                  Service
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[14px]">
-                  {state?.advancedservices?.join(", ")}
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-start gap-5 items-center px-5 mt-2">
-              <div>
-                <span className="font-bold text-[14px] text-[#0247FF]">
-                  {state?.venue}
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[14px]">
-                  1439 Inverness Miami FI 34598
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
+
+        <div className="my-[24px] flex justify-between items-center w-full gap-3">
+          <div className="text-lg text-white font-medium">
+            Invitation Details
           </div>
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-            <div className="w-full mx-auto flex flex-row justify-start items-center">
-              <span className="font-extrabold text-[13.68px]">
-                Hot Rod Details
-              </span>
-            </div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-2 mb-2">
-              <div>
-                <span className="font-bold text-[16px] text-[#0247FF]">
-                  Gender
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[16px]">{state?.gender}</span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-2">
-              <div>
-                <span className="font-bold text-[16px] text-[#0247FF]">
-                  VAI<span className="logoSetupweight">RIFY ID</span>
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[17px] text-[#0247FF]">
-                  ID# {state?.userId?.vaiID}
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-2">
-              <div>
-                <span className="font-extrabold text-[16px] text-[#0247FF] uppercase">
-                  VAI<span className="logoSetupweight">RIDATE</span> #
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[16px] text-[#0247FF]">
-                  0046893490
-                </span>
-              </div>
-            </div>
-            <div
-              style={{ border: "1px solid white" }}
-              className="w-full mt-2"
-            ></div>
-            <div className="w-full mx-auto flex flex-row justify-between items-center px-2 mt-2">
-              <div>
-                <span className="font-extrabold text-[12.83px]">
-                  Total offered for this appointment.
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-[16px]">
-                  ${state?.priceoffered}
-                </span>
-              </div>
-            </div>
+          <div className={`py-[2px] px-[6px] rounded-[8px] text-sm font-bold ${state?.status === "pending" ? "text-[#0085B9] bg-[#0085B929]" : "text-[#008F34] bg-[#008F3429]"}`}>
+            {state?.status} invitation
           </div>
+        </div>
+
+        <div className="bg-[#FFFFFF14] rounded-[16px] w-full p-[16px]">
+          <div className="flex justify-between gap-2 items-center">
+            <div className="text-white opacity-[0.6] font-normal text-base">Date/Time</div>
+            <p className="text-white font-medium text-base">{moment(state?.createdAt).format("DD/mm/yy")} at{" "}
+              {state?.invitationtime?.from} - {state?.invitationtime?.to}</p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">Services</div>
+            <p className="text-white font-medium text-base"> {state?.service}</p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">Durations</div>
+            <p className="text-white font-medium text-base">{hours} hr {minutes} m</p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">Rate</div>
+            <p className="text-white font-medium text-base"> ${state?.priceoffered}</p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">Extra’s</div>
+            <p className="text-white font-medium text-base">{state?.advancedservices?.length ? state.advancedservices.join(", ") : "-"}</p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">Outcall</div>
+            <p className="text-white font-medium text-base">
+              1439 Inverness Miami FI 34598
+              {/* was static  */}
+            </p>
+          </div>
+        </div>
+
+        <div className="my-[24px] w-full">
+          <div className="text-lg text-white font-medium text-left">
+            More Details
+          </div>
+        </div>
+
+        <div className="bg-[#FFFFFF14] rounded-[16px] w-full p-[16px]">
+          <div className="flex justify-between gap-2 items-center">
+            <div className="text-white opacity-[0.6] font-normal text-base">Gender</div>
+            <p className="text-white font-medium text-base">{state?.gender}</p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">VAIRIFY ID</div>
+            <p className="text-white font-medium text-base upppercase">{state?.userId?.vaiID}</p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">VAIRIDATE</div>
+            <p className="text-white font-medium text-base">
+              0046893490
+              {/* was static  */}
+            </p>
+          </div>
+          <div className="flex justify-between gap-2 items-center mt-[8px]">
+            <div className="text-white opacity-[0.6] font-normal text-base">Total Offered for this appointment</div>
+            <p className="text-white font-medium text-base">
+              ${state?.priceoffered}
+            </p>
+          </div>
+        </div>
+
+
+        {/* old */}
+
+        <div className="w-full mt-[24px]">
           {status === "pending" &&
             (state?.client ? (
-              <div className="w-full mx-auto flex flex-row justify-center items-center mt-7 mb-4">
+              <div className="w-full mx-auto flex flex-row justify-center items-center gap-[8px]">
                 <Button
-                  className={
-                    "flex items-center w-fit mt-4 py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] py-2 rounded-xl "
-                  }
-                  size="36px"
-                  bgColor={"[#02227E]"}
+                  size="48px"
+                  disabled={isLoading}
                   onClick={HandleAccept}
                   text={
                     !isLoading ? (
                       "Accept and Send Profile"
                     ) : (
-                      <div className="flex items-center	justify-center pt-[6px]">
-                        <Loading />
-                      </div>
+                      <Loading />
                     )
                   }
+                  className={'secondary-btn !bg-[#008F34] hover:!bg-[#1ba44d]'}
+                />
+                <Button
+                  size="48px"
+                  disabled={cancelLoading}
+                  onClick={() => handleCancelInvite(state._id)}
+                  text={
+                    !cancelLoading ? (
+                      "Cancel"
+                    ) : (
+                      <Loading />
+                    )
+                  }
+                  className={'!bg-transparent secondary-btn border-2 border-[#919EAB33] hover:!bg-[#919EAB33] py-[4px]'}
                 />
               </div>
             ) : (
               <div className="w-full mx-auto flex flex-row justify-center items-center mt-7 mb-4">
                 <Button
                   text="View Results"
-                  className={
-                    "rounded-[20px] bg-[#02227E] border-2 border-[#02227E] font-bold text-[26px] text-white w-[70%] text-center "
-                  }
-                  size="36px"
-                  bgColor={"[#02227E]"}
+
+                  size="48px"
                   onClick={HandleResult}
                 />
               </div>

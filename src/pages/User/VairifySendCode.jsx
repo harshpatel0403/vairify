@@ -7,15 +7,6 @@ import { useState } from "react";
 const VairifySendCode = () => {
     const navigate = useNavigate();
     const [OTPCode, setOTPCode] = useState(null)
-    //   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
-    // const HandleOnClick = () => {
-    //     console.log(UserData)
-    //     if (UserData?.user_type === "client-hobbyist") {
-    //         navigate("/uploadProfile");
-    //     } else if (UserData?.user_type === "agency-business") {
-    //         navigate("/bussiness-vai-codes");
-    //     }
-    // };
     return (
         <div className="main-container">
             <div className="max-w-[400px] mx-auto w-full">

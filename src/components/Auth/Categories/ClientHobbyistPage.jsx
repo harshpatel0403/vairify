@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../../../components/Button";
 import InputText from "../../../components/InputText";
 import InputPassword from "../../../components/InputPassword";
 import SelectBox from "../../../components/SelectBox";
 import { useDispatch, useSelector } from "react-redux";
-import { HandleLogIn, HandleSignUp, SendOTP } from "../../../redux/action/Auth";
+import { HandleSignUp, SendOTP } from "../../../redux/action/Auth";
 import { toast } from "react-toastify";
 import Loading from "../../Loading/Index";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
+import BackButton from "../../BackButton/backArrowButton";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export default function ClientHobbyistPage() {
+  useEffect(() => {
+    AOS.init({
+      duration: 700,
+      once: true,
+      offset: 200,
+    });
+  }, []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const language = useSelector((state) => state?.Auth?.language);
@@ -150,9 +160,11 @@ export default function ClientHobbyistPage() {
             password: result?.payload?.data?.user?.epassword,
           };
 
-          dispatch(HandleLogIn(body));
-          await dispatch(SendOTP(body?.email));
-          navigate("/otp-verification");
+          dispatch(SendOTP(body?.email));
+          navigate("/otp-verification", {
+            state: { login: false, email: body?.email, password: body?.password },
+          }
+          );
 
           setIsLoading(false);
           setUsername("");
@@ -179,16 +191,194 @@ export default function ClientHobbyistPage() {
   };
 
   return (
-    <div className="main-container flex flex-col justify-between px-0">
-      <div className="w-full mt-6 mb-6 bg-gradient-to-b from-[#040B473D] to-[#040B473D] h-[47px] flex items-center justify-center">
-        <span
-          style={{ fontFamily: "Roboto" }}
-          className="text-[25px] text-center font-extrabold text-[#040C50]"
-        >
-          Client/Hobbyist
-        </span>
-      </div>
-      <div className="inner-content-part">
+    <div className="signup-backgound-design">
+      <div className="signup-container container">
+        <div className="signup-content relative">
+          <div className="backnavigation"><BackButton /></div>
+          <div className="logo-img-container">
+            <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+            <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
+          </div>
+          <div className="sm:mt-[64px] mt-[24px] mb-[24px]">
+            <h3 className="primary-heading">
+              Client/Hobbyist
+            </h3>
+          </div>
+
+          <div className="flex flex-col gap-[20px] items-center justify-center">
+            <div className="flex items-center sm:flex-nowrap flex-wrap gap-[20px] w-[100%]">
+              <div className="w-[100%]">
+                <InputText
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
+                  placeholder={"Username"}
+                  size="47px"
+                  border={error.username && `#ef4444`}
+                />
+                {error.username && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.username}
+                  </label>
+                )}
+              </div>
+              <div className="w-[100%]">
+                <PhoneInput
+                  inputClass={`w-[100%] custom-phone-input-class ${error?.phoneNumber ? "error-border" : ""
+                    } `}
+                  buttonClass=""
+                  searchClass=""
+                  dropdownClass=""
+                  containerClass="w-full h-[47px]"
+                  country={"in"}
+                  placeholder={"Phone number"}
+                  enableSearch={true}
+                  value={phoneNumber}
+                  onChange={(phone) => setPhoneNumber(phone)}
+                  inputStyle={{
+                    width: "100%",
+                    height: "100%",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color: "white",
+                    borderStyle: "solid",
+                    borderRadius: "1rem",
+                  }}
+                  isValid={(inputNumber, country, countries) => {
+                    const phoneLength = Math.ceil(
+                      countries.filter(
+                        (val) => val.dialCode === country.dialCode
+                      )[0]?.format.length / 2
+                    );
+                    let result = validatePhoneNumber(
+                      inputNumber,
+                      country,
+                      true,
+                      phoneLength
+                    );
+                    setIsValidPhoneNumber(result);
+                    return true;
+                  }}
+                />
+                {error.phoneNumber && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.phoneNumber}
+                  </label>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center sm:flex-nowrap flex-wrap gap-[20px] w-[100%]">
+              <div className="w-[100%]">
+                <InputText
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
+                  placeholder={"Email"}
+                  size="47px"
+                  border={error.email && `#ef4444`}
+                />
+                {error.email && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.email}
+                  </label>
+                )}
+              </div>
+              <div className="w-[100%]">
+                <SelectBox
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  placeholder="Gender"
+                  options={genderOptions}
+                  className1="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
+                  size={"h-[47px]"}
+                  textAlign={"text-left"}
+                  fontWeight={"font-bold"}
+                  textColor={"text-white"}
+                  textSize={"text-[14px]"}
+                  border={error.gender && `#ef4444`}
+                />
+                {error.gender && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.gender}
+                  </label>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center sm:flex-nowrap flex-wrap gap-[20px] w-[100%]">
+              <div className="w-[100%]">
+                <InputPassword
+                  value={userpass}
+                  onChange={(e) => setUserPass(e.target.value)}
+                  className="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
+                  textSize={14}
+                  placeholder={"Password"}
+                  type={password}
+                  showPassword={() => handleShowPassword("password")}
+                  border={error.userpass && `#ef4444`}
+                />
+                {error.userpass && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.userpass}
+                  </label>
+                )}
+              </div>
+              <div className="w-[100%]">
+                <InputPassword
+                  value={userconfirmPass}
+                  onChange={(e) => setUserconfirmPass(e.target.value)}
+                  className="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
+                  textSize={14}
+                  placeholder={"Confirm Password"}
+                  type={confirmPassword}
+                  showPassword={() => handleShowPassword("confirmPassword")}
+                  border={error.userconfirmPass && `#ef4444`}
+                />
+                {error.userconfirmPass && (
+                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                    {error.userconfirmPass}
+                  </label>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center w-full">
+              <div>
+                <div className="mb-2 flex">
+                  <input
+                    checked={termsChecked}
+                    onChange={() => setTermsChecked(!termsChecked)}
+                    type="checkbox"
+                    className="mr-1 border-none"
+                  />
+                  <label className="text-sm font-normal text-white">Terms and conditions</label>
+                </div>
+                {error.termsChecked && (
+                  <div className="mb-4">
+                    <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                      {error.termsChecked}
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex w-full h-fit justify-center">
+              <Button
+                className='max-w-[500px] '
+                text={!isLoading ? ("Register") : (
+                  <div className="flex items-center	justify-center">
+                    <Loading />
+                  </div>
+                )
+                }
+                onClick={handleRegister}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="text-[#919EAB] font-normal text-[14px] max-sm:mb-[48px]">Already have an account? <Link to="/login" className="text-white"> Login</Link></div>
+          </div>
+
+
+
+          {/* <div className="inner-content-part">
         <div className="py-2 flex-1 px-5 form-field-container">
           <div className="mb-4">
             <InputText
@@ -206,15 +396,7 @@ export default function ClientHobbyistPage() {
             )}
           </div>
           <div className="mb-4">
-            {/* <InputText
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="text-[18px] font-bold"
-                placeholder={"Phone number"}
-                size="47px"
-                type={"number"}
-                border={error.phoneNumber && `#ef4444`}
-              /> */}
+      
             <PhoneInput
               inputClass={`custom-phone-input-class ${error?.phoneNumber ? "error-border" : ""
                 } `}
@@ -364,7 +546,13 @@ export default function ClientHobbyistPage() {
             disabled={isLoading}
           />
         </div>
+      </div> */}
+
+        </div>
       </div>
     </div>
   );
 }
+
+
+

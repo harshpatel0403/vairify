@@ -60,7 +60,9 @@ function ServiceRoute(props) {
   // }, [location?.pathname]);
 
   if (!isMounted) {
-    return <>Please wait..</>
+    return <>
+    {/* Please wait.. */}
+    </>
   }
 
   return props?.children;

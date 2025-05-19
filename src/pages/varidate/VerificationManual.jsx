@@ -62,12 +62,6 @@ export default function VerificationManual() {
                       : "clientId"
                   ]?.faceVerificationImage
                   }`
-                  //  `${import.meta.env.VITE_APP_API_USER_FACEIMAGES_IMAGE_URL}/${appointment?.[
-                  //   userType === "client-hobbyist"
-                  //     ? "companionId"
-                  //     : "clientId"
-                  // ]?.faceVerificationImage
-                  // }`
                   : appointment?.[
                     userType === "client-hobbyist"
                       ? "companionId"
@@ -96,11 +90,8 @@ export default function VerificationManual() {
             />
           </div>
           <div className="w-[150px] h-[150px] overflow-hidden">
-            {/* VITE_APP_API_USER_VARIDATE_MANUAL_SELFIE_URL */}
             <img
               src={`${import.meta.env.VITE_APP_S3_IMAGE}/${appointment?.manualSelfie?.file}`}
-              // src={`${import.meta.env.VITE_APP_API_USER_VARIDATE_MANUAL_SELFIE_URL
-              //   }/${appointment?.manualSelfie?.file}`}
               alt="Vairidate Verification Member"
             />
           </div>

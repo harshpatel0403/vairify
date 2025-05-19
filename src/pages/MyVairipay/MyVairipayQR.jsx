@@ -1,5 +1,7 @@
 import Button from "../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
+import Header from "../../components/Header/Header";
+import PageTitle from "../../components/PageTitle";
 
 export default function BusinessProfileQRCode() {
   const navigate = useNavigate();
@@ -12,7 +14,48 @@ export default function BusinessProfileQRCode() {
     navigate("/vairipay-search");
   };
   return (
-    <div className="main-container h-full form-field-container flex flex-col justify-between">
+    <>
+      <div className="container">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={"My Mpay"} />
+        </div>
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-[24px]">
+          <div className="w-full bg-white flex items-center justify-center sm:rounded-[16px] rounded-[8px] max-w-[588px] sm:h-[360px] h-[165px]">
+            <img
+              src={
+                import.meta.env.VITE_APP_API_USER_VARIPAY_IMAGE_URL +
+                `/${state?.state?.image}`
+              }
+              alt="Cash App"
+            />
+          </div>
+          <div className="flex items-center justify-center flex-col w-full gap-[24px]">
+            <h4 className="font-medium sm:text-[28px] text-[24px] text-white text-center">QR Code</h4>
+            <div>
+              <img
+                src={`${state?.image}`}
+                className="w-[200px] h-[200px]"
+                alt="QR Code"
+              />
+            </div>
+            <p className="font-medium text-[24px] text-[#008F34] text-center flex items-center gap-2 ">Upload Successfully <img src="/images/setup/confirm-check.svg" alt="icon" /></p>
+          </div>
+        </div>
+        <div className="flex items-center justify-center flex-col w-full max-w-[500px] gap-[24px] mx-auto my-[48px]">
+          {/* <Button
+            onClick={handleAddMore}
+            text={"Add More"}
+            size="45px"
+          /> */}
+          <Button
+            onClick={handleNext}
+            text={"Finished"}
+            size="45px"
+          />
+        </div>
+      </div>
+
+      {/* <div className="main-container h-full form-field-container flex flex-col justify-between">
       <div className="pt-10 flex flex-col justify-between items-center w-full mx-auto">
         <div className="w-full mx-auto flex items-center justify-center">
           <img
@@ -68,6 +111,8 @@ export default function BusinessProfileQRCode() {
           />
         </div>
       </div>
-    </div>
+    </div> */}
+    </>
+
   );
 }

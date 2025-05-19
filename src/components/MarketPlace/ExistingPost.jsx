@@ -10,7 +10,6 @@ import Modal from "react-modal";
 import { useState } from "react";
 import Loading from "../Loading/Index";
 import { toast } from "react-toastify";
-import BaseAPI from "../../BaseAPI";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
@@ -19,7 +18,7 @@ export default function ExistingPost() {
   const navigate = useNavigate();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const NewPost = useSelector((state) => state.Market.getpost);
-  const [isLoading, setIsLoading] = useState(false); // State to track loading
+  const [isLoading, setIsLoading] = useState(false);
   const [open, setopen] = useState(false);
   const [inquiryData, setInquiryData] = useState({});
 
@@ -50,7 +49,6 @@ export default function ExistingPost() {
           setIsLoading(false);
         } else {
           setIsLoading(false);
-          // setError(true);
         }
       })
       .catch((err) => {
@@ -68,198 +66,167 @@ export default function ExistingPost() {
     const localStartTime = startTimeUTC.local().format('hh:mm A');
     const localEndTime = endTimeUTC.local().format('hh:mm A');
 
-    return `${localStartTime} to ${localEndTime}`;
+    return `${localStartTime} - ${localEndTime}`;
   };
 
   return (
-    <div className="mt-9 px-3 gap-6 flex flex-col extra-tab-height grid grid-cols-1 gap-0 md:grid-cols-2">
-      {NewPost?.map((item, index) => {
-        item.Repost = true;
-        return (
-          <div
-            key={index}
-            className="bg-[#3760CB] flex flex-col rounded-2xl p-3 border-2 border-white"
-          >
-            <div className="flex flex-row justify-around items-center">
-              <div className="mr-4">
-                <img
-                  className=" min-w-[97px] h-[97px] rounded-full"
-                  src={`${import.meta.env.VITE_APP_S3_IMAGE}/${item?.image}`}
-                  alt=""
-                />
-              </div>
-              <div className="flex flex-col gap-[2px]">
-                <div className="w-full">
-                  <div className="flex flex-col">
-                    <div className="grid grid-cols-2">
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          Location:
-                        </h6>
-                      </div>
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          {item.location}
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2">
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          Category:
-                        </h6>
-                      </div>
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          {item.category}
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2">
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          Sub:
-                        </h6>
-                      </div>
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          Travelling
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2">
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          Date:
-                        </h6>
-                      </div>
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          From {item?.date?.from} to {item?.date?.to}
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2">
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          Time:
-                        </h6>
-                      </div>
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          {convertToLocalTime(`${item?.time?.from} to ${item?.time?.to}`)}
-                          {/* {item?.time?.from} to {item?.time?.to} */}
-                        </h6>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2">
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          Frequency:
-                        </h6>
-                      </div>
-                      <div className="text-start">
-                        <h6 className="text-[10px] text-white font-bold">
-                          {item.frequency}
-                        </h6>
+    <div className="overflow-auto max-h-[1334px] no-scrollbar pt-[24px] lg:pt-0 min-h-[calc(100vh-100px)]">
+      <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+        {NewPost && NewPost.length < 0 ? (
+          NewPost?.map((item, index) => {
+            item.Repost = true;
+            return (
+              <div
+                key={index}
+                className="bg-[#919EAB33] flex flex-col sm:rounded-2xl rounded-xl sm:p-[16px] p-[12px]"
+              >
+                <div>
+                  <div>
+                    <img
+                      className="rounded-lg h-[140px] w-full object-cover"
+                      src={`${import.meta.env.VITE_APP_S3_IMAGE}/${item?.image}`}
+                      alt=""
+                    />
+                  </div>
+                  <div className="flex flex-col gap-[2px] mt-3">
+                    <div className="w-full">
+                      <div className="flex flex-col">
+                        <div className="grid grid-cols-2">
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal opacity-[0.7]">
+                              Location:
+                            </h6>
+                          </div>
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal">
+                              {item.location}
+                            </h6>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal opacity-[0.7]">
+                              Date:
+                            </h6>
+                          </div>
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal">
+                              {item?.date?.from == item?.date?.to ? item?.date?.from : `From ${item?.date?.from} to ${item?.date?.to}`}
+                            </h6>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal opacity-[0.7]">
+                              Time:
+                            </h6>
+                          </div>
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal">
+                              {convertToLocalTime(`${item?.time?.from} to ${item?.time?.to}`)}
+                            </h6>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2">
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal opacity-[0.7]">
+                              Frequency:
+                            </h6>
+                          </div>
+                          <div className="text-start">
+                            <h6 className="text-[14px] text-white font-normal">
+                              {item.frequency}
+                            </h6>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    className="bg-[#FFFFFF29] rounded-[8px] py-[7px] px-[20px] w-full max-w-[144px] text-[14px] font-medium text-white hover:scale-[0.97] transition-all duration-200"
+                    onClick={() =>
+                      navigate("/marketplace/post/review", {
+                        state: { ...item, from: "view", Repost: false },
+                      })
+                    }
+                  >View</button>
+                  <button
+                    className="bg-[#FFFFFF] rounded-[8px] py-[7px] px-[20px] w-full max-w-[144px] text-[14px] font-medium text-[#060C4D] hover:scale-[0.97] transition-all duration-200"
+                    onClick={() =>
+                      navigate("/my-calendar", {
+                        state: item,
+                      })
+                    }
+                  >Re-Post</button>
+                  <button
+                    className="h-[36px] min-w-[36px] hover:scale-[0.97] transition-all duration-200"
+                    onClick={() => {
+                      setInquiryData(item);
+                      setopen(true);
+                    }}> <img src="/images/home/bin.svg" alt="bin icon" className="h-[36px] w-[36px]" /> </button>
+                </div>
+              </div>
+            );
+          })) : (
+          <>
+          <div className="w-full flex flex-col justify-center items-center md:col-span-2">
+                  <img src="/images/home/no-post.svg" alt="no post"/>
+                  <p className="text-white font-bold text-xl mt-[24px]">There is no posts yet </p>
+                </div>
+          </>
+        )}
+        <Modal
+          isOpen={open}
+          onRequestClose={closeopen}
+          className=" max-w-[500px] w-full h-[174px] bg-[#FFFFFF] relative rounded-2xl p-[24px]"
+        >
+          <button
+            onClick={() => setopen(false)}
+            className="absolute top-[24px] right-[24px]"
+          >
+            <img
+              src="/images/home/modalClose.svg"
+              alt="icon"
+              width="20px"
+              height="20px"
+            />
+          </button>
+          <div>
+            <p className="text-[20px] font-medium text-center text-black w-[70%] mx-auto">
+              Are you sure you want to cancel your post
+            </p>
+            <div className="flex justify-around items-center w-full pt-2">
+              <div className="w-[40%]">
+                <Button
+                  className={'secondary-btn'}
+                  text={
+                    !isLoading ? (
+                      "Yes"
+                    ) : (
+                      <div className="flex items-center justify-center">
+                        <Loading />
+                      </div>
+                    )
+                  }
+                  size="45px"
+                  onClick={deleteButton}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="w-[40%]">
+                <Button
+                  text={"No"}
+                  size="45px"
+                  onClick={() => setopen(false)}
+                  className={' hover:bg-[#060C4D]'}
+                />
               </div>
             </div>
-            <div className="flex gap-4 mt-4">
-              <Button
-                text={"Cancel"}
-                className={
-                  "flex items-center justify-center rounded-full h-[23px] text-white border-[#02227E] border-[1px] from-[#FF0000] to-[#FF0000]"
-                }
-                size="23px"
-                onClick={() => {
-                  setInquiryData(item);
-                  setopen(true);
-                }}
-              />
-              <Button
-                text={"Re-post"}
-                className={
-                  "flex items-center justify-center rounded-full h-[23px] text-white border-[#02227E] border-[1px] from-[#0C8A02] to-[#0C8A02]"
-                }
-                size="23px"
-                onClick={() =>
-                  navigate("/my-calendar", {
-                    state: item,
-                  })
-                }
-              />
-              <Button
-                onClick={() =>
-                  navigate("/marketplace/post/review", {
-                    state: { ...item, from: "view" },
-                  })
-                }
-                text={"View"}
-                className={
-                  "flex items-center justify-center rounded-full h-[23px] text-white border-[#02227E] border-[1px] from-[#02227E] to-[#02227E]"
-                }
-                size="23px"
-              />
-            </div>
           </div>
-        );
-      })}
-      <Modal
-        isOpen={open}
-        onRequestClose={closeopen}
-        className=" w-[360px] h-[174px] bg-[#3760CB] relative center-modal rounded-2xl px-4"
-      >
-        <button
-          onClick={() => setopen(false)}
-          className="absolute top-2 right-2"
-        >
-          <img
-            src="/images/Mask group-close.png"
-            alt=""
-            width="30px"
-            height="30px"
-          />
-        </button>
-        <div className="pt-8">
-          <p className="text-[24px] font-bold text-center text-[#fff] leading-8">
-            Are you sure you want to cancel your post
-          </p>
-          <div className="flex justify-around items-center w-full pt-2">
-            <div className="w-[40%]">
-              <Button
-                className={
-                  "flex items-center py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-black text-[23.4px]"
-                }
-                text={
-                  !isLoading ? (
-                    "Yes"
-                  ) : (
-                    <div className="flex items-center justify-center pt-[6px]">
-                      <Loading />
-                    </div>
-                  )
-                }
-                size="45px"
-                onClick={deleteButton}
-              />
-            </div>
-            <div className="w-[40%]">
-              <Button
-                className={
-                  "flex items-center py-2 my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-black text-[23.4px]"
-                }
-                text={"No"}
-                size="45px"
-                onClick={() => setopen(false)}
-              />
-            </div>
-          </div>
-        </div>
-      </Modal>
+        </Modal>
+      </div>
     </div>
   );
 }

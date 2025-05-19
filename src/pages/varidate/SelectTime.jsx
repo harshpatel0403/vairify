@@ -153,14 +153,6 @@ export default function SelectTime() {
                       ? "/images/male.png"
                       : "/images/female.png"
                 }
-                // src={
-                //   varidateData?.companionData?.profilePic
-                //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                //     `/${varidateData?.companionData?.profilePic}`
-                //     : varidateData?.companionData?.gender === "Male"
-                //       ? "/images/male.png"
-                //       : "/images/female.png"
-                // }
                 alt="Sugar"
                 className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
               />

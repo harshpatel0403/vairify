@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "../../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import BackButton from "../../../components/BackButton/backArrowButton";
+import AOS from 'aos';
+import { useTranslation } from "react-i18next";
+import 'aos/dist/aos.css';
 export default function ChainPassIDPage() {
+    const { t } = useTranslation();
+  useEffect(() => {
+    AOS.init({
+      duration: 1400,
+      once: true,
+      offset: 200,
+    });
+  }, []);
   const navigate = useNavigate();
   const { state } = useLocation();
   const handleCompanion = () => {
@@ -27,73 +38,31 @@ export default function ChainPassIDPage() {
   };
 
   return (
-    <div className="main-container flex flex-col justify-center form-field-container">
-      <div className="relative flex flex-col justify-start items-center">
-        <div className="relative top-6">
-          <img src={"/images/VectorLogo1.png"} alt="Vector Logo 1" />
-        </div>
-        <div className="relative bottom-2 left-4">
-          <img src={"/images/VectorLogo2.png"} alt="Vector Logo 2" />
-        </div>
-        <div className="relative ">
-          <span
-            style={{ fontFamily: "Roboto Serif" }}
-            className="font-bold text-[28px] text-center text-[#02227E]"
-          >
-            VAI
-          </span>
-          <span
-            style={{ fontFamily: "Roboto Serif" }}
-            className="font-light text-[28px] text-center text-[#02227E]"
-          >
-            RIFY
-          </span>
+    <div className="signup-backgound-design">
+      <div className="signup-container container">
+        <div className="signup-content relative">
+          <div className="backnavigation"><BackButton /></div>
+          <div className="logo-img-container">
+            <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+            <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
+          </div>
+          <div className="sm:mt-[64px] mt-[30px] mb-[24px]">
+            <h3
+              className="primary-heading text-center"
+            >
+              {t("chainpass.selectCategory")}
+            </h3>
+          </div>
+          <div className="grid md:grid-cols-4 grid-cols-2 gap-[20px]">
+            <div data-aos="flip-left" className="rounded-[8px]  cursor-pointer sm:p-[20px] p-[16px] flex flex-col justify-center items-center gap-[8px] bg-white category-box" onClick={handleClient}><img src="/images/signup/category-img1.svg" alt="img" /><h4 className="gredient-text lg:text-[20px] sm:text-[16px] xs:text-[14px] font-semibold text-center">{t("chainpass.clientHobbyist")}</h4></div>
+            <div data-aos="flip-left" className="rounded-[8px]   cursor-pointer sm:p-[20px] p-[16px] flex flex-col justify-center items-center gap-[8px] bg-white category-box" onClick={handleCompanion}><img src="/images/signup/category-img2.svg" alt="img" /><h4 className="gredient-text lg:text-[20px] sm:text-[16px] xs:text-[14px] font-semibold text-center">{t("chainpass.companionProvider")}</h4></div>
+            <div data-aos="flip-right" className="rounded-[8px]   cursor-pointer sm:p-[20px] p-[16px] flex flex-col justify-center items-center gap-[8px] bg-white category-box" onClick={handleAgency}><img src="/images/signup/category-img3.svg" alt="img" /><h4 className="gredient-text lg:text-[20px] sm:text-[16px] xs:text-[14px] font-semibold text-center">{t("chainpass.agencyBusiness")}</h4></div>
+            <div data-aos="flip-right" className="rounded-[8px]   cursor-pointer sm:p-[20px] p-[16px] flex flex-col justify-center items-center gap-[8px] bg-white category-box" onClick={handleInfluencer}><img src="/images/signup/category-img4.svg" alt="img" /><h4 className="gredient-text lg:text-[20px] sm:text-[16px] xs:text-[14px] font-semibold text-center">{t("chainpass.influencerAffiliate")}</h4></div>
+          </div>
         </div>
       </div>
-      <div className="mt-5 mb-2">
-        <span
-          className="text-[18px] text-[#02227E] font-bold"
-        >
-          Select Your Category
-        </span>
-      </div>
-      <div className="">
-        <Button
-          className={
-            "mt-6 from-[#02227E] to-[#0247FF] font-bold text-white text-[19.8px] border-4 border-[#CCCCCC]"
-          }
-          size="52px"
-          text={"Client/Hobbyist"}
-          onClick={handleClient}
-        />
-        <Button
-          className={
-            "mt-4 from-[#02227E] to-[#0247FF] font-bold text-white text-[19.8px] border-4 border-[#CCCCCC]"
-          }
-          size="52px"
-          text={"Companion/Provider"}
-          onClick={handleCompanion}
-        />
-        <Button
-          className={
-            "mt-4 from-[#02227E] to-[#0247FF] font-bold text-white text-[19.8px] border-4 border-[#CCCCCC]"
-          }
-          size="52px"
-          text={"Agency/Business"}
-          onClick={handleAgency}
-        />
-        <Button
-          className={
-            "mt-4 from-[#02227E] to-[#0247FF] font-bold text-white text-[19.8px] border-4 border-[#CCCCCC]"
-          }
-          size="52px"
-          text={"Influencer/Affliliate"}
-          onClick={handleInfluencer}
-        />
-      </div>
-      {/* <div className="mb-12 mt-9">
-            <Button text={'Next'} className={'text-custom-1 py-2 from-inherit to-inherit bg-[#05B7FD] text-black'} />
-        </div> */}
     </div>
-  );
+  )
 }
+
+

@@ -7,6 +7,8 @@ import Button from "../../../../components/Button";
 import MarketPlaceModale from "../../../../components/MarketPlace/MarketPlaceModale";
 import VaridateService from "../../../../services/VaridateServices";
 import { toast } from "react-toastify";
+import Loading from "../../../../components/Loading/Index";
+import PageTitle from "../../../../components/PageTitle";
 
 const SensualServices = [
   "Girlfriend Experience",
@@ -277,11 +279,11 @@ export default function AdvancedSearch2() {
 
   console.log(InquiryData.AllData, "InquiryDataInquiryData");
   return (
-    <div>
+    <div className="container">
       <div className="w-full mx-auto flex flex-col justify-center items-center pb-4">
-        <p className="max-w-none text-[24px] md:text-[33px] text-center text-[#040B47] font-roboto-serif font-bold py-3">
-          Advanced Search
-        </p>
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={"Advanced Search"} isSmall={true} />
+        </div>
         {/* {InquiryData?.state?.title === "Escort" && (
           <p className="text-[30px] md:text-[33px] text-center text-[#040B47] font-roboto-serif font-bold">
             {InquiryData?.state?.title}
@@ -306,9 +308,8 @@ export default function AdvancedSearch2() {
                 >
                   <div className="flex items-center justify-center absolute left-1">
                     <button
-                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${
-                        options.includes(item) ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
-                      }`}
+                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${options.includes(item) ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+                        }`}
                     ></button>
                   </div>
                   <div className="flex items-center justify-center w-[100px] leading-4">
@@ -333,11 +334,10 @@ export default function AdvancedSearch2() {
                 >
                   <div className="flex items-center justify-center absolute left-1">
                     <button
-                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${
-                        options.includes(items)
-                          ? "bg-[#08FA5A]"
-                          : "bg-[#D9D9D9]"
-                      }`}
+                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${options.includes(items)
+                        ? "bg-[#08FA5A]"
+                        : "bg-[#D9D9D9]"
+                        }`}
                     ></button>
                   </div>
                   <div className="flex items-center justify-center w-[100px] leading-4">
@@ -362,9 +362,8 @@ export default function AdvancedSearch2() {
                 >
                   <div className="flex items-center justify-center absolute left-1">
                     <button
-                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${
-                        options.includes(data) ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
-                      }`}
+                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${options.includes(data) ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+                        }`}
                     ></button>
                   </div>
                   <div className="flex items-center justify-center w-[100px] leading-4">
@@ -396,9 +395,8 @@ export default function AdvancedSearch2() {
                 >
                   <div className="flex items-center justify-center absolute left-1">
                     <button
-                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${
-                        options.includes(item) ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
-                      }`}
+                      className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${options.includes(item) ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+                        }`}
                     ></button>
                   </div>
                   <div className="flex items-center justify-center w-[100px] leading-4">
@@ -414,14 +412,14 @@ export default function AdvancedSearch2() {
 
         {(true || InquiryData?.state?.title === "Escort") && (
           <div className="w-full">
-            <div className="mt-1 mb-6 bg-linear-gradient w-full h-[30px] text-[24px] text-[#fff] font-bold flex justify-center items-center shadow-[0px_9px_20px_rgba(0,0,0,0.5)]">
+            <div className="text-lg font-medium text-white text-center">
               Personal Appearance
             </div>
-            <div className="flex flex-col items-center justify-center px-5 mb-5">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 mt-5 pb-2">
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+            <div className="flex flex-col items-center justify-center mb-5">
+              <div className="grid grid-cols-2 mt-[24px] sm:gap-[24px] gap-[16px] w-full" >
+                <div className="w-full select-arrow ">
                   <select
-                    className="px-3 rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="build"
                     onChange={HandleOption}
                   >
@@ -429,23 +427,15 @@ export default function AdvancedSearch2() {
                       Build
                     </option>
                     {Build.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="w-full select-arrow">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="height"
                     onChange={HandleOption}
                   >
@@ -453,23 +443,15 @@ export default function AdvancedSearch2() {
                       Height
                     </option>
                     {heightOptions.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="eyescolor"
                     onChange={HandleOption}
                   >
@@ -477,23 +459,15 @@ export default function AdvancedSearch2() {
                       Eyes Color
                     </option>
                     {Eyes.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="hairtype"
                     onChange={HandleOption}
                   >
@@ -501,24 +475,16 @@ export default function AdvancedSearch2() {
                       Hair Type
                     </option>
                     {HairStyle.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
 
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="haircolor"
                     onChange={HandleOption}
                   >
@@ -526,23 +492,15 @@ export default function AdvancedSearch2() {
                       Hair Color
                     </option>
                     {HairColor.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="hairlength"
                     onChange={HandleOption}
                   >
@@ -550,23 +508,15 @@ export default function AdvancedSearch2() {
                       Hair Length
                     </option>
                     {HairLength.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="weight"
                     onChange={HandleOption}
                   >
@@ -574,23 +524,15 @@ export default function AdvancedSearch2() {
                       Weight
                     </option>
                     {Weight.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="publichair"
                     onChange={HandleOption}
                   >
@@ -598,23 +540,15 @@ export default function AdvancedSearch2() {
                       Public Hair
                     </option>
                     {PubicHair.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="piercings"
                     onChange={HandleOption}
                   >
@@ -622,135 +556,96 @@ export default function AdvancedSearch2() {
                       Piercings
                     </option>
                     {Piercings.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
                 </div>
                 {(InquiryData.AllData.gender === "Female" ||
                   InquiryData.AllData.gender?.startsWith("Trans")) && (
-                  <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
-                    <select
-                      className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
-                      name="breasttype"
-                      onChange={HandleOption}
-                    >
-                      <option selected disabled>
-                        Breast Type
-                      </option>
-                      {BreastType.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute top-2 right-2">
-                      <svg
-                        className={`w-6 h-6 fill-current text-white`}
-                        viewBox="0 0 20 20"
+                    <div className="select-arrow w-full">
+                      <select
+                        className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                        name="breasttype"
+                        onChange={HandleOption}
                       >
-                        <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                      </svg>
+                        <option selected disabled>
+                          Breast Type
+                        </option>
+                        {BreastType.map((option) => (
+                          <option key={option} value={option} className="text-black">
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {(InquiryData.AllData.gender === "Female" ||
                   InquiryData.AllData.gender?.startsWith("Trans")) && (
-                  <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
-                    <select
-                      className="rounded-3xl text-ellipsis whitespace-pre pr-[21px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
-                      name="breastappearance"
-                      onChange={HandleOption}
-                    >
-                      <option selected disabled>
-                        Breast Appearance
-                      </option>
-                      {BreastAppearance.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute top-2 right-2">
-                      <svg
-                        className={`w-6 h-6 fill-current text-white`}
-                        viewBox="0 0 20 20"
+                    <div className="select-arrow w-full">
+                      <select
+                        className="rounded-3xl text-ellipsis whitespace-pre pr-[21px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                        name="breastappearance"
+                        onChange={HandleOption}
                       >
-                        <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                      </svg>
+                        <option selected disabled>
+                          Breast Appearance
+                        </option>
+                        {BreastAppearance.map((option) => (
+                          <option key={option} value={option} className="text-black">
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {(InquiryData.AllData.gender === "Female" ||
                   InquiryData.AllData.gender?.startsWith("Trans")) && (
-                  <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
-                    <select
-                      className="rounded-3xl text-ellipsis whitespace-pre pr-[21px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
-                      name="breastsize"
-                      onChange={HandleOption}
-                    >
-                      <option selected disabled>
-                        Breast Size
-                      </option>
-                      {BreastSize.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute top-2 right-2">
-                      <svg
-                        className={`w-6 h-6 fill-current text-white`}
-                        viewBox="0 0 20 20"
+                    <div className="select-arrow w-full">
+                      <select
+                        className="rounded-3xl text-ellipsis whitespace-pre pr-[21px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                        name="breastsize"
+                        onChange={HandleOption}
                       >
-                        <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                      </svg>
+                        <option selected disabled>
+                          Breast Size
+                        </option>
+                        {BreastSize.map((option) => (
+                          <option key={option} value={option} className="text-black">
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {(InquiryData.AllData.gender === "Male" ||
                   InquiryData.AllData.gender?.startsWith("Trans")) && (
-                  <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
-                    <select
-                      className="rounded-3xl text-ellipsis whitespace-pre pr-[21px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
-                      name="dicksize"
-                      onChange={HandleOption}
-                    >
-                      <option selected disabled>
-                        Dick Size
-                      </option>
-                      {DickSize.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute top-2 right-2">
-                      <svg
-                        className={`w-6 h-6 fill-current text-white`}
-                        viewBox="0 0 20 20"
+                    <div className="select-arrow w-full">
+                      <select
+                        className="rounded-3xl text-ellipsis whitespace-pre pr-[21px] bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                        name="dicksize"
+                        onChange={HandleOption}
                       >
-                        <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                      </svg>
+                        <option selected disabled>
+                          Dick Size
+                        </option>
+                        {DickSize.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div className="relative rounded-3xl flex justify-center items-center   h-[36px] w-[155px]">
+                <div className="select-arrow w-full">
                   <select
-                    className="rounded-3xl bg-[#02227E] bg-gradient-to-b from-[#02227E] to-[#0247FF] text-white appearance-none px-3 py-1.5 w-full font-bold focus:outline-none"
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                     name="tattoos"
                     onChange={HandleOption}
                   >
@@ -758,56 +653,46 @@ export default function AdvancedSearch2() {
                       Tattoos
                     </option>
                     {Tattoos.map((option) => (
-                      <option key={option} value={option}>
+                      <option key={option} value={option} className="text-black">
                         {option}
                       </option>
                     ))}
                   </select>
-                  <div className="absolute top-2 right-2">
-                    <svg
-                      className={`w-6 h-6 fill-current text-white`}
-                      viewBox="0 0 20 20"
-                    >
-                      <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z" />
-                    </svg>
-                  </div>
+
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        <div className="mt-1 mb-6 bg-linear-gradient w-full h-[30px] text-[24px] text-[#fff] font-bold flex justify-center items-center shadow-[0px_9px_20px_rgba(0,0,0,0.5)]">
+        <div className="text-lg font-medium text-white text-center sm:my-[24px] my-[16px]">
           Sensual Services
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-2 mb-8">
+        <div className="grid grid-cols-2 gap-4 mt-2 mb-8 w-full">
           {SensualServices.map((item) => (
             <div
               key={item}
-              className={`bg-gradient-to-b from-[#02227E] to-[#0247FF] rounded-[20px] flex flex-row items-center justify-center px-6 pl-8 py-2 h-[38px] relative`}
+              className="w-full"
               onClick={() => handleTraditionalToggle(item)}
             >
-              <div className="flex items-center justify-center absolute left-1">
-                <button
-                  className={`w-[20px] h-[20px] rounded-[100%] border-2 border-[#0CA36C] ${
-                    options.includes(item) ? "bg-[#08FA5A]" : "bg-[#D9D9D9]"
+              <button
+                className={`w-full text-white text-sm p-[12px] rounded-[8px] ${options.includes(item) ? "bg-[#405FC4]" : "bg-[#FFFFFF14]"
                   }`}
-                ></button>
-              </div>
-              <div className="flex items-center justify-center w-[100px] leading-4">
-                <span className="font-bold text-[14px] text-white">{item}</span>
-              </div>
+              >
+                {item}
+              </button>
+
             </div>
           ))}
         </div>
-        <div className="">
+        <div className="max-w-[500px] w-full mb-[48px]">
           <Button
-            className={
-              "flex items-center w-fit mt-2 my-2 pr-5 pl-5 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[20px] py-2 rounded-xl shadow-[0px_9px_20px_rgba(0,0,0,0.5)]"
-            }
+            className=' w-full '
             disabled={loading}
-            text={loading ? "Loading.." : "Search"}
-            size="45px"
+            text={loading ? <div className="flex items-center	justify-center">
+              <Loading />
+            </div> : "Search"}
+            size="48px"
             onClick={() => HandleSearch(true)}
           />
           {/* <div className=" items-center justify-center w-full pb-4">

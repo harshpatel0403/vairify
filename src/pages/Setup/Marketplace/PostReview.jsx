@@ -8,23 +8,23 @@ import { HandleCreateNewPost } from "../../../redux/action/MarketplaceSearch";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { HandleUser } from "../../../redux/action/Auth";
-import BaseAPI from "../../../BaseAPI";
 
 export default function PostReview() {
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [isLoading, setIsLoading] = useState(false); // State to track loading
+  const [isLoading, setIsLoading] = useState(false);
 
   const fromMoment = moment(state?.date?.from, "DD/MM/YYYY");
   const toMoment = moment(state?.date?.to, "DD/MM/YYYY");
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  // Format the date range as "Month Day - Day"
+
   const formattedDateRange =
     state?.date?.to !== "Invalid date"
-      ? `${fromMoment.format("MMMM D")} - ${toMoment.format("D")}`
+      ? state?.date?.from == state?.date?.to ? `${fromMoment.format("MMMM D")}`
+        : `${fromMoment.format("MMMM D")} - ${toMoment.format("MMMM D")}`
       : `${fromMoment.format("MMMM D")}`;
 
   const formattedTimeRange =
@@ -73,10 +73,9 @@ export default function PostReview() {
             type: "success",
           });
           setIsLoading(false);
-          navigate("/marketplace/post");
+          navigate("/featured");
         } else {
           setIsLoading(false);
-          // setError(true);
           toast(result?.payload?.data?.message, {
             hideProgressBar: true,
             autoClose: 1000,
@@ -108,110 +107,107 @@ export default function PostReview() {
     return `${localStartTime} to ${localEndTime}`;
   };
   return (
-    <div className="main-container pt-6 px-0 max-height-card-data mt-[-15px]">
-      <div className="bg-[#040B476f] w-full py-2">
-        <h3 className="text-[#040C50] text-[24px] font-bold">
-          Marketplace Posts
+    <div className="container mb-[48px]">
+      <div>
+        <h3 className="text-white text-center text-[28px] font-medium my-[48px]">
+          Review Post
         </h3>
       </div>
-      <div className="mt-9 px-3 justify-center flex flex-col items-center">
-        <div className="flex flex-col w-60">
-          {state?.image && !state?.Repost ? (
+      <div className="bg-white rounded-[16px] p-[24px] max-w-[500px] mx-auto">
+        <div className="flex flex-col w-full">
+          {state?.image && !("Repost" in state) ? (
             <img
               src={URL.createObjectURL(state?.image)}
               alt
-              className="object-contain"
+              className="object-cover h-[180px] w-full rounded-lg"
             />
           ) : (
             <img
+              className="object-cover h-[180px] w-full rounded-lg"
               src={`${import.meta.env.VITE_APP_S3_IMAGE
                 }/${state?.image}`}
               alt
             />
           )}
-          <div className="bg-[#CCC] p-3 rounded-b-xl">
-            <h5 className="leading-normal text-[16px] font-medium">
+          <div>
+            <h5 className="text-[16px] font-normal text-[#919EAB] mt-[8px]">
               {state?.message}
             </h5>
           </div>
         </div>
-        <div>
-          <h3 className="text-[24px] font-bold">Review</h3>
-        </div>
-        <div className="w-full flex flex-col items-center">
-          <div className="grid grid-cols-2 w-72">
+        <div className="w-full flex flex-col items-center bg-[#919EAB29] rounded-[16px] p-[16px] mt-[24px]">
+          <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-bold">Date:</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Date</h5>
             </div>
-            <h5 className="text-[16px] font-medium text-start">
+            <h5 className="text-[16px] font-medium text-end text-[#212B36]">
               {formattedDateRange}
             </h5>
           </div>
-          <div className="grid grid-cols-2 w-72">
+          <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-bold">Time :</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Time</h5>
             </div>
-            <h5 className="text-[16px] font-medium text-start">
-              {/* {state?.time?.from} - {state?.time?.to} */}
-              {state?.Repost ? `${convertToLocalTime(`${state?.time?.from} to ${state?.time?.to}`)}` : `${formattedTimeRange}`}
+            <h5 className="text-[16px] font-medium text-end text-[#212B36]">
+              {state?.Repost ? convertToLocalTime(`${state?.time?.from?.split(' ')[1]} to ${state?.time?.to?.split(' ')[1]}`)
+                : state?.from == "view" ? convertToLocalTime(`${state?.time?.from} to ${state?.time?.to}`)
+                  : `${formattedTimeRange}`}
 
             </h5>
           </div>
-          <div className="grid grid-cols-2 w-72">
+          <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-bold">Location:</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Location</h5>
             </div>
-            <h5 className="text-[16px] font-medium text-start">
-              {state?.location} - {state?.city}
+            <h5 className="text-[16px] font-medium text-end text-[#212B36]">
+              {state?.city ? `${state?.location} - ${state?.city}` : state?.location}
             </h5>
           </div>
-          <div className="grid grid-cols-2 w-72">
+          <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-bold">Frequency</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Frequency</h5>
             </div>
-            <h5 className="text-[16px] font-medium text-start">
+            <h5 className="text-[16px] font-medium text-end text-[#212B36]">
               {state?.frequency}hr Intervals
             </h5>
           </div>
         </div>
 
-        <div className="grid mt-4 grid-cols-2 w-72">
-          <div className="text-start">
-            <h3 className="text-[#026EFF] text-[24px] font-bold">Total</h3>
+        <div className="w-full flex items-center justify-between bg-[#919EAB29] rounded-[16px] p-[16px] mt-[24px]">
+          <div>
+            <h3 className="text-[16px] font-medium text-[#212B36]">Total</h3>
           </div>
-          <h3 className="text-[#026EFF] text-[24px] text-start font-bold">
+          <h3 className="text-[16px] font-medium text-end text-[#212B36]">
             {state?.totalGRT}
           </h3>
         </div>
         {state?.from !== "view" && (
           <>
-            <div className="grid grid-cols-2 w-72">
-              <div className="text-start">
-                <h3 className="text-[#026EFF] text-[24px] font-bold">
+            <div className="w-full flex items-center justify-between bg-[#919EAB29] rounded-[16px] p-[16px] my-[24px]">
+              <div>
+                <h3 className="text-[16px] font-medium text-[#212B36]">
                   Credits:
                 </h3>
               </div>
-              <h3 className="text-[#026EFF] text-[24px] text-start font-bold">
+              <h3 className="text-[16px] font-medium text-end text-[#212B36]">
                 {UserDetails?.tokens}
               </h3>
             </div>
 
-            <div className="flex justify-center w-full">
+            <div className="flex justify-center w-full max-w-[500px] mx-auto">
               <Button
-                className={
-                  "flex items-center mt-4 py-2 w-full max-w-[306px] my-2 justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[24px] py-2 rounded-xl"
-                }
+                className={'secondary-btn'}
                 text={
                   !isLoading ? (
                     "Checkout"
                   ) : (
-                    <div className="flex items-center justify-center pt-[6px]">
+                    <div className="flex items-center justify-center">
                       <Loading />
                     </div>
                   )
                 }
-                size="40px"
                 onClick={HandleButton}
+                disabled={isLoading}
               />
             </div>
           </>

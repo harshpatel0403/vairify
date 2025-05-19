@@ -1,33 +1,19 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import NotificationServices from "../../services/NotificationServices";
+import organizeNotificationsByDay from "../../Ultis/notifications";
 
-export default function Footer({ bgColor }) {
+export default function Footer({ bgColor, from }) {
   const navigate = useNavigate();
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
+  const location = useLocation();
+  const path = location.pathname;
 
   const AuthToken = useSelector((state) => state?.Auth?.Auth?.data?.token);
-  // const notificationCount = useSelector((state) => state?.Auth?.notificationCount);
-  const [notificationCount, setNotificationCount] = useState(0);
   const [tokenAvailable, setTokenAvailable] = useState(false);
 
-  useEffect(()=>{
-    if(UserData?._id){
-      fetchNotificationData();
-    }
-  },[])
-
-  const fetchNotificationData = async () => {
-    await NotificationServices.getAllNotifications(UserData?._id)
-      .then((res) => {
-        const notificationData = res?.filter((item) => item?.read === false)?.length;
-        setNotificationCount(notificationData)
-      })
-      .catch((error) => console.log(error));
-  }
   useEffect(() => {
-
     setTokenAvailable(!!AuthToken);
   }, [AuthToken]);
 
@@ -52,73 +38,83 @@ export default function Footer({ bgColor }) {
     navigate("/settings");
   };
 
+  const hideFooterRoutes = [
+    "/setup-face-verification",
+    "/vai",
+    "/get-vai",
+    "/terms",
+    "/subscription",
+    "/migration",
+    "/payment",
+    "/reset-password",
+    "/bussiness-vai",
+    from == "settings" && "/change-password",
+    "/otp-verification",
+    "/otp-congratulations",
+    "/chat/:receiverId",
+    "/payment-success",
+    "/self-verification-completed",
+    "/business/community",
+    "/reset-password",
+    "/reset-password-otp",
+    "/confirm/password",
+    "/agencybusiness"
+  ];
+
+  const shouldHideFooter =
+    path.startsWith("/chat/") || hideFooterRoutes.includes(path);
+
+
+  if (shouldHideFooter) {
+    return null;
+  }
+
   return (
-    <div
-      className={`bottom-group-container flex flex-row justify-around items-center
-    bg-[${bgColor}]
-    text-3xl text-white text-center
-    fixed
-    inset-x-0
-    bottom-0
-    m-0
-    p-3`}
-    >
-      <div>
-        <button disabled={!tokenAvailable}>
+    <div className="lg:pt-[64px] pt-[40px] pb-[48px] bg-[#000531] w-full sm:block hidden mt-auto footer">
+      <div className="max-w-[1216px] w-[90%] mx-auto">
+        <div className="mx-auto flex justify-center items-center">
           <img
-            onClick={(e) => navigateHome(e)}
-            src={"/images/BottomNav1.png"}
-            alt="Bottom Nav 1"
+            src="/images/signup/logo.svg"
+            alt="logo"
+            className="max-w-[132px]"
           />
-        </button>
-      </div>
-      <div className="relative">
-        <button
-          onClick={(e) => navigateNotification(e)}
-          disabled={!tokenAvailable}
-        >
-          <img src={"/images/BottomNav2.png"} alt="Bottom Nav 2" />
-        </button>
-        {tokenAvailable ? (
-          <span
-            className="absolute top-[-4px] right-[-8px]"
-            style={{
-              width: "22px",
-              height: "22px",
-              backgroundColor: "#fc677d",
-              borderRadius: "50%",
-              color: "white",
-              fontSize: "12px",
-              fontWeight: "700",
-              lineHeight: "8.79px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {notificationCount > 99 ? "99+" : notificationCount}
-          </span>
-        ) : (
-          <></>
-        )}
-      </div>
-      <div>
-        <button
-          onClick={(e) => navigateMarketplace(e)}
-          disabled={!tokenAvailable}
-        >
-          <img src={"/images/BottomNav3.png"} alt="Bottom Nav 3" />
-        </button>
-      </div>
-      <div>
-        <button onClick={(e) => naviageLogs(e)} disabled={!tokenAvailable}>
-          <img src={"/images/BottomNav4.png"} alt="Bottom Nav 4" />
-        </button>
-      </div>
-      <div>
-        <button onClick={(e) => navigateSettings(e)} disabled={!tokenAvailable}>
-          <img src={"/images/BottomNav5.png"} alt="Bottom Nav 5" />
-        </button>
+        </div>
+        <div className="flex justify-center items-center mt-[30px] gap-[32px]">
+
+          <div>
+            <button disabled={!tokenAvailable} onClick={(e) => navigateHome(e)} className="lg:text-base text-sm font-semibold text-white cursor-pointer disabled:cursor-not-allowed">
+              Home
+            </button>
+          </div>
+          <div className="relative">
+            <button onClick={(e) => { navigateNotification(e) }} disabled={!tokenAvailable} className="lg:text-base text-sm font-semibold text-white cursor-pointer disabled:cursor-not-allowed">
+              Notification
+            </button>
+          </div>
+          <div>
+            <button onClick={(e) => navigateMarketplace(e)} disabled={!tokenAvailable} className="lg:text-base text-sm font-semibold text-white cursor-pointer disabled:cursor-not-allowed">
+              Marketplace
+            </button>
+          </div>
+          <div>
+            <button onClick={(e) => naviageLogs(e)} disabled={!tokenAvailable} className="lg:text-base text-sm font-semibold text-white cursor-pointer disabled:cursor-not-allowed">
+              Message
+            </button>
+          </div>
+          <div>
+            <button onClick={(e) => navigateSettings(e)} disabled={!tokenAvailable} className="lg:text-base text-sm font-semibold text-white cursor-pointer disabled:cursor-not-allowed">
+              Setting
+            </button>
+          </div>
+        </div>
+        <div className="flex lg:justify-between justify-center items-center lg:mt-[48px] mt-[30px] lg:gap-[32px] gap-[16px] lg:flex-row flex-col">
+          <p className="text-[#919EAB] font-normal lg:text-base text-sm">© Copyright 2025 By VAIRIFY. All Rights Reserved.</p>
+          <div className="flex justify-center items-center lg:gap-[40px] gap-[20px]">
+            <a href="" target="_blank" className="text-[#919EAB] font-normal lg:text-base text-sm whitespace-nowrap">Refund policy</a>
+            <a href="/privacy-policy" target="_blank" className="text-[#919EAB] font-normal lg:text-base text-sm whitespace-nowrap">Privacy Policy</a>
+            <a href="/terms-and-conditions" target="_blank" className="text-[#919EAB] font-normal lg:text-base text-sm whitespace-nowrap">Terms of Service</a>
+          </div>
+        </div>
       </div>
     </div>
   );

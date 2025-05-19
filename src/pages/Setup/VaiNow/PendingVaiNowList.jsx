@@ -5,12 +5,22 @@ import VaridateService from "../../../services/VaridateServices";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import moment from "moment";
+import Loading from "../../../components/Loading/Index";
+import PageTitle from "../../../components/PageTitle";
+import Modal from 'react-modal'
+import { IoCloseCircleOutline } from "react-icons/io5";
+import HotRodAnalysis from "../../varidate/HotRodAnalysis";
 
 const VaiNowList = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [particularItem, setParticularItem] = useState({});
+  const closeModal = () => {
+    setOpenModal(false);
+  }
 
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const userType = UserDetails?.user_type; //'companion-provider'
@@ -91,10 +101,8 @@ const VaiNowList = () => {
 
   if (loading) {
     return (
-      <div className="main-container h-full">
-        <div className="h-full flex justify-center items-center">
-          <p>Loading...</p>
-        </div>
+      <div className="flex justify-center align-center items-center pt-[48px] h-[50vh]">
+        <Loading />
       </div>
     );
   }
@@ -111,28 +119,25 @@ const VaiNowList = () => {
 
   return (
     <div
-      className="main-content py-4 rounded-2xl pb-[0px] bg-[#D5D6E0]"
-      style={{ height: "calc(100vh - 160px)" }}
+      className="container"
     >
+      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+        <PageTitle title={"VAIRIFY Now"} />
+      </div>
       <div className="flex flex-col justify-between">
-        <div className="mt-0 bg-[#040C50]/[26%] w-full ">
-          <h2 className="font-extrabold py-2 text-[24px] mulish-font-family uppercase">
-            Vai<span className="logoSetupweight">rify now</span>
-          </h2>
-        </div>
-        {/* <div className="mt-[20px] items-center flex sm:flex-row flex-col gap-[26px] px-2 pb-8">
-          <div className=""> */}
+
         {appointments?.length > 0 ? (
-          <div className="mt-[20px] items-center flex sm:flex-row flex-col gap-[26px] px-2 pb-8">
-            <div className="">
-              <div className="grid md:grid-cols-2 gap-4 w-full">
-                {appointments.map((appointment) => (
-                  <div
-                    key={appointment._id}
-                    className="sm:w-[100%] max-w-[440px] bg-[#3760CB] shadow-2xl py-[12px] rounded-[20px] border border-gray-100 h-[auto] min-h-[235px]"
-                  >
-                    <div className="flex gap-2 sm:gap-4 pl-[10px] pr-[10px] items-center">
-                      <div className="w-[25%] justify-center">
+          <div className="items-center flex sm:flex-row flex-col gap-[26px] px-2 pb-8">
+            <div className="grid md:grid-cols-2 gap-4 w-full">
+              {appointments.map((appointment) => (
+                <div
+                  key={appointment._id}
+                  className="w-full p-[16px] bg-[#919EAB33] rounded-[16px] "
+                >
+
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex gap-[8px] flex-grow">
+                      <div>
                         <img
                           src={
                             appointment?.[
@@ -142,21 +147,13 @@ const VaiNowList = () => {
                             ]?.profilePic
                               ?
                               `${import.meta.env
-                              .VITE_APP_S3_IMAGE
-                            }/${appointment?.[
-                              userType == "client-hobbyist"
-                                ? "companionId"
-                                : "clientId"
-                            ]?.profilePic
-                            }`
-                              //  `${import.meta.env
-                              //   .VITE_APP_API_USERPROFILE_IMAGE_URL
-                              // }/${appointment?.[
-                              //   userType == "client-hobbyist"
-                              //     ? "companionId"
-                              //     : "clientId"
-                              // ]?.profilePic
-                              // }`
+                                .VITE_APP_S3_IMAGE
+                              }/${appointment?.[
+                                userType == "client-hobbyist"
+                                  ? "companionId"
+                                  : "clientId"
+                              ]?.profilePic
+                              }`
                               : appointment?.[
                                 userType == "client-hobbyist"
                                   ? "companionId"
@@ -165,290 +162,284 @@ const VaiNowList = () => {
                                 ? "/images/male.png"
                                 : "/images/female.png"
                           }
-                          className="w-[86px] h-[86px] min-w-[86px] min-h-[86px] max-w-[86px] max-h-[86px] rounded-full"
+                          className="w-[48px] h-[48px] rounded-full object-cover"
                           alt=""
                         />
-                        <div className="mt-2">
-                          <h6 className="text-xs text-white font-roboto font-semibold">
-                            TruRevu
-                          </h6>
-                          <h6 className="text-xs text-white font-roboto font-semibold capitalize">
-                            {
-                              appointment?.[
-                                userType == "client-hobbyist"
-                                  ? "companionId"
-                                  : "clientId"
-                              ]?.name
-                            }{" "}
-                            / ID #$
-                            {
-                              appointment?.[
-                                userType == "client-hobbyist"
-                                  ? "companionId"
-                                  : "clientId"
-                              ]?.vaiID
-                            }
-                          </h6>
 
-                          <div className="flex gap-1 items-start justify-center">
-                            <div className="flex gap-1 mt-1">
-                              {Array.from(
-                                {
-                                  length:
-                                    appointment?.[
-                                      userType == "client-hobbyist"
-                                        ? "companionId"
-                                        : "clientId"
-                                    ]?.avgRating || 0,
-                                },
-                                (_, index) => index
-                              )?.map((rating) => (
-                                <img
-                                  src="/images/Star.svg"
-                                  className="w-[10px]  h-[10px]"
-                                  alt=""
-                                />
-                              ))}
-                              {Array.from(
-                                {
-                                  length:
-                                    5 -
-                                    Math.floor(
-                                      appointment?.[
-                                        userType == "client-hobbyist"
-                                          ? "companionId"
-                                          : "clientId"
-                                      ]?.avgRating || 0
-                                    ),
-                                },
-                                (_, index) => index
-                              )?.map((rating) => (
-                                <img
-                                  src="/images/StarUnfilled.svg"
-                                  className="w-[10px]  h-[10px]"
-                                  alt=""
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex justify-around">
-                          <div className="text-part">
-                            <h6 className="font-extrabold mb-0 text-[24px] mulish-font-family uppercase">
-                              Vai
-                              <span className="logoSetupweight">rify now</span>
-                            </h6>
-                            <p className="font-extrabold uppercase m-0 p-0">
-                              {appointment?._id}
-                            </p>
-                          </div>
+                      <div>
+                        <div className="sm:text-base text-sm text-white font-medium">
+                          {
+                            appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.name
+                          }
                         </div>
-                        <div className="flex gap-2 sm:gap-4 pl-[10px] pr-[10px]">
-                          <div className="flex-1">
-                            <div className="grid gap-[5px] mt-4 grid-cols-3">
-                              <span className="font-roboto text-white text-[10px]">
-                                Requested <br /> Appt/time
-                              </span>
-                              <span className="font-roboto text-white text-[10px]">
-                                Elapsed <br /> Time
-                              </span>
-                              <span className="font-roboto text-white text-[10px]">
-                                Status
-                              </span>
-                            </div>
-                            <div className="grid gap-[5px] mt-4 sm:mt-[14px] grid-cols-3">
-                              <span className="font-roboto text-white text-[10px]">
-                                {moment(appointment?.startDateTime).format(
-                                  "MM/DD/YYYY"
-                                )}{" "}
-                                <br />
-                                {moment(appointment?.startDateTime).format(
-                                  "hh:mmA"
-                                )}
-                              </span>
-                              <span className="font-roboto text-white text-[10px]">
-                                {appointment?.createdAt
-                                  ? moment(appointment?.createdAt).fromNow()
-                                  : " - "}
-                              </span>
-                              <span className="font-roboto text-white text-[10px]">
-                                {userType === "client-hobbyist" &&
-                                  appointment?.clientStatus !== "Cancel"
-                                  ? appointment?.companionStatus
-                                  : appointment?.clientStatus}
-                              </span>
-                            </div>
-                          </div>
+                        <div className="sm:text-sm text-xs font-normal text-[#919EAB] uppercase">
+                          {
+                            appointment?.[
+                              userType == "client-hobbyist"
+                                ? "companionId"
+                                : "clientId"
+                            ]?.vaiID
+                          }
                         </div>
-                        <div className="flex mt-4 gap-2">
-                          <div className="w-[100%] text-center mt-3">
-                            <button
-                              onClick={() =>
-                                navigate("/user/profile", {
-                                  state: {
-                                    item: {
-                                      userId:
-                                        appointment?.[
-                                        userType === "client-hobbyist"
-                                          ? "companionId"
-                                          : "clientId"
-                                        ],
-                                    },
-                                    market: true,
-                                  },
-                                })
-                              }
-                              className="w-full font-roboto font-bold text-[16px] text-white px-2 py-[3px]  border rounded-[25px] border-white bg-[#02227E]"
-                            >
-                              View Profile
-                            </button>
-                          </div>
 
-                          <div className="w-[100%] text-center mt-3 gap-3 flex flex-wrap justify-center">
-                            {userType !== "client-hobbyist" &&
-                              appointment?.companionStatus !== "Scheduled" &&
-                              appointment?.companionStatus !== "Rejected" && (
-                                <button
-                                  // disabled={
-                                  //   appointment?.companionStatus !== "Accepted" &&
-                                  //   appointment?.companionStatus !== "Signed" &&
-                                  //   appointment?.companionStatus !== "Scheduled"
-                                  // }
-                                  onClick={() => accpetAppt(appointment)}
-                                  className="w-full font-bold text-[16px] px-7 py-[3px]  rounded-[25px] border-white bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold change-font-family"
-                                >
-                                  Accept
-                                </button>
-                              )}
-                            {userType !== "client-hobbyist" &&
-                              appointment?.companionStatus !== "Scheduled" &&
-                              appointment?.companionStatus !== "Rejected" && (
-                                <button
-                                  // disabled={
-                                  //   appointment?.companionStatus !== "Accepted" &&
-                                  //   appointment?.companionStatus !== "Signed" &&
-                                  //   appointment?.companionStatus !== "Scheduled"
-                                  // }
-                                  onClick={() => rejectAppt(appointment?._id)}
-                                  className="w-full font-roboto font-bold text-[16px] text-white px-7 py-[3px]  rounded-[25px] border-white bg-[#DB3002]"
-                                >
-                                  Cancel
-                                </button>
-                              )}
-                            {(userType === "client-hobbyist" ||
-                              appointment?.companionStatus === "Scheduled") && (
-                                <button
-                                  // disabled={
-                                  //   appointment?.companionStatus !== "Accepted" &&
-                                  //   appointment?.companionStatus !== "Signed" &&
-                                  //   appointment?.companionStatus !== "Scheduled"
-                                  // }
-                                  onClick={() => navigateToviewall(appointment)}
-                                  className="w-full font-roboto font-bold text-[16px] text-white px-7 py-[3px]  border rounded-[25px] border-white bg-[#02227E]"
-                                >
-                                  View
-                                </button>
-                              )}
-                          </div>
-                        </div>
-                        {appointment?.vaiCheckStatus?.[
-                          userType === "client-hobbyist"
-                            ? "clientStatus"
-                            : "companionStatus"
-                        ] === "Verified" ? (
-                          <button
-                            onClick={() =>
-                              navigate("/varidate/post/review", {
-                                state: appointment,
-                              })
-                            }
-                            className="w-full font-roboto font-bold text-[16px] text-white px-7 py-[3px]  border rounded-[25px] border-white bg-[#02227E] mt-3 mb-4"
-                            disabled={appointment?.[
-                              userType == "client-hobbyist"
-                                ? "companionId"
-                                : "clientId"
-                            ]?.reviews?.find(
-                              (review) =>
-                                review?.appointment === appointment?._id
-                            )}
-                          >
-                            {appointment?.[
-                              userType == "client-hobbyist"
-                                ? "companionId"
-                                : "clientId"
-                            ]?.reviews?.find(
-                              (review) =>
-                                review?.appointment === appointment?._id
-                            )
-                              ? "Reviewed"
-                              : "Post Review"}
-                          </button>
-                        ) : (
-                          appointment?.companionStatus === "Scheduled" && (
-                            <button
-                              onClick={() =>
-                                navigate("/varidate/face-verification", {
-                                  state: {
-                                    ...appointment,
-                                    from: "vairifyNow",
-                                    for: "vaicheck",
-                                  },
-                                })
-                              }
-                              className="w-full text-[16px] px-7 py-[3px]  rounded-[25px] border-white bg-[#02227E] mt-3 mb-4 bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold change-font-family"
-                            >
-                              VAI Check
-                            </button>
-                          )
-                        )}
-                        <div className="flex justify-between items-center"></div>
                       </div>
                     </div>
-                    {true || userType === "client-hobbyist" ? (
-                      <></>
-                    ) : (
-                      <>
-                        <div className="w-full mx-auto flex flex-row justify-center items-center mt-3">
-                          <div className="w-[100%] text-center">
-                            <button className="w-full font-roboto font-bold text-[16px] text-white px-7 py-[3px]  rounded-[25px] bg-[#02227E]">
-                              {
-                                appointment?.[
-                                userType === "client-hobbyist"
-                                  ? "clientStatus"
-                                  : "companionStatus"
-                                ]
-                              }
-                            </button>
-                          </div>
-                          <div className="max-w-[50%] w-[100%] text-center pe-3">
-                            <Button
-                              onClick={() => navigateToViewPage(appointment)}
-                              text={"Go to VAIRIDATE>>"}
-                              className={
-                                "bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold shadow-l"
-                              }
-                            />
-                          </div>
-                        </div>
-                      </>
-                    )}
+                    <div>
+                      <div className="flex gap-[4px]">
+                        <p className="sm:text-base text-sm text-white font-semibold">
+                          {appointment?.[userType === "client-hobbyist" ? "companionId" : "clientId"]?.avgRating || 0}
+                        </p>
+                        <img src="/images/home/star.svg" alt="rating" />
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
+
+                  <div className="mt-[16px]">
+                    <div className="flex justify-between gap-2">
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">VAIRIFY Now</div>
+                      <p className="text-white sm:text-sm text-xs font-medium text-right">
+                        {appointment?._id}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Request Appt/time</div>
+                      <p className="text-white sm:text-sm text-xs font-medium text-right">
+                        {moment(appointment?.startDateTime).format(
+                          "MM/DD/YYYY"
+                        )}{" "}
+                        -
+                        {moment(appointment?.startDateTime).format(
+                          "hh:mmA"
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Elapsed Time</div>
+                      <p className="text-white sm:text-sm text-xs font-medium text-right">
+                        {appointment?.createdAt
+                          ? moment(appointment?.createdAt).fromNow()
+                          : " - "}
+                      </p>
+                    </div>
+                    <div className="flex justify-between gap-2">
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Status</div>
+                      <p className={`sm:text-sm text-xs font-medium text-right ${(userType === "client-hobbyist"
+                        ? appointment?.companionStatus
+                        : appointment?.clientStatus) === "Requested"
+                        ? "text-cyan-500"
+                        : (userType === "client-hobbyist"
+                          ? appointment?.companionStatus
+                          : appointment?.clientStatus) === "Rejected"
+                          ? "text-red-500"
+                          : (userType === "client-hobbyist"
+                            ? appointment?.companionStatus
+                            : appointment?.clientStatus) === "Scheduled"
+                            ? "text-green-500"
+                            : (userType === "client-hobbyist"
+                              ? appointment?.companionStatus
+                              : appointment?.clientStatus) === "Pending"
+                              ? "text-yellow-500"
+                              : "text-white"
+                        }`}>
+                        {userType === "client-hobbyist" &&
+                          appointment?.clientStatus !== "Cancel"
+                          ? appointment?.companionStatus
+                          : appointment?.clientStatus}
+                      </p>
+                    </div>
+                  </div>
+
+
+
+
+
+                  {/* old */}
+                  <div className="flex gap-2 sm:gap-4 items-center">
+                    <div className="flex-1">
+                      <div className="flex mt-4 gap-2">
+                        <div className="w-full flex gap-[8px]">
+                          <Button
+                            onClick={() =>
+                              navigate("/user/profile", {
+                                state: {
+                                  item: {
+                                    userId:
+                                      appointment?.[
+                                      userType === "client-hobbyist"
+                                        ? "companionId"
+                                        : "clientId"
+                                      ],
+                                  },
+                                  market: true,
+                                },
+                              })
+                            }
+                            className="py-[4px] w-full px-4"
+                            text={'View Profile'}
+                            size={'36px'}
+                          />
+
+                          {userType !== "client-hobbyist" &&
+                            appointment?.companionStatus !== "Scheduled" &&
+                            appointment?.companionStatus !== "Rejected" && (
+                              <Button
+                                // disabled={
+                                //   appointment?.companionStatus !== "Accepted" &&
+                                //   appointment?.companionStatus !== "Signed" &&
+                                //   appointment?.companionStatus !== "Scheduled"
+                                // }
+                                onClick={() => accpetAppt(appointment)}
+                                className="py-[4px] secondary-btn !bg-[#008F34] px-4"
+                                text={'Accept'}
+                              />
+
+                            )}
+                          {userType !== "client-hobbyist" &&
+                            appointment?.companionStatus !== "Scheduled" &&
+                            appointment?.companionStatus !== "Rejected" && (
+                              <Button
+                                // disabled={
+                                //   appointment?.companionStatus !== "Accepted" &&
+                                //   appointment?.companionStatus !== "Signed" &&
+                                //   appointment?.companionStatus !== "Scheduled"
+                                // }
+                                onClick={() => rejectAppt(appointment?._id)}
+                                className="py-[4px] secondary-btn !bg-[#E43530] px-4"
+                                text={'Cancel'}
+                              />
+                            )}
+                          {(userType === "client-hobbyist" ||
+                            appointment?.companionStatus === "Scheduled") && (
+                              <Button
+                                // disabled={
+                                //   appointment?.companionStatus !== "Accepted" &&
+                                //   appointment?.companionStatus !== "Signed" &&
+                                //   appointment?.companionStatus !== "Scheduled"
+                                // }
+                                onClick={() => navigateToviewall(appointment)}
+                                className="py-[4px] secondary-btn !bg-transparent border-[2px] border-[#919EAB33] hover:!bg-[#FFFFFF29]"
+                                text={'View'}
+                                size={'36px'}
+                              />
+                            )}
+                        </div>
+                      </div>
+                      {appointment?.vaiCheckStatus?.[
+                        userType === "client-hobbyist"
+                          ? "clientStatus"
+                          : "companionStatus"
+                      ] === "Verified" ? (
+                        <Button
+                          onClick={() => {
+                            setOpenModal(true);
+                            setParticularItem(appointment)
+                          }
+                          }
+                          // onClick={() =>
+                          //   navigate("/varidate/post/review", {
+                          //     state: appointment,
+                          //   })
+                          // }
+                          className="w-full mt-3 py-[4px] secondary-btn !bg-transparent border-[2px] border-[#919EAB33] hover:!bg-[#FFFFFF29]"
+                          disabled={appointment?.[
+                            userType == "client-hobbyist"
+                              ? "companionId"
+                              : "clientId"
+                          ]?.reviews?.find(
+                            (review) =>
+                              review?.appointment === appointment?._id
+                          )}
+                          text={appointment?.[
+                            userType == "client-hobbyist"
+                              ? "companionId"
+                              : "clientId"
+                          ]?.reviews?.find(
+                            (review) =>
+                              review?.appointment === appointment?._id
+                          )
+                            ? "Reviewed"
+                            : "Post Review"}
+                        ></Button>
+                      ) : (
+                        appointment?.companionStatus === "Scheduled" && (
+                          <Button
+                            onClick={() =>
+                              navigate("/varidate/face-verification", {
+                                state: {
+                                  ...appointment,
+                                  from: "vairifyNow",
+                                  for: "vaicheck",
+                                },
+                              })
+                            }
+                            text={'VAI Check'}
+                            className="w-full px-7 py-[4px] secondary-btn !bg-[#008F34] mt-3 mb-4"
+                          >
+
+                          </Button>
+                        )
+                      )}
+                      <div className="flex justify-between items-center"></div>
+                    </div>
+                  </div>
+                  {true || userType === "client-hobbyist" ? (
+                    <></>
+                  ) : (
+                    <>
+                      <div className="w-full mx-auto flex flex-row justify-center items-center mt-3">
+                        <div className="w-[100%] text-center">
+                          <button className="w-full font-roboto font-bold text-[16px] text-white px-7 py-[3px]  rounded-[25px] bg-[#02227E]">
+                            {
+                              appointment?.[
+                              userType === "client-hobbyist"
+                                ? "clientStatus"
+                                : "companionStatus"
+                              ]
+                            }
+                          </button>
+                        </div>
+                        <div className="max-w-[50%] w-[100%] text-center pe-3">
+                          <Button
+                            onClick={() => navigateToViewPage(appointment)}
+                            text={"Go to VAIRIDATE"}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         ) : (
-          <div className="text-[32px] text-[#4b4b4b] font-bold text-center h-[400px] flex flex-col justify-center items-center">
+          <div className="text-xl text-white font-bold text-center flex flex-col justify-center items-center my-[48px] gap-[24px]">
             <div className="image-not">
-              <img src="/images/notFound.png" alt="logo" />
+              <img src="/images/home/result-not-found.svg" alt="not found" />
             </div>
             Result not found
           </div>
         )}
         {/* </div>
         </div> */}
+        <Modal
+          isOpen={openModal}
+          onRequestClose={closeModal}
+          className=" max-w-[550px] sm:max-h-[800px] max-h-[600px] h-full mx-auto bg-white overflow-auto fixed rounded-2xl sm:p-[24px] p-[16px] w-[90%]"
+          contentLabel="#"
+        >
+          <button
+            className="absolute sm:right-[24px] right-[16px] sm:top-[20px] top-[12px] p-1 ml-auto bg-transparent border-0 text-black cursor-pointer z-50 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+            onClick={closeModal}
+          >
+            <IoCloseCircleOutline size={26} />
+          </button>
+          <HotRodAnalysis state={particularItem} />
+        </Modal>
       </div>
     </div>
   );

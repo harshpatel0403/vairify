@@ -20,6 +20,9 @@ import {
 } from "../../utils";
 import MyVairifyService from "../../services/MyVairifyService";
 import { HandleUpdateFollowers } from "../../redux/action/Auth";
+import Loading from "../../components/Loading/Index";
+import PageTitle from "../../components/PageTitle";
+import { HandleGetProfile } from "../../redux/action/Profile";
 
 export default function SelectDate() {
   const navigate = useNavigate();
@@ -27,7 +30,6 @@ export default function SelectDate() {
   const dispatch = useDispatch();
 
   const params = useParams();
-  console.log("poarms", params);
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const [servicesOptions, setServicesOptions] = useState([]);
   const [services, setServices] = useState([]);
@@ -52,8 +54,88 @@ export default function SelectDate() {
   const [minDate, setMinDate] = useState(new Date());
   const [appointments, setAppointments] = useState([]);
   const [firstAvailableSlot, setFirstAvailableSlot] = useState("");
+  const [followLoading, setFollowLoading] = useState(false);
 
-  console.log(firstAvailableSlot, "first slot is this")
+  useEffect(() => {
+    if (date) {
+      setVaridateData({
+        type: selectedType,
+        hours: selectedHours,
+        service: selectedService,
+        country: selectedCountry,
+        date: firstAvailableSlot?.date,
+        allServices,
+        availableHours: hours,
+        companionData,
+        activeScheduleData,
+        calendarRules,
+        appointments,
+        selectedSlot: firstAvailableSlot?.slot,
+        selectedSubServices,
+        address: selectedCountry,
+      });
+    }
+  }, [firstAvailableSlot]);
+
+  const [staff, setStaff] = useState("");
+  const [varidateData, setVaridateData] = useState();
+  const [slots, setSlots] = useState([]);
+  const handleClick = (props) => {
+    setStaff(props);
+    setVaridateData((prevValue) => ({
+      ...prevValue,
+      selectedSlot: props,
+    }));
+  };
+  const navigateToSelectTime = () => {
+    navigate("/varidate/verification");
+  };
+  const navigateToServicesRates = () => {
+    navigate("/varidate/services-rates", { state: varidateData });
+  };
+
+  const setStartAndEndHours = (dayInWord) => {
+    let day = varidateData?.activeScheduleData?.days?.find(
+      (item) => item?.day == dayInWord
+    );
+    let generatedSlots = generateTimeSlots(
+      varidateData?.hours?.time * 60,
+      day?.start,
+      day?.end,
+      calculateTotalMinutes(varidateData?.calendarRules?.bufferTime),
+      {
+        selectedDate: varidateData?.date,
+        ...varidateData?.calendarRules?.blackOutPeriod,
+      },
+      varidateData?.appointments?.length ? varidateData.appointments : null
+    );
+    setSlots(generatedSlots);
+  };
+
+  useEffect(() => {
+    if (varidateData?.hours) {
+      if (varidateData?.date) {
+        let dayIndex = varidateData?.date?.getDay();
+        if (dayIndex == 0) {
+          setStartAndEndHours("Su");
+        } else if (dayIndex == 1) {
+          setStartAndEndHours("Mo");
+        } else if (dayIndex == 2) {
+          setStartAndEndHours("Tu");
+        } else if (dayIndex == 3) {
+          setStartAndEndHours("We");
+        } else if (dayIndex == 4) {
+          setStartAndEndHours("Th");
+        } else if (dayIndex == 5) {
+          setStartAndEndHours("Fr");
+        } else if (dayIndex == 6) {
+          setStartAndEndHours("Sa");
+        }
+      }
+    }
+  }, [varidateData]);
+
+
   const toggleFirstAvaliableSlot = (slot) => {
     // setStaff(props);
     let newSelectedCountry;
@@ -185,7 +267,6 @@ export default function SelectDate() {
             toast.error("No schedules available!");
             navigate(-1);
           }
-          console.log("all data", res);
           let activeSchedule = res.payload?.schedule?.find(
             (item) => item?.status == "active"
           );
@@ -279,7 +360,6 @@ export default function SelectDate() {
       let day = activeScheduleData?.days?.find(
         (item) => item?.day == getDayInWordFromIndex(date)
       );
-      console.log(getDayInWordFromIndex(date), "dateas slot")
       const slots = generateTimeSlots(
         selectedHours?.time * 60,
         day?.start,
@@ -301,7 +381,6 @@ export default function SelectDate() {
 
   useEffect(() => {
     let slot = getFirstAvailableSlot(activeDates);
-    console.log(slot, "slot")
     setFirstAvailableSlot(slot);
   }, [
     activeDates,
@@ -336,11 +415,16 @@ export default function SelectDate() {
     }
   }, [activeDates]);
 
-  const [followLoading, setFollowLoading] = useState(false);
+
+  useEffect(() => {
+    if (UserData?._id) {
+      dispatch(HandleUpdateFollowers(UserData?._id))
+    }
+  }, []);
 
   const isFollowed = useCallback(
     (id) => {
-      let result = UserData?.followers?.find((item) => item?.userId === id);
+      let result = UserData?.followers?.find((item) => item?.userId === id || item?._id === id);
       if (result) {
         return true;
       } else {
@@ -391,10 +475,8 @@ export default function SelectDate() {
 
   if (loading) {
     return (
-      <div className="main-container">
-        <div className="w-full mx-auto flex flex-col justify-center items-center">
-          Please wait...
-        </div>
+      <div className="flex justify-center align-center items-center h-[50vh]">
+        <Loading />
       </div>
     );
   }
@@ -409,52 +491,123 @@ export default function SelectDate() {
 
   if (!activeDates?.length) {
     return (
-      <div className="main-container">
-        <div className="w-full mx-auto flex flex-col justify-center items-center">
-          <div className="w-full mx-auto flex flex-row justify-between items-start mt-2 mb-3">
-            <div className="flex flex-col items-center justify-center">
-              <div>
-                <span className="text-[18px] text-[#040C50] font-extrabold">
-                  VAI
-                  <span className="text-[18px] text-[#040C50] font-semibold">
-                    RIFY ID
-                  </span>
-                </span>
-              </div>
-              <div>
-                <span className="text-[15px] text-[#040C50] font-bold uppercase">
+      <div className="container">
+        <div className="md:min-h-[calc(100vh-350px)] min-h-[calc(100vh-305px)]">
+          <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+            <PageTitle title={"VAIRIDATE"} />
+          </div>
+          <div className="w-full mx-auto flex flex-col justify-center items-center">
+            <div className="w-full flex flex-row sm:justify-around justify-between items-end mt-[80px] p-[16px] bg-[#FFFFFF0A] rounded-[16px]">
+              <div className="flex flex-col items-center justify-center sm:min-w-[120px] min-w-[80px]">
+                <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+                  VAIRIFY ID
+                </div>
+                <div className="font-bold sm:text-lg text-base text-white uppercase">
                   {companionData?.vaiID}
-                </span>
+                </div>
+              </div>
+              <div className=" relative">
+                <div
+                  className="sm:h-[120px] h-[80px] sm:w-[120px] w-[80px] rounded-full mt-[-74px] relative flex justify-center"
+                >
+                  <img
+                    className="sm:w-[120px] w-[80px] sm:h-[120px] h-[80px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
+                    src={
+                      companionData?.profilePic
+                        ? import.meta.env.VITE_APP_S3_IMAGE +
+                        `/${companionData?.profilePic}`
+                        : companionData?.gender === "Male"
+                          ? "/images/male.png"
+                          : "/images/female.png"
+                    }
+                    alt="profile photo"
+                  />
+                  <div
+                    style={{ right: "0px", bottom: "0px", zIndex: "1" }}
+                    className="absolute"
+                    onClick={() => {
+                      followLoading ? null : handleFollow();
+                    }}
+                  >
+                    {followLoading ? (
+                      <div
+                        className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        role="status"
+                      ></div>
+                    ) : (
+                      <img
+                        src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
+                        alt="Intimate Massage Icon Second"
+                        className={`${isFollowed(companionData?._id) ? "" : "grayscale"
+                          }`}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="flex-col flex justify-center items-center mt-[24px]">
+                  <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+                    Name
+                  </div>
+                  <span className="font-bold sm:text-lg text-base text-white">
+                    {companionData?.name}
+                  </span>
+                </div>
+              </div>
+              <div className="leading-[18px] sm:min-w-[120px] min-w-[80px] flex flex-col justify-center items-center">
+                <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+                  TruRevu
+                </div>
+                <div className="flex justify-center items-center gap-1">
+                  <div className="sm:text-lg text-base text-white font-bold ">
+                    {companionData?.avgRating ?? 0}
+                  </div>
+                  <img src="/images/home/star.svg" alt="star" />
+                </div>
               </div>
             </div>
-            <div className="w-[120px] relative">
+
+            <div className="w-full mx-auto flex flex-col justify-center items-center my-[48px] text-base font-medium text-white">
+              No active dates available!
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container">
+      <div className="w-full">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={"VAIRIDATE"} />
+        </div>
+        <div className="w-full flex flex-row sm:justify-around justify-between items-end mt-[102px] p-[16px] bg-[#FFFFFF0A] rounded-[16px]">
+          <div className="flex flex-col items-center justify-center sm:min-w-[120px] min-w-[80px]">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              VAIRIFY ID
+            </div>
+            <div className="font-bold sm:text-lg text-base text-white uppercase">
+              {companionData?.vaiID}
+            </div>
+          </div>
+          <div className=" relative">
+            <div
+              className="sm:h-[120px] h-[80px] sm:w-[120px] w-[80px] rounded-full mt-[-74px] relative flex justify-center"
+            >
+              <img
+                className="sm:w-[120px] w-[80px] sm:h-[120px] h-[80px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
+                src={
+                  companionData?.profilePic
+                    ? import.meta.env.VITE_APP_S3_IMAGE +
+                    `/${companionData?.profilePic}`
+                    : companionData?.gender === "Male"
+                      ? "/images/male.png"
+                      : "/images/female.png"
+                }
+                alt="profile"
+              />
               <div
-                style={{ left: "10px", bottom: "65px" }}
-                className="absolute w-full h-full"
-              >
-                <img
-                  src={
-                    companionData?.profilePic
-                      ? import.meta.env.VITE_APP_S3_IMAGE +
-                      `/${companionData?.profilePic}`
-                      : companionData?.gender === "Male"
-                        ? "/images/male.png"
-                        : "/images/female.png"
-                  }
-                  // src={
-                  //   companionData?.profilePic
-                  //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                  //       `/${companionData?.profilePic}`
-                  //     : companionData?.gender === "Male"
-                  //     ? "/images/male.png"
-                  //     : "/images/female.png"
-                  // }
-                  className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
-                  alt="Intimate Massage"
-                />
-              </div>
-              <div
-                style={{ right: "0px", top: "25px" }}
+                style={{ right: "0px", bottom: "0px", zIndex: "1" }}
                 className="absolute"
                 onClick={() => {
                   followLoading ? null : handleFollow();
@@ -475,172 +628,38 @@ export default function SelectDate() {
                 )}
               </div>
             </div>
-
-
-            <div>
-              <div>
-                <span className="text-[18px] text-[#040C50] font-bold">
-                  TruRevu
-                </span>
+            <div className="flex-col flex justify-center items-center mt-[24px]">
+              <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+                Name
               </div>
-              <div className="flex flex-row justify-center items-center">
-                {Array.from(
-                  { length: companionData?.avgRating || 0 },
-                  (_, index) => index
-                )?.map((rating) => (
-                  <FontAwesomeIcon
-                    icon={faStar}
-                    color="#E1AB3F"
-                    className="text-[10px] margin-right-5"
-                  />
-                ))}
-                {Array.from(
-                  { length: 5 - Math.floor(companionData?.avgRating || 0) },
-                  (_, index) => index
-                )?.map((rating) => (
-                  <FontAwesomeIcon
-                    icon={faStar}
-                    color="#111"
-                    className="text-[10px] margin-right-5"
-                  />
-                ))}
-                <span className="text-[15px] text-[#040C50] font-bold">
-                  {companionData?.avgRating}
-                </span>
+              <span className="font-bold sm:text-lg text-base text-white">
+                {companionData?.name}
+              </span>
+            </div>
+          </div>
+          <div className="leading-[18px] sm:min-w-[120px] min-w-[80px] flex flex-col justify-center items-center">
+            <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
+              TruRevu
+            </div>
+            <div className="flex justify-center items-center gap-1">
+              <div className="sm:text-lg text-base text-white font-bold ">
+                {companionData?.avgRating ?? 0}
               </div>
+              <img src="/images/home/star.svg" alt="star" />
             </div>
           </div>
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-2">
-            <span className="font-bold text-[24px]">{companionData?.name}</span>
-          </div>
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-8">
-            <span className="font-bold text-[20px]">
-              No active dates available!
-            </span>
-          </div>
         </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className="main-container">
-      <div className="w-full mx-auto flex flex-col justify-center items-center">
-        <div className="w-full mx-auto flex flex-row justify-between items-start mt-2 mb-3">
-          <div className="flex flex-col items-center justify-center">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold">
-                  RIFY ID
-                </span>
-              </span>
-            </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold uppercase">
-                {companionData?.vaiID}
-              </span>
-            </div>
-          </div>
-          <div className="w-[120px] relative">
-            <div
-              style={{ left: "10px", bottom: "65px" }}
-              className="absolute w-full h-full"
-            >
-              <img
-                className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white"
-                src={
-                  companionData?.profilePic
-                    ? import.meta.env.VITE_APP_S3_IMAGE +
-                    `/${companionData?.profilePic}`
-                    : companionData?.gender === "Male"
-                      ? "/images/male.png"
-                      : "/images/female.png"
-                }
-                // src={
-                //   companionData?.profilePic
-                //     ? import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                //       `/${companionData?.profilePic}`
-                //     : companionData?.gender === "Male"
-                //     ? "/images/male.png"
-                //     : "/images/female.png"
-                // }
-                alt="Intimate Massage"
-              />
-            </div>
-            <div
-              style={{ right: "0px", top: "25px", zIndex: "999" }}
-              className="absolute"
-              onClick={() => {
-                followLoading ? null : handleFollow();
-              }}
-            >
-              {followLoading ? (
-                <div
-                  className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                  role="status"
-                ></div>
-              ) : (
-                <img
-                  src={import.meta.env.BASE_URL + "images/SugarIcon2.png"}
-                  alt="Intimate Massage Icon Second"
-                  className={`${isFollowed(companionData?._id) ? "" : "grayscale"
-                    }`}
-                />
-              )}
-            </div>
-          </div>
-          <div>
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold">
-                TruRevu
-              </span>
-            </div>
-            <div className="flex flex-row justify-center items-center">
-              {Array.from(
-                { length: companionData?.avgRating || 0 },
-                (_, index) => index
-              )?.map((rating) => (
-                <FontAwesomeIcon
-                  icon={faStar}
-                  color="#E1AB3F"
-                  className="text-[10px] margin-right-5"
-                />
-              ))}
-              {Array.from(
-                { length: 5 - Math.floor(companionData?.avgRating || 0) },
-                (_, index) => index
-              )?.map((rating) => (
-                <FontAwesomeIcon
-                  icon={faStar}
-                  color="#111"
-                  className="text-[10px] margin-right-5"
-                />
-              ))}
-              <span className="text-[15px] text-[#040C50] font-bold">
-                {companionData?.avgRating}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center mt-2">
-          <span className="font-bold text-[24px] capitalize">
-            {companionData?.name}
-          </span>
-        </div>
-        <div className="inner-content-part-country w-full mx-auto overflow-x-hidden">
-          <div className="w-full mx-auto flex flex-row justify-around items-center mt-4">
+        <div className="w-full">
+          <div className="w-full mx-auto flex flex-row justify-around items-center sm:mt-[48px] mt-[24px]">
             {firstAvailableSlot?.slot ? (
-              <div>
-                <div
+              <div className="max-w-[500px] w-full mx-auto">
+                <Button
                   onClick={() => toggleFirstAvaliableSlot(firstAvailableSlot)}
-                  className="px-7 rounded-[10px] bg-gradient-to-t from-lime-500 to-emerald-500 border-2 border-solid border-[#707076] cursor-pointer"
-                >
-                  <span className="font-bold text-[20px] text-[#060b44]">
-                    1st Available
-                  </span>
-                </div>
-                <p className="mt-2 text-">
+                  className="secondary-btn !bg-[#FFFFFF29] w-full"
+                  text='Book 1st Available'
+                />
+                <p className="mt-2 text-center text-sm text-white font-normal opacity-[0.7]">
                   {moment(firstAvailableSlot.date).format("DD/MM/YYYY")}{" "}
                   {firstAvailableSlot.slot}
                 </p>
@@ -659,9 +678,8 @@ export default function SelectDate() {
                         <div onClick={() => toggle("Schedule")} className='px-4'><span className='font-extrabold text-[24px] text-[#02227E]'>Schedule</span></div>
                     }  */}
           </div>
-          <div className="w-[100vw]"></div>
-          <div className="w-full mx-auto flex flex-row justify-around items-center flex-wrap-nowrap mt-4">
-            <div className="max-w-[254px] w-[100%] px-2 option-selected">
+          <div className="w-full mx-auto flex sm:mt-[48px] mt-[24px] sm:gap-[24px] gap-[16px]">
+            <div className="w-full ">
               <SelectBox
                 size={"h-[40px]"}
                 options={
@@ -676,17 +694,15 @@ export default function SelectDate() {
                   handleChangeSelect(e, setSelectedType);
                   setSelectedCountry(null);
                 }}
-                className={"rounded-full"}
-                shadowNone="shadow-none"
-                borderWidth="border-none"
-                backgroundColor={"bg-gradient-to-b from-[#02227E] to-[#0247FF]"}
-                textSize={"18px"}
+                className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px] h-[54px]"
+                textAlign={"text-left"}
+                rounded={"rounded-2xl"}
                 fontWeight={"font-bold"}
                 textColor={"text-white"}
-                arrowColor={"text-white"}
+                textSize={"text-[14px]"}
               />
             </div>
-            <div className="max-w-[254px] w-[100%] px-2 option-selected">
+            <div className="w-full">
               <SelectBox
                 size={"h-[40px]"}
                 options={servicesOptions}
@@ -700,18 +716,17 @@ export default function SelectDate() {
                     // "servicesName"
                   )
                 }
-                className={"rounded-full"}
-                borderWidth="border-none"
-                backgroundColor={"bg-gradient-to-b from-[#02227E] to-[#0247FF]"}
-                textSize={"18px"}
+                className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px] h-[54px]"
+                textAlign={"text-left"}
+                rounded={"rounded-2xl"}
                 fontWeight={"font-bold"}
                 textColor={"text-white"}
-                arrowColor={"text-white"}
+                textSize={"text-[14px]"}
               />
             </div>
           </div>
-          <div className="w-full mx-auto flex flex-row justify-around items-center flex-wrap-nowrap mt-2">
-            <div className="max-w-[254px] w-[100%] mb-3 px-2 option-selected">
+          <div className="w-full mx-auto flex sm:mt-[24px] mt-[16px] sm:gap-[24px] gap-[16px]">
+            <div className="w-full">
               <SelectBox
                 size={"h-[40px]"}
                 options={hoursOptions}
@@ -719,19 +734,18 @@ export default function SelectDate() {
                 onChange={(e) =>
                   handleChangeSelect(e, setSelectedHours, true, hours, "value")
                 }
-                className={"rounded-full"}
-                borderWidth="border-none"
-                backgroundColor={"bg-gradient-to-b from-[#02227E] to-[#0247FF]"}
-                textSize={"18px"}
+                className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px] h-[54px]"
+                textAlign={"text-left"}
+                rounded={"rounded-2xl"}
                 fontWeight={"font-bold"}
                 textColor={"text-white"}
-                arrowColor={"text-white"}
+                textSize={"text-[14px]"}
               />
             </div>
-            <div className="max-w-[254px] w-[100%] mb-3 px-2 option-selected relative rounded-2xl w-full  bg-gradient-to-b from-[#02227E] to-[#0247FF] border-none   border-2 border-[#fff] custom-select-dropdown">
+            <div className="w-full select-arrow ">
               <select
                 disabled={selectedType !== "Outcall"}
-                className="custom-select-btn appearance-none block w-full  px-4 pr-8 h-[40px] shadow leading-tight rounded-2xl focus:outline-none focus:shadow-outline h-[100%] bg-transparent text-white undefined 18px font-bold   undefined focus:outline-none focus:ring-0 text-center"
+                className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
                 onChange={(e) => {
                   e.target.value === "add-new-addr"
                     ? navigate("/manage-incall-addresses")
@@ -744,12 +758,13 @@ export default function SelectDate() {
                     );
                 }}
               >
-                <option selected={!selectedCountry}>Select Address</option>
+                <option selected={!selectedCountry} className="text-black">Select Address</option>
                 {!UserData?.incallAddresses.length && (
                   <option
                     value={"add-new-addr"}
                     selected={false}
                     onClick={() => navigate("/manage-incall-addresses")}
+                    className="text-black"
                   >
                     Add new address
                   </option>
@@ -759,22 +774,12 @@ export default function SelectDate() {
                     selected={addr?._id === selectedCountry?._id}
                     value={addr?._id}
                     key={addr?._id}
+                    className="text-black"
                   >
                     {addr.addressLine1}
                   </option>
                 ))}
               </select>
-              <div
-                className="border-none border-[#CFCFCF] border-t-0 border-r-0 border-b-0 pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 bg-transparent"
-              // style="top: 2px;"
-              >
-                <svg
-                  className="w-8 h-8 fill-current text-blue-500 text-white undefined"
-                  viewBox="0 0 20 20"
-                >
-                  <path fillRule="evenodd" d="M10 12l-6-6h12l-6 6z"></path>
-                </svg>
-              </div>
               {/* <SelectBox
               size={"h-[40px]"}
               options={UserData?.incallAddresses}
@@ -798,7 +803,11 @@ export default function SelectDate() {
             /> */}
             </div>
           </div>
-          <div className="w-full mx-auto mt-4 calendar-design">
+
+          <div className="text-center text-xl font-medium text-white sm:mt-[48px] mt-[24px]">
+            Select Date
+          </div>
+          <div className="w-full mx-auto mt-[24px] calendar-design max-w-[550px] ">
             <Calendar
               onChange={setDate}
               value={date}
@@ -810,12 +819,8 @@ export default function SelectDate() {
               tileDisabled={tileDisabled}
             />
           </div>
-          <div className="w-full mx-auto flex flex-col justify-center items-center mt-4">
-            <p className="text-center">
-              <span className="bold">Selected Date:</span> {date.toDateString()}
-            </p>
-          </div>
-          <div className="w-full mx-auto flex items-center justify-center mt-5">
+          <p className="text-center text-sm text-white mt-[24px]">Selected Date:{date.toDateString()}</p>
+          {/* <div className="w-full mx-auto flex items-center justify-center mt-5">
             <div className="w-[154px]">
               <Button
                 onClick={() => navigateToSelectDate()}
@@ -824,6 +829,88 @@ export default function SelectDate() {
                   "h-[45px] font-bold text-[18px] text-white rounded-[25px] border-2 border-white bg-grandient-to-b from-[#02227E] to-[#0247FF]"
                 }
               />
+            </div>
+          </div> */}
+
+          <div className="text-center text-lg font-medium text-white sm:mt-[48px] mt-[24px]">
+            Select Slot
+          </div>
+
+          <div>
+            <div className="mx-auto flex flex-col justify-center items-center form-field-container w-full">
+
+              <div className="mt-[24px] w-full">
+                <div className="w-full grid grid-cols-2 sm:gap-[24px] gap-[16px]">
+                  {slots?.map((slot, index) => (
+                    <div key={index} className="">
+                      {/* {staff == slot ? ( */}
+                      {/* <div className="w-full mx-auto flex flex-row justify-center items-center">
+                            <Button
+                              onClick={() => handleClick("")}
+                              text={slot}
+                              bgColor="[#01195C]"
+                              className={
+                                "bg-[#01195C] border-2 border-[#02227E] rounded-md font-bold text-[18px] text-white px-4 h-[60px]"
+                              }
+                            />
+                            <Button
+                              onClick={() => navigateToServicesRates()}
+                              text="VAIRIDATE>>"
+                              className={
+                                "bg-[#05B7FD] border-2 border-[#02227E] rounded-md font-bold text-[18px] text-[#01195C] px-2 h-[60px]"
+                              }
+                            />
+                        </div> */}
+                      {/* ) : ( */}
+                      <Button
+                        onClick={() => handleClick(slot)}
+                        text={slot}
+                        className={'secondary-btn !bg-[#FFFFFF14] focus:!bg-[#405FC4] hover:!bg-[#405FC4]'}
+                      />
+                      {/* )} */}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mb-4 mt-4 px-4 ">
+                  {/* <div className="w-full mx-auto flex flex-row justify-center items-center mt-2">
+                    <span className="font-bold text-[20px]">
+                      {moment(varidateData?.date).format("dddd DD/MM/YYYY")}
+                    </span>
+                  </div> */}
+                  {staff != "" && (
+                    <div className="w-full">
+                      <div className="text-center text-sm text-white mt-[24px]">
+                        Selected slot: {`${staff}`}
+                      </div>
+                      <div className="text-center text-sm text-white mt-2">
+                        Escort {varidateData?.type}
+                      </div>
+                      <div className="mx-auto flex flex-row justify-center items-center gap-[8px] mt-2">
+                        <div className="text-center text-base text-white opacity-[0.7]">
+                          Agreed Price:
+                        </div>
+                        <Button
+                          // onClick={() => navigateToSelectTime()}
+                          text={
+                            varidateData?.hours?.[
+                            varidateData?.type?.toLowerCase()
+                            ] +
+                            " " +
+                            varidateData?.hours?.currency
+                          }
+                          className={'!w-fit px-4 py-[4px] !bg-[#FFFFFF29] secondary-btn'}
+                          size={'32px'}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="max-w-[500px] w-full mx-auto mb-[48px]">
+                  <Button onClick={() => navigateToServicesRates()} text={'Save'} size={'48px'} className={'mt-[20px]'} />
+                </div>
+              </div>
             </div>
           </div>
         </div>

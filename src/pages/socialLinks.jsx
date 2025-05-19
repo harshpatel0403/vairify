@@ -3,11 +3,19 @@ import SocialServices from "../services/SocialServices";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import Loading from "../components/Loading/Index";
+import PageTitle from "../components/PageTitle";
 
-const SocialLinks = () => {
-  const { state } = useLocation();
+const SocialLinks = (props) => {
+  const location = useLocation();
+  const state = props?.state || location?.state;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [isFromProp, setIsFromProp] = useState(true);
+  useEffect(() => {
+    const fromProps = props?.state;
+    setIsFromProp(fromProps);
+  }, [props?.state]);
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
   const targetUserId = state == null ? UserDetails?._id : state?._id;
@@ -34,45 +42,61 @@ const SocialLinks = () => {
 
   if (loading) {
     return (
-      <div className="h-full min-h-[calc(100vh-230px)] flex items-center justify-center">
-        <div className="text-black h-full flex justify-center items-center">
-          <p className="text-[20px] text-bold">Loading...</p>
-        </div>
+      <div className="flex justify-center items-center mt-10">
+        <Loading />
       </div>
     );
   }
 
   return (
-    <div className="main-container px-3 py-6 pb-6 gap-2 flex flex-col items-center">
-      <div className="w-[100vw] flex flex-col justify-center items-center bg-[#797E9E] h-[40px]">
-        <p className="font-bold text-[26px] text-[#040C50]">Follow Me</p>
-      </div>
-
-      {data[0]?.message ? (
-        <div className="text-[32px] text-[#4b4b4b] font-bold text-center h-[500px] flex flex-col justify-center items-center">
-          <div className="image-not">
-            <img src="/images/notFound.png" alt="logo" />
+    <div className={`container ${!isFromProp ? "mb-[48px]" : "lg:p-0 "}`}>
+      <div>
+        {!isFromProp &&
+          <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+            <PageTitle title={"Follow Me"} />
           </div>
-          Result not found
-        </div>
-      ) : (
-        <div className="cardList w-full mt-5">
-          {data?.map((list, index) => (
-            <div key={index} className="cardData">
-              <div className="cardIcon">
-                <img src={"/images/vairify-logo-icon.png"} alt="logo" />
-              </div>
-              <div className="cardLink">
-                {console.log(list?.socialUrl)}
-                <a href={list?.socialUrl} target="_blank">{list?.socialUrl}</a>
-              </div>
-              <div className="sendIcon">
-                <img src={"/images/send-vector.png"} alt="logo" />
-              </div>
+        }
+      </div>
+      <div className=" lg:mt-0 mt-[24px]">
+        {data[0]?.message ? (
+          <div className="text-[24px] text-[#ffffff] font-medium text-center h-[500px] flex flex-col justify-center items-center">
+            <div className="image-not">
+              <img src="/images/home/notfound.svg" alt="logo" />
             </div>
-          ))}
-        </div>
-      )}
+            Result not found
+          </div>
+        ) : (
+          <div className="flex flex-col gap-[16px]">
+            {data?.map((list, index) => (
+              <div key={index} className="flex items-center gap-[16px] w-full bg-[#919EAB33] p-[16px] rounded-[8px]">
+                <div className="w-fit">
+                  {/* <img src={"/images/vairify-logo-icon.png"} alt="logo" /> */}
+                  <img
+                    src={
+                      list.socialAppName.toLowerCase() === 'facebook'
+                        ? '/images/home/facebook-logo.svg'
+                        : list.socialAppName.toLowerCase() === 'instagram'
+                          ? '/images/home/instagram-logo.svg'
+                          : list.socialAppName.toLowerCase() === 'twitter'
+                            ? '/images/home/twitter-logo.svg'
+                            : list.socialAppName.toLowerCase() === 'whatsapp'
+                              ? '/images/home/whatsapp-logo.svg'
+                              : '/images/home/vairify-social.svg'
+                    }
+                    alt={list.socialAppName}
+                    className="min-w-[52px] min-h-[52px] w-[52px] h-[52px]  object-cover rounded-full"
+                  />
+                </div>
+                <div className="">
+                  <p className="text-white font-medium text-base">{list.socialAppName}</p>
+                  <a href={list?.socialUrl} target="_blank" className="text-[#919EAB] text-xs font-normal">{list?.socialUrl}</a>
+                </div>
+                
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

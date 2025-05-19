@@ -42,15 +42,6 @@ export default function MyVairipayUserQR() {
                       ? "/images/male.png"
                       : "/images/female.png"
                 }
-                // src={
-                //   state?.UserRequest?.requester?.profilePic !== ""
-                //     ? `${import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL}/${
-                //         state?.UserRequest?.requester?.profilePic
-                //       }`
-                //     : state?.UserRequest?.requester?.gender === "Male"
-                //     ? "/images/male.png"
-                //     : "/images/female.png"
-                // }
                 alt={state?.UserRequest?.requester?.name}
               />
             </div>
@@ -179,17 +170,17 @@ export default function MyVairipayUserQR() {
                   <img
                     className="w-[126px] h-[129px] pt-1"
                     src={`${import.meta.env.VITE_APP_S3_IMAGE
-                    }/${state?.App?.qrCode}`}
-                  alt="Vairipay Request QR Logo"
-                  onError={(e) => {
-                    console.error("Error loading image:", e);
-                  }}
-                    // src={`${import.meta.env.VITE_APP_API_USER_VARIPAYS_IMAGE_URL
-                    //   }/${state?.App?.qrCode}`}
-                    // alt="Vairipay Request QR Logo"
-                    // onError={(e) => {
-                    //   console.error("Error loading image:", e);
-                    // }}
+                      }/${state?.App?.qrCode}`}
+                    alt="Vairipay Request QR Logo"
+                    onError={(e) => {
+                      console.error("Error loading image:", e);
+                    }}
+                  // src={`${import.meta.env.VITE_APP_API_USER_VARIPAYS_IMAGE_URL
+                  //   }/${state?.App?.qrCode}`}
+                  // alt="Vairipay Request QR Logo"
+                  // onError={(e) => {
+                  //   console.error("Error loading image:", e);
+                  // }}
                   />
                 </div>
                 <div className="mt-3">

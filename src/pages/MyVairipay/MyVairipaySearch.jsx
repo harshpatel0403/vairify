@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import SearchBox from "../../components/SearchBox";
 import AuthService from "../../services/AuthService";
 import Loading from "../../components/Loading/Index";
+import Header from "../../components/Header/Header";
+import PageTitle from "../../components/PageTitle";
 
 export default function MyVairipaySearch() {
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -77,78 +79,140 @@ export default function MyVairipaySearch() {
   };
 
   return (
-    <div className="main-container form-field-container pb-0 flex flex-col justify-center pt-2 w-full max-w-[510px]">
-      <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
-        <div className="w-full mx-auto flex items-center justify-center my-2">
-          <img
-            src={import.meta.env.BASE_URL + "images/VairipaySearchLogo.png"}
-            alt="Vairipay Search Logo"
-          />
-        </div>
-        {/* <select
-          className="w-[100%] p-2 rounded-xl my-2 font-bold text-[21px] text-[#6a7bb3]"
-          style={{ color: "rgba(2, 34, 126, 0.60) !important;" }}
-          value={selectedCountry}
-          onChange={handleSelectChange}
-        >
-          <option value="">Search Country (Any)</option>
-          {countries?.map((country) => (
-            <option key={country._id} value={country.name}>
-              {country.name}
-            </option>
-          ))}
-        </select> */}
-        <div className="w-full input-serach-veiripay">
-          <SearchBox
-            onSearch={handleSearch}
-            placeholder="Search Varipay"
-            bgColor={"gray-100"}
-            className={
-              "w-[100%] max-w-[297px] rounded-lg border-0 border-[#D9D9D9] text-[30px] font-bold text-[#02227E]"
-            }
-          />
-        </div>
-        <div className="social-meadia-part h-auto overflow-x-hidden">
-          {filterdVaripays ? (
-            filterdVaripays.length !== 0 ? (
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-5 mb-3">
-                {filterdVaripays?.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      onClick={() => handleSubmit(item)}
-                      className="bg-[#3760CB] rounded-[30px] border-2 border-[#02227E] p-[12px] w-[90px] h-[90px] flex items-center justify-center overflow-hidden"
-                    >
-                      <div className="bg-[#fff] w-[65px] h-[45px] rounded-[4px] text-center flex items-center p-2">
-                        <img
-                          className="max-h-[36px] mx-auto"
-                          src={
-                            import.meta.env
-                              .VITE_APP_API_USER_VARIPAY_IMAGE_URL +
-                            `/${item?.image}`
-                          }
-                          alt={item.name}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="text-[32px] text-[#4b4b4b] font-bold text-center flex flex-col justify-center items-center">
-                <div className="image-not">
-                  <img src="/images/notFound.png" alt="logo" />
-                </div>
-                Result not found
-              </div>
-            )
-          ) : (
-            <div className="flex items-center justify-center h-80">
-              <Loading />
-            </div>
-          )}
+    <>
+      <div className="container">
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={"My Mpay"} />
         </div>
       </div>
-    </div>
+      <div className="container mb-[48px]">
+        <div className="main-container form-field-container pb-0 flex flex-col justify-center pt-2 w-full">
+          <div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
+            <div className="w-full max-w-[840px] mx-auto input-serach-veiripay">
+              <SearchBox
+                onSearch={handleSearch}
+                placeholder="Search"
+                className={
+                  "w-[100%] bg-transparent rounded-lg border-1 border-[#919EAB33] text-[16px] font-noemal text-white"
+                }
+              />
+            </div>
+            <div className="social-meadia-part h-auto overflow-x-hidden">
+              {filterdVaripays ? (
+                filterdVaripays.length !== 0 ? (
+                  <div className="grid grid-cols-3 sm:grid-cols-5 sm:gap-[24px] gap-[16px] mt-5 mb-3">
+                    {filterdVaripays?.map((item, index) => {
+                      return (
+                        <div
+                          key={index}
+                          onClick={() => handleSubmit(item)}
+                        >
+                          <div className="bg-[#fff] cursor-pointer sm:max-w-[220px] max-w-[100px] sm:h-[100px] h-[50px] w-full rounded-[8px] text-center flex items-center p-2">
+                            <img
+                              className="max-h-[36px] mx-auto"
+                              src={
+                                import.meta.env
+                                  .VITE_APP_API_USER_VARIPAY_IMAGE_URL +
+                                `/${item?.image}`
+                              }
+                              alt={item.name}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-[32px] text-[#4b4b4b] font-bold text-center flex flex-col justify-center items-center">
+                    <div className="image-not">
+                      <img src="/images/notFound.png" alt="logo" />
+                    </div>
+                    Result not found
+                  </div>
+                )
+              ) : (
+                <div className="flex items-center justify-center h-80">
+                  <Loading />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
+
+{/* <div className="main-container form-field-container pb-0 flex flex-col justify-center pt-2 w-full max-w-[510px]">
+<div className="w-full mx-auto flex flex-col justify-center items-center pt-2">
+  <div className="w-full mx-auto flex items-center justify-center my-2">
+    <img
+      src={import.meta.env.BASE_URL + "images/VairipaySearchLogo.png"}
+      alt="Vairipay Search Logo"
+    />
+  </div>
+  <select
+    className="w-[100%] p-2 rounded-xl my-2 font-bold text-[21px] text-[#6a7bb3]"
+    style={{ color: "rgba(2, 34, 126, 0.60) !important;" }}
+    value={selectedCountry}
+    onChange={handleSelectChange}
+  >
+    <option value="">Search Country (Any)</option>
+    {countries?.map((country) => (
+      <option key={country._id} value={country.name}>
+        {country.name}
+      </option>
+    ))}
+  </select>
+  <div className="w-full input-serach-veiripay">
+    <SearchBox
+      onSearch={handleSearch}
+      placeholder="Search Varipay"
+      bgColor={"gray-100"}
+      className={
+        "w-[100%] max-w-[297px] rounded-lg border-0 border-[#D9D9D9] text-[30px] font-bold text-[#02227E]"
+      }
+    />
+  </div>
+  <div className="social-meadia-part h-auto overflow-x-hidden">
+    {filterdVaripays ? (
+      filterdVaripays.length !== 0 ? (
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-5 mb-3">
+          {filterdVaripays?.map((item, index) => {
+            return (
+              <div
+                key={index}
+                onClick={() => handleSubmit(item)}
+                className="bg-[#3760CB] rounded-[30px] border-2 border-[#02227E] p-[12px] w-[90px] h-[90px] flex items-center justify-center overflow-hidden"
+              >
+                <div className="bg-[#fff] w-[65px] h-[45px] rounded-[4px] text-center flex items-center p-2">
+                  <img
+                    className="max-h-[36px] mx-auto"
+                    src={
+                      import.meta.env
+                        .VITE_APP_API_USER_VARIPAY_IMAGE_URL +
+                      `/${item?.image}`
+                    }
+                    alt={item.name}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-[32px] text-[#4b4b4b] font-bold text-center flex flex-col justify-center items-center">
+          <div className="image-not">
+            <img src="/images/notFound.png" alt="logo" />
+          </div>
+          Result not found
+        </div>
+      )
+    ) : (
+      <div className="flex items-center justify-center h-80">
+        <Loading />
+      </div>
+    )}
+  </div>
+</div>
+</div> */}

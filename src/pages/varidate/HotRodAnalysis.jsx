@@ -8,8 +8,9 @@ import VaridateService from "../../services/VaridateServices";
 import { toast } from "react-toastify";
 import { HandleUpdateFollowers } from "../../redux/action/Auth";
 import MyVairifyService from "../../services/MyVairifyService";
+import Loading from "../../components/Loading/Index";
 
-export default function HotRodAnalysis() {
+export default function HotRodAnalysis(props) {
   const [Puncutalityrating, setPuncutalityRating] = useState(0);
   const [Etequetterating, setEtequetteRating] = useState(0);
   const [Attituderating, setAttitudeRating] = useState(0);
@@ -27,7 +28,7 @@ export default function HotRodAnalysis() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const appointment = location.state;
+  const appointment = props?.state || location.state;
 
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
 
@@ -46,12 +47,12 @@ export default function HotRodAnalysis() {
   let overallRating =
     userType === "client-hobbyist"
       ? (Puncutalityrating +
-          incallAtmos +
-          Attituderating +
-          service +
-          appearence +
-          communication) /
-        6
+        incallAtmos +
+        Attituderating +
+        service +
+        appearence +
+        communication) /
+      6
       : (Puncutalityrating + Etequetterating + Attituderating) / 3;
   const handleSubmit = async () => {
     if (!Puncutalityrating || !Attituderating || !message) {
@@ -137,438 +138,288 @@ export default function HotRodAnalysis() {
   };
 
   return (
-    <div className="main-container " style={{ height: "calc(100vh - 167px)" }}>
-      <div className="w-full mx-auto flex flex-col items-center h-full">
-        <div className="w-full mx-auto flex flex-row justify-between items-start">
-          <div className="flex flex-col items-center justify-center leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-extrabold font-Roboto-Serif">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-semibold font-Roboto-Serif">
-                  RIFY ID
-                </span>
-              </span>
-            </div>
-            <div>
-              <span className="text-[15px] text-[#040C50] font-bold uppercase">
-                {
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.vaiID
-                }
-              </span>
-            </div>
-          </div>
-          <div className="w-[120px] relative">
+    <div className="max-h-[600px]">
+      <h3 className="text-[#212B36] text-center font-semibold text-[20px] pb-[24px]">Post Review</h3>
+      <div className="flex items-center justify-center mb-[24px] relative w-fit mx-auto">
+        <img
+          src={
+            appointment?.[
+              userType === "client-hobbyist" ? "companionId" : "clientId"
+            ]?.profilePic
+              ?
+              import.meta.env.VITE_APP_S3_IMAGE +
+              `/${appointment?.[
+                userType === "client-hobbyist"
+                  ? "companionId"
+                  : "clientId"
+              ]?.profilePic
+              }`
+              : appointment?.[
+                userType === "client-hobbyist"
+                  ? "companionId"
+                  : "clientId"
+              ]?.gender === "Male"
+                ? "/images/male.png"
+                : "/images/female.png"
+          }
+          alt="Hot Rod"
+          className="w-[100px] h-[100px] rounded-full overflow-hidden object-cover"
+        />
+        <div className=" absolute bottom-0 right-0 cursor-pointer" onClick={() => {
+          followLoading ? null : handleFollow();
+        }}>
+          {followLoading ? (
             <div
-              style={{ left: "0px", bottom: "65px" }}
-              className="absolute w-full h-full rounded-full"
-            >
-              <img
-                src={
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.profilePic
-                    ?
-                    import.meta.env.VITE_APP_S3_IMAGE +
-                    `/${
-                      appointment?.[
-                        userType === "client-hobbyist"
-                          ? "companionId"
-                          : "clientId"
-                      ]?.profilePic
-                    }`
-                    //  import.meta.env.VITE_APP_API_USERPROFILE_IMAGE_URL +
-                    //   `/${
-                    //     appointment?.[
-                    //       userType === "client-hobbyist"
-                    //         ? "companionId"
-                    //         : "clientId"
-                    //     ]?.profilePic
-                    //   }`
-                    : appointment?.[
-                        userType === "client-hobbyist"
-                          ? "companionId"
-                          : "clientId"
-                      ]?.gender === "Male"
-                    ? "/images/male.png"
-                    : "/images/female.png"
-                }
-                alt="Hot Rod"
-                className="w-[120px] h-[120px] rounded-[125px] overflow-hidden bg-[#fff] border-2 border-white object-cover"
-              />
-            </div>
-            <div
-              style={{ right: "0px", top: "25px" }}
-              className="absolute"
-              onClick={() => {
-                followLoading ? null : handleFollow();
-              }}
-            >
-              {followLoading ? (
-                <div
-                  className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                  role="status"
-                ></div>
-              ) : (
-                <img
-                  src={"/images/SugarIcon2.png"}
-                  alt="Sugar Icon Second"
-                  className={`${
-                    isFollowed(
-                      userType === "client-hobbyist"
-                        ? appointment?.["companionId"]?._id
-                        : appointment?.["clientId"]?._id
-                    )
-                      ? ""
-                      : "grayscale"
-                  }`}
-                />
-              )}
-            </div>
-          </div>
-          <div className="leading-[18px]">
-            <div>
-              <span className="text-[18px] text-[#040C50] font-bold font-Roboto-Serif">
-                TruRevu
-              </span>
-            </div>
-            <div className="flex flex-row justify-center items-center">
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.averageRating >= 1
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.averageRating >= 2
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.averageRating >= 3
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.averageRating >= 4
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <FontAwesomeIcon
-                icon={faStar}
-                color={
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.averageRating >= 5
-                    ? "#E1AB3F"
-                    : "#111"
-                }
-                className="text-[10px] margin-right-5 drop-shadow-[1px_1px_0px_#111]"
-              />
-              <span className="text-[15px] text-[#040C50] font-bold ml-0.5">
-                {(
-                  appointment?.[
-                    userType === "client-hobbyist" ? "companionId" : "clientId"
-                  ]?.averageRating || 0
-                ).toFixed(1)}
-              </span>
-            </div>
-          </div>
+              className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+              role="status"
+            ></div>
+          ) : (
+            <img
+              src={"/images/home/profile-plus.svg"}
+              alt="Sugar Icon Second"
+              className={`${isFollowed(
+                userType === "client-hobbyist"
+                  ? appointment?.["companionId"]?._id
+                  : appointment?.["clientId"]?._id
+              )
+                ? ""
+                : "grayscale"
+                }`}
+            />
+          )}
         </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center pt-4">
-          <span className="font-bold text-[18px]">
+      </div>
+
+      <div className="flex items-center justify-around gap-2 mb-[24px]">
+        <div>
+          <h4 className="text-[14px] text-[#212B36] font-normal text-center">
+            VAIRIFY ID
+          </h4>
+          <h4 className="text-[16px] text-[#212B36] font-bold uppercase text-center">
+            {
+              appointment?.[
+                userType === "client-hobbyist" ? "companionId" : "clientId"
+              ]?.vaiID
+            }
+          </h4>
+        </div>
+        <div>
+          <h3 className="text-[14px] text-[#212B36] font-normal text-center">
+            Name
+          </h3>
+          <h4 className="text-[16px] text-[#212B36] font-bold text-center">
             {
               appointment?.[
                 userType === "client-hobbyist" ? "companionId" : "clientId"
               ]?.name
             }
-          </span>
+          </h4>
         </div>
-        <div className="w-full mx-auto flex flex-col justify-center items-center">
-          <div>
-            <span className="text-[28px] text-[#040C50] font-bold">
-              TruRevu
-            </span>
-          </div>
+        <div className="flex flex-col items-center justify-center">
+          <h3 className="text-[14px] text-[#212B36] font-normal text-center">
+            TruRevu
+          </h3>
+          <h4 className="flex items-center gap-1 text-[14px] text-[#212B36] font-semibold text-center">  {appointment?.[
+            userType === "client-hobbyist" ? "companionId" : "clientId"
+          ]?.averageRating} <img src="/images/home/star.svg" alt="icon" /></h4>
         </div>
-        <div className="inner-content-part-xlarge_ w-full flex flex-col flex-auto">
+      </div>
+      <div className="bg-[#212B3614] rounded-2xl p-[16px] w-full mb-[24px]">
+        <div className="flex justify-between items-center gap-2 w-full mb-[8px]">
+          <h4 className="text-[14px] text-[#212B36] font-normal">
+            Reviewer
+          </h4>
+          <h4 className="text-[14px] text-[#212B36] font-semibold">
+            {UserDetails?.name}
+          </h4>
+        </div>
+        <div className="flex justify-between items-center gap-2 w-full mb-[8px]">
+          <h4 className="text-[14px] text-[#212B36] font-normal">
+            Classification
+          </h4>
+          <h4 className="text-[14px] text-[#212B36] font-semibold">
+            {userType}
+          </h4>
+        </div>
+
+        <div className="flex justify-between items-center gap-2 w-full">
+          <h4 className="text-[14px] text-[#212B36] font-normal">
+            VAIRIFY ID
+          </h4>
+          <h4 className="text-[14px] text-[#212B36] font-semibold">
+            {UserDetails?.vaiID}
+          </h4>
+        </div>
+      </div>
+
+
+      <div className="inner-content-part-xlarge_ w-full flex flex-col flex-auto">
+        <div
+          className={`${userType === "client-hobbyist" ? "gap-[16px]" : "gap-[16px]"
+            } flex flex-col py-2 overflow-y-auto flex-auto`}
+        >
           <div className="w-full mx-auto flex flex-row justify-between items-center">
             <div>
-              <span className="font-bold text-[14.4px] text-[#0247FF]">
-                Reviewer
-              </span>
+              <span className="font-semibold text-[#212B36] text-[16px]">Puncutality</span>
             </div>
             <div>
-              <span className="font-bold text-[14.4px] text-[#0247FF]">
-                Classification
-              </span>
-            </div>
-            <div>
-              <span className="font-extrabold text-[14.4px] text-[#0247FF] uppercase">
-                VAI<span className="logoSetupweight">RIFY ID</span>
-              </span>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <FontAwesomeIcon
+                  key={index}
+                  icon={index < Puncutalityrating ? faStar : faStarBorder}
+                  style={{
+                    textShadow:
+                      "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
+                  }}
+                  color={index < Puncutalityrating ? "#E1AB3F" : "#444"}
+                  className={`text-[18px] margin-right-5 ${index === 0 ? "border-red-500" : ""
+                    }`}
+                  onClick={() => PuncutalityhandleStarClick(index + 1)}
+                />
+              ))}
             </div>
           </div>
-          <div className="w-full mx-auto flex flex-row justify-between items-center ">
-            <div>
-              <span className="font-extrabold text-[18px] text-[#0247FF]">
-                {UserDetails?.name}
-              </span>
-            </div>
-            <div>
-              <span className="font-extrabold text-[18px] text-[#0247FF]">
-                {userType}
-              </span>
-            </div>
-            <div>
-              <span className="font-extrabold text-[18px] text-[#0247FF]">
-                {UserDetails?.vaiID}
-              </span>
-            </div>
-          </div>
-          <div
-            className={`${
-              userType === "client-hobbyist" ? "gap-1" : "gap-2"
-            } flex flex-col py-2 overflow-y-auto flex-auto`}
-          >
+          {userType === "client-hobbyist" ? (
             <div className="w-full mx-auto flex flex-row justify-between items-center">
               <div>
-                <span className="font-bold text-[14.4px]">Puncutality</span>
+                <span className="font-semibold text-[#212B36] text-[16px]">
+                  Incall Atmosphere
+                </span>
               </div>
               <div>
                 {Array.from({ length: 5 }).map((_, index) => (
                   <FontAwesomeIcon
                     key={index}
-                    icon={index < Puncutalityrating ? faStar : faStarBorder}
+                    icon={index < incallAtmos ? faStar : faStarBorder}
                     style={{
                       textShadow:
                         "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
                     }}
-                    color={index < Puncutalityrating ? "#E1AB3F" : "#444"}
-                    className={`text-[18px] margin-right-5 ${
-                      index === 0 ? "border-red-500" : ""
-                    }`}
-                    onClick={() => PuncutalityhandleStarClick(index + 1)}
+                    color={index < incallAtmos ? "#E1AB3F" : "#444"}
+                    className={`text-[18px] margin-right-5 ${index === 0 ? "border-red-500" : ""
+                      }`}
+                    onClick={() => setIncallAtmos(index + 1)}
                   />
                 ))}
               </div>
             </div>
-            {userType === "client-hobbyist" ? (
+          ) : (
+            <div className="w-full mx-auto flex flex-row justify-between items-center">
+              <div>
+                <span className="font-semibold text-[#212B36] text-[16px]">Etequette</span>
+              </div>
+              <div>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <FontAwesomeIcon
+                    key={index}
+                    icon={index < Etequetterating ? faStar : faStarBorder}
+                    style={{
+                      textShadow:
+                        "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
+                    }}
+                    color={index < Etequetterating ? "#E1AB3F" : "#444"}
+                    className={`text-[18px] margin-right-5 ${index === 0 ? "border-red-500" : ""
+                      }`}
+                    onClick={() => EtequettehandleStarClick(index + 1)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div>
+              <span className="font-semibold text-[#212B36] text-[16px]">Attitude</span>
+            </div>
+            <div>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <FontAwesomeIcon
+                  key={index}
+                  icon={index < Attituderating ? faStar : faStarBorder}
+                  style={{
+                    textShadow:
+                      "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
+                  }}
+                  color={index < Attituderating ? "#E1AB3F" : "#444"}
+                  className={`text-[18px] margin-right-5 ${index === 0 ? "border-red-500" : ""
+                    }`}
+                  onClick={() => AttitudehandleStarClick(index + 1)}
+                />
+              ))}
+            </div>
+          </div>
+          {userType === "client-hobbyist" ? (
+            <>
               <div className="w-full mx-auto flex flex-row justify-between items-center">
                 <div>
-                  <span className="font-bold text-[14.4px]">
-                    Incall Atmosphere
+                  <span className="font-semibold text-[#212B36] text-[16px]">Service</span>
+                </div>
+                <div>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <FontAwesomeIcon
+                      key={index}
+                      icon={index < service ? faStar : faStarBorder}
+                      style={{
+                        textShadow:
+                          "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
+                      }}
+                      color={index < service ? "#E1AB3F" : "#444"}
+                      className={`text-[18px] margin-right-5 ${index === 0 ? "border-red-500" : ""
+                        }`}
+                      onClick={() => setService(index + 1)}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="w-full mx-auto flex flex-row justify-between items-center">
+                <div>
+                  <span className="font-semibold text-[#212B36] text-[16px]">Appearence</span>
+                </div>
+                <div>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <FontAwesomeIcon
+                      key={index}
+                      icon={index < appearence ? faStar : faStarBorder}
+                      style={{
+                        textShadow:
+                          "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
+                      }}
+                      color={index < appearence ? "#E1AB3F" : "#444"}
+                      className={`text-[18px] margin-right-5 ${index === 0 ? "border-red-500" : ""
+                        }`}
+                      onClick={() => setAppearence(index + 1)}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="w-full mx-auto flex flex-row justify-between items-center">
+                <div>
+                  <span className="font-semibold text-[#212B36] text-[16px]">
+                    Communication
                   </span>
                 </div>
                 <div>
                   {Array.from({ length: 5 }).map((_, index) => (
                     <FontAwesomeIcon
                       key={index}
-                      icon={index < incallAtmos ? faStar : faStarBorder}
+                      icon={index < communication ? faStar : faStarBorder}
                       style={{
                         textShadow:
                           "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
                       }}
-                      color={index < incallAtmos ? "#E1AB3F" : "#444"}
-                      className={`text-[18px] margin-right-5 ${
-                        index === 0 ? "border-red-500" : ""
-                      }`}
-                      onClick={() => setIncallAtmos(index + 1)}
+                      color={index < communication ? "#E1AB3F" : "#444"}
+                      className={`text-[18px] margin-right-5 ${index === 0 ? "border-red-500" : ""
+                        }`}
+                      onClick={() => setCommunication(index + 1)}
                     />
                   ))}
                 </div>
               </div>
-            ) : (
               <div className="w-full mx-auto flex flex-row justify-between items-center">
-                <div>
-                  <span className="font-bold text-[14.4px]">Etequette</span>
-                </div>
-                <div>
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <FontAwesomeIcon
-                      key={index}
-                      icon={index < Etequetterating ? faStar : faStarBorder}
-                      style={{
-                        textShadow:
-                          "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
-                      }}
-                      color={index < Etequetterating ? "#E1AB3F" : "#444"}
-                      className={`text-[18px] margin-right-5 ${
-                        index === 0 ? "border-red-500" : ""
-                      }`}
-                      onClick={() => EtequettehandleStarClick(index + 1)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-            <div className="w-full mx-auto flex flex-row justify-between items-center">
-              <div>
-                <span className="font-bold text-[14.4px]">Attitude</span>
-              </div>
-              <div>
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <FontAwesomeIcon
-                    key={index}
-                    icon={index < Attituderating ? faStar : faStarBorder}
-                    style={{
-                      textShadow:
-                        "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
-                    }}
-                    color={index < Attituderating ? "#E1AB3F" : "#444"}
-                    className={`text-[18px] margin-right-5 ${
-                      index === 0 ? "border-red-500" : ""
-                    }`}
-                    onClick={() => AttitudehandleStarClick(index + 1)}
-                  />
-                ))}
-              </div>
-            </div>
-            {userType === "client-hobbyist" ? (
-              <>
-                <div className="w-full mx-auto flex flex-row justify-between items-center">
-                  <div>
-                    <span className="font-bold text-[14.4px]">Service</span>
-                  </div>
-                  <div>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <FontAwesomeIcon
-                        key={index}
-                        icon={index < service ? faStar : faStarBorder}
-                        style={{
-                          textShadow:
-                            "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
-                        }}
-                        color={index < service ? "#E1AB3F" : "#444"}
-                        className={`text-[18px] margin-right-5 ${
-                          index === 0 ? "border-red-500" : ""
-                        }`}
-                        onClick={() => setService(index + 1)}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="w-full mx-auto flex flex-row justify-between items-center">
-                  <div>
-                    <span className="font-bold text-[14.4px]">Appearence</span>
-                  </div>
-                  <div>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <FontAwesomeIcon
-                        key={index}
-                        icon={index < appearence ? faStar : faStarBorder}
-                        style={{
-                          textShadow:
-                            "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
-                        }}
-                        color={index < appearence ? "#E1AB3F" : "#444"}
-                        className={`text-[18px] margin-right-5 ${
-                          index === 0 ? "border-red-500" : ""
-                        }`}
-                        onClick={() => setAppearence(index + 1)}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="w-full mx-auto flex flex-row justify-between items-center">
-                  <div>
-                    <span className="font-bold text-[14.4px]">
-                      Communication
-                    </span>
-                  </div>
-                  <div>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <FontAwesomeIcon
-                        key={index}
-                        icon={index < communication ? faStar : faStarBorder}
-                        style={{
-                          textShadow:
-                            "-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000",
-                        }}
-                        color={index < communication ? "#E1AB3F" : "#444"}
-                        className={`text-[18px] margin-right-5 ${
-                          index === 0 ? "border-red-500" : ""
-                        }`}
-                        onClick={() => setCommunication(index + 1)}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="w-full mx-auto flex flex-row justify-between items-center">
-                  <p className="text-start">
-                    <span className="font-bold text-[14.4px]">
-                      Advertising Photos Match verified photos
-                    </span>
-                  </p>
-                  <div className="flex flex-row justify-center items-center">
-                    <div className="flex items-center mr-7">
-                      <input
-                        onChange={(e) => setPaid(true)}
-                        checked={paid}
-                        id="default-radio-1"
-                        type="radio"
-                        value={true}
-                        name="default-radio"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <label
-                        htmlFor="default-radio-1"
-                        className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                      >
-                        Yes
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        onChange={(e) => setPaid(false)}
-                        checked={!paid}
-                        id="default-radio-2"
-                        type="radio"
-                        value={false}
-                        name="default-radio"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <label
-                        htmlFor="default-radio-2"
-                        className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                      >
-                        No
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="w-full mx-auto flex flex-row justify-between items-center">
-                <div>
-                  <span className="font-bold text-[14.4px]">
-                    Paid as agreed
+                <p className="text-start">
+                  <span className="font-semibold text-[#212B36] text-[16px]">
+                    Advertising Photos Match verified photos
                   </span>
-                </div>
+                </p>
                 <div className="flex flex-row justify-center items-center">
                   <div className="flex items-center mr-7">
                     <input
@@ -578,11 +429,11 @@ export default function HotRodAnalysis() {
                       type="radio"
                       value={true}
                       name="default-radio"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 accent-[#212B36] text-blue-600 focus:outline-none focus:ring-0 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
                     />
                     <label
                       htmlFor="default-radio-1"
-                      className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="ml-2 text-sm font-medium !text-[#212B36]"
                     >
                       Yes
                     </label>
@@ -595,60 +446,105 @@ export default function HotRodAnalysis() {
                       type="radio"
                       value={false}
                       name="default-radio"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 accent-[#212B36] text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:outline-none focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
                     />
                     <label
                       htmlFor="default-radio-2"
-                      className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="ml-2 text-sm font-medium !text-[#212B36]"
                     >
                       No
                     </label>
                   </div>
                 </div>
               </div>
-            )}
+            </>
+          ) : (
             <div className="w-full mx-auto flex flex-row justify-between items-center">
               <div>
-                <span className="font-bold text-[14.4px]">Overall</span>
-              </div>
-              <div>
-                <span className="font-bold text-[14.4px]">
-                  {overallRating.toFixed(1)}
+                <span className="font-semibold text-[#212B36] text-[16px]">
+                  Paid as agreed
                 </span>
               </div>
-            </div>
-            <div className="w-full mx-auto flex flex-col justify-center items-center">
-              <div className="w-full mx-auto flex flex-row justify-start items-center">
-                <span className="font-bold text-[14.4px]">
-                  {userType === "client-hobbyist"
-                    ? "Details"
-                    : "Companion Notes"}
-                </span>
+              <div className="flex flex-row justify-center items-center">
+                <div className="flex items-center mr-7">
+                  <input
+                    onChange={(e) => setPaid(true)}
+                    checked={paid}
+                    id="default-radio-1"
+                    type="radio"
+                    value={true}
+                    name="default-radio"
+                    className="w-4 h-4 accent-[#212B36] text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:outline-none focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="default-radio-1"
+                    className="ml-2 text-sm font-medium !text-[#212B36]"
+                  >
+                    Yes
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    onChange={(e) => setPaid(false)}
+                    checked={!paid}
+                    id="default-radio-2"
+                    type="radio"
+                    value={false}
+                    name="default-radio"
+                    className="w-4 h-4 accent-[#212B36] text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:outline-none focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="default-radio-2"
+                    className="ml-2 text-sm font-medium !text-[#212B36]"
+                  >
+                    No
+                  </label>
+                </div>
               </div>
-              <div className="w-full mx-auto flex flex-row justify-center items-center">
-                <textarea
-                  rows="2"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="block_ p-2.5 w-full text-[15px] text-gray-900 rounded-md border-0 focus:ring-blue-500 dark:placeholder-gray-400  bg-[#E2E2E2] focus-visible:border-0 "
-                  placeholder=""
-                ></textarea>
-              </div>
             </div>
-            <div className="w-full text-center py-2">
-              <button
-                disabled={loading}
-                onClick={handleSubmit}
-                className="w-full px-7 rounded-[10px] bg-gradient-to-t from-lime-500 to-emerald-500 border-2 border-solid border-[#707076]"
-              >
-                <span className="font-bold text-[20px] text-[#060b44]">
-                  {loading ? "Loading.." : "Submit"}
-                </span>
-              </button>
+          )}
+          <div className="w-full mx-auto flex flex-row justify-between items-center">
+            <div>
+              <span className="font-semibold text-[#212B36] text-[16px]">Overall</span>
             </div>
+            <div>
+              <span className="font-semibold text-[#212B36] text-[16px]">
+                {overallRating.toFixed(1)}
+              </span>
+            </div>
+          </div>
+          <div className="w-full mx-auto flex flex-col justify-center items-center">
+            <div className="w-full mx-auto flex flex-row justify-start items-center">
+              <span className="font-semibold text-[#212B36] text-[16px] mb-2">
+                {userType === "client-hobbyist"
+                  ? "Details"
+                  : "Companion Notes"}
+              </span>
+            </div>
+            <div className="w-full mx-auto flex flex-row justify-center items-center">
+              <textarea
+                rows="3"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="p-3 w-full text-[16px] text-[#212B36] rounded-md border border-[#919EAB33] focus:ring-[#212B36] dark:placeholder-[#212B36] focus:border-[#212B36] bg-transparent "
+                placeholder=""
+              ></textarea>
+            </div>
+          </div>
+          <div className="w-full text-center">
+            <button
+              disabled={loading}
+              onClick={handleSubmit}
+              className="secondary-btn p-[10px] w-full rounded-lg mb-7"
+            >
+              <span className="font-bold text-[20px] text-[#060b44]">
+                {loading ? <Loading /> : "Submit"}
+              </span>
+            </button>
           </div>
         </div>
       </div>
+
     </div>
   );
 }
