@@ -11,7 +11,7 @@ import Button from "../../../components/Button";
 const videoConstraints = {
   width: 400,
   height: 400,
-  facingMode: "user" || { exact: "environment" },
+  facingMode: { exact: "environment" },
 };
 const BackID = ({
   documentID,

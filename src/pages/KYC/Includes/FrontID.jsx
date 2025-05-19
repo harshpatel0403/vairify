@@ -12,7 +12,7 @@ import { Button } from "@mui/material";
 const videoConstraints = {
   width: 400,
   height: 400,
-  facingMode: "user" || { exact: "environment" },
+  facingMode: { exact: "environment" },
 };
 
 const FrontID = ({
