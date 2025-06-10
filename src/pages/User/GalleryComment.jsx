@@ -1,6 +1,7 @@
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import PersonalComments from "../../components/PersonalComments";
@@ -12,6 +13,7 @@ import { toast } from "react-toastify";
 import Loading from "../../components/Loading/Index";
 
 const GalleryComment = () => {
+  const { t } = useTranslation();
   const { state } = useLocation();
   const dispatch = useDispatch();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -64,17 +66,17 @@ const GalleryComment = () => {
           userId: UserDetails?._id,
         });
         dispatch(HandleUpdateFollowers(UserDetails?._id));
-        toast.success("Successfully unfollowed!");
+        toast.success(t("gallerycomment.unfollowSuccess"));
       } else {
         await MyVairifyService.addFollow(userProfile?._id, {
           userId: UserDetails?._id,
         });
         await dispatch(HandleUpdateFollowers(UserDetails?._id));
-        toast.success("Successfully followed!");
+        toast.success(t("gallerycomment.followSuccess"));
       }
     } catch (error) {
       console.log(error);
-      toast.error("Unable to follow!");
+      toast.error(t("gallerycomment.followError"));
     } finally {
       setFollowLoading(false);
     }
@@ -206,14 +208,14 @@ const GalleryComment = () => {
               value={comments}
               onChange={(e) => setComments(e.target.value)}
               influencer-affiliate
-              placeholder={"comment"}
+              placeholder={t("gallerycomment.commentPlaceholder")}
               className={"h-[40px] text-[18px] font-normal text-white !border-0 w-full"}
             />
             <button
               onClick={(e) => handelComments(e)}
               className="w-[24px] ml-[20px] invert"
             >
-              <img src="/public/images/comments.png" />
+              <img src="/images/comments.png" />
             </button>
           </div>
         </div>

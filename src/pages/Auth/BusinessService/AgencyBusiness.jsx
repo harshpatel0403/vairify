@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputText from "../../../components/InputText";
 import Button from "../../../components/Button";
 import { HandleLogIn, HandleSignUp } from "../../../redux/action/Auth";
@@ -8,6 +8,7 @@ import Loading from "../../../components/Loading/Index";
 import { useLocation, useNavigate } from "react-router-dom";
 import BackButton from "../../../components/BackButton/backArrowButton";
 import { useTranslation } from "react-i18next";
+import AuthService from "../../../services/AuthService";
 
 export default function AgencyBusiness() {
   const dispatch = useDispatch();
@@ -16,6 +17,10 @@ export default function AgencyBusiness() {
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false); // State to track loading
   const [agencyDetails, setagencyDetails] = useState({});
+  const [countries, setCountries] = useState([]);
+  
+
+  
 
   const [error, setError] = useState({});
 
@@ -23,15 +28,15 @@ export default function AgencyBusiness() {
     setIsLoading(true);
     e.preventDefault();
     let body = {
-      name: state.name,
-      language: state.language,
+      name: state?.name,
+      language: state?.language,
       parentId: 0,
-      email: state.email,
-      password: state.password,
+      email: state?.email,
+      password: state?.password,
       country: agencyDetails?.countryOfBusiness,
       user_type: "agency-business",
       business_name: agencyDetails?.nameOfBusiness,
-      business_type: state.business_type,
+      business_type: state?.business_type,
       address: agencyDetails?.address,
       phone: agencyDetails?.phone,
       whatsapp: agencyDetails?.whatsapp,
@@ -109,6 +114,18 @@ export default function AgencyBusiness() {
     setagencyDetails({ ...agencyDetails, [e.target.name]: e.target.value });
   };
 
+  const getAllData = () => {
+    AuthService.getAllCountries()
+    .then((res) => {
+      setCountries(res);})
+    .catch((err) => {
+      console.log(err);
+      toast.error(err?.response?.data?.error || err.message);
+    });
+  };
+  useEffect(() => {
+    getAllData();
+  }, []);
   return (
     <>
       <div className="signup-backgound-design">
@@ -123,26 +140,31 @@ export default function AgencyBusiness() {
               <h3
                 className="primary-heading"
               >
-                {state.business_type.replace("Business", "").trim()}{' '}{t("agencyBusiness.heading")}
+                {state?.business_type.replace("Business", "").trim()}{' '}{t("agencyBusiness.heading")}
               </h3>
               <p className="font-normal sm:text-[18px] text-[14px] text-white sm:mt-2 opacity-70">{t("agencyBusiness.subheading")}</p>
             </div>
             <div className="flex gap-[16px] sm:flex-nowrap flex-wrap">
               <div className="w-full">
-                <InputText
-                  // value={username}
-                  name={"countryOfBusiness"}
-                  onChange={(e) => HandleInput(e)}
-                  influencer-affiliate
-                  className="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
-                  placeholder={t("agencyBusiness.countryPlaceholder")}
-                  border={error.countryOfBusiness && `#ef4444`}
-                />
-                {error.countryOfBusiness && (
-                  <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
-                    {error.countryOfBusiness}
-                  </label>
-                )}
+                 <select
+                    className="appearance-none w-full border-2 border-[#919EAB33] rounded-[8px] py-[14px] px-[14px] bg-transparent text-white font-normal text-[14px]"
+                    value={agencyDetails.countryOfBusiness || ""}
+                    onChange={(e) =>
+                      HandleInput({ target: { name: "countryOfBusiness", value: e.target.value } })
+                    }
+                  >
+                    <option value="" className="text-black">{t("socialsearch.searchCountry")}</option>
+                    {countries?.map((country) => (
+                      <option key={country._id} value={country.name} className="text-black">
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                  {error.countryOfBusiness && (
+                    <label className="text-red-500 text-sm flex items-baseline pl-[12px] pt-[2px]">
+                      {error.countryOfBusiness}
+                    </label>
+                  )}
               </div>
               <div className="w-full">
                 <InputText

@@ -174,7 +174,7 @@ function DateGuardEmergencyContacts(props) {
                         ${onlineMembers.includes(member?.memberId?._id) && "online"}
                         `}
                       >
-                        <Avatar sx={{ bgcolor: "#FFFFFF14" }}>{(member?.memberId?.name?.[0] || "U").toUpperCase()}</Avatar>
+                        <Avatar>{(member?.memberId?.name?.[0] || "U").toUpperCase()}</Avatar>
                       </div>
                     )
                   )}
@@ -202,7 +202,7 @@ function DateGuardEmergencyContacts(props) {
                       : ""
                       } `}
                   >
-                    <Avatar sx={{ bgcolor: "#FFFFFF14" }}>{(groupDetails?.members?.find(
+                    <Avatar>{(groupDetails?.members?.find(
                       item => item?.memberId?._id == message?.memberId?._id
                     )?.memberId?.name?.[0])?.toUpperCase() || "U"}</Avatar>
                   </div>
@@ -304,7 +304,7 @@ function DateGuardEmergencyContacts(props) {
                         ${onlineMembers.includes(member?.memberId?._id) && "online"}
                         `}
                       >
-                        <Avatar sx={{ bgcolor: "#FFFFFF14" }}>{(member?.memberId?.name?.[0] || "U").toUpperCase()}</Avatar>
+                        <Avatar>{(member?.memberId?.name?.[0] || "U").toUpperCase()}</Avatar>
                       </div>
                     )
                   )}
@@ -322,9 +322,7 @@ function DateGuardEmergencyContacts(props) {
               <div className="w-full mt-4 max-w-md flex flex-col gap-4">
                 <img
                   style={{ width: "100%", height: "auto" }}
-                  src="/images/image.png"
-                // src={`${import.meta.env.VITE_APP_S3_IMAGE || ""
-                //   }/${alarmDetails?.proof?.file}`}
+                  src={`${import.meta.env.VITE_APP_S3_IMAGE}/${alarmDetails?.proof?.file}`}
                 />
                 <div className="bg-blue-950 rounded-xl text-black p-2 px-4 min-h-[80px] mt-4 text-start">
                   {alarmDetails?.proof?.message}
@@ -508,7 +506,7 @@ function DateGuardEmergencyContacts(props) {
                         ${onlineMembers.includes(member?.memberId?._id) && "online"}
                         `}
                     >
-                      <Avatar sx={{ bgcolor: "#FFFFFF14" }}>{(member?.memberId?.name?.[0] || "U").toUpperCase()}</Avatar>
+                      <Avatar>{(member?.memberId?.name?.[0] || "U").toUpperCase()}</Avatar>
                     </div>
                   )
                 )}

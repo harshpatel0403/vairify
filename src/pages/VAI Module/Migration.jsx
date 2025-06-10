@@ -135,12 +135,12 @@ const Migration = () => {
                       <label className="ml-4 block text-gray-700 font-medium text-sm text-left">
                         <div className="flex flex-row justify-center items-center">
                           <div className="w-[70px] h-[60px] p-0 m-0 relative flex items-center justify-center">
-                            <span className="font-bold text-[18px] text-[#000000]">
+                            <span className="font-bold text-[18px] text-white">
                               {`${item?.currency}${item?.amount}.00`}
                             </span>
                             <div
                               className="w-[70px] h-[42px] discounted-value absolute"
-                              style={{ borderBottom: "1px solid black" }}
+                              style={{ borderBottom: "1px solid white" }}
                             ></div>
                           </div>
                           <div className="w-[90px] h-[50px] p-0 m-0 flex items-center justify-center">
@@ -154,7 +154,7 @@ const Migration = () => {
 
                     <div className="w-full mx-auto flex flex-row justify-around gap-7 items-center mb-8">
                       <button
-                        className="w-full bg-[#E8EBF0] text-[#0247FF] hover:text-white hover:bg-[#0247FF] font-semibold text-[15px] p-[12px] rounded-[8px] transition-all duration-300 ease-in-out"
+                        className="w-full bg-[#E8EBF0] text-[#060C4D] hover:text-white hover:bg-[#0247FF] font-semibold text-[15px] p-[12px] rounded-[8px] transition-all duration-300 ease-in-out"
                         onClick={() => HandleClick(true, item)}
                       >
                         {t("migration.buttonYes")}

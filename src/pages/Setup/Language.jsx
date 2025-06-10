@@ -14,8 +14,10 @@ import LayoutHeader from "../layout/Header";
 import Footer from "../layout/Footer";
 import Header from "../../components/Header/Header";
 import PageTitle from "../../components/PageTitle";
+import { useTranslation } from "react-i18next";
 
 const Language = () => {
+  const { t } = useTranslation();
   const [languages, setLanguages] = useState([]);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
   const [selectedLang, setSelectedLang] = useState(false);
@@ -73,6 +75,10 @@ const Language = () => {
   };
   const handleNext = () => {
     try {
+      if (!language) {
+        toast.error("Please select a language");
+        return;
+      }
       setIsLoading(true);
       if (UserDetails) {
         dispatch(UpdateProfile({ language: language, userId: UserDetails?._id }))
@@ -92,13 +98,13 @@ const Language = () => {
               });
             }
             setIsLoading(false);
-            navigate(from || "/selectcategory");
+            navigate(from ? `/${from}` : "/selectcategory");
           })
           .catch((err) => {
             console.error(err, "Error");
           });
       } else {
-        navigate(from || "/selectcategory", { state: { language: language } });
+        navigate(from ? `/${from}` : "/selectcategory", { state: { language: language } });
       }
 
     } catch (error) {
@@ -126,13 +132,13 @@ const Language = () => {
           <div className="container mt-[50px]">
             <div className="mx-auto">
               <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-                <PageTitle title={"Select Your Language"} isSmall={true} />
+                <PageTitle title={t("language.selectTitle")} isSmall={true} />
               </div>
               <div className="sm:mt-[64px] mt-[30px] flex flex-col items-center justify-center sm:gap-[32px] gap-[24px]">
                 <div className="w-full">
                   <SearchBox
                     onSearch={handleSearch}
-                    placeholder="Search"
+                    placeholder={t("language.searchPlaceholder")}
                     classname="border-[2px] border-[#919EAB33] !rounded-[8px] !pl-[46px] !px-[14px] !py-[16px] !input-text !bg-transparent !w-[100%] !text-white"
                     language="true"
                   />
@@ -181,7 +187,7 @@ const Language = () => {
                 </div>
                 <div className="max-w-[500px] w-full md:mt-[100px] mt-0 h-fit">
                   <Button
-                    text={isLoading ? (<Loading />) : from ? "Save" : "Select Language"}
+                    text={isLoading ? (<Loading />) : from ? t("language.save") : t("language.selectLanguage")}
                     disabled={isLoading}
                     onClick={handleNext}
                   />
@@ -202,11 +208,11 @@ const Language = () => {
                   <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
                 </div>
                 <div className="sm:mt-[64px] mt-[30px] flex flex-col items-center justify-center sm:gap-[32px] gap-[24px]">
-                  <h3 className="primary-heading text-center">Select Your Language</h3>
+                  <h3 className="primary-heading text-center">{t("language.selectTitle")}</h3>
                   <div className="w-full">
                     <SearchBox
                       onSearch={handleSearch}
-                      placeholder="Search Languages"
+                      placeholder={t("language.searchPlaceholder")}
                       classname="border-[2px] border-[#919EAB33] !rounded-[8px] !pl-[46px] !px-[14px] !py-[16px] !input-text !bg-transparent !w-[100%] !text-white"
                       language="true"
                     />
@@ -257,7 +263,7 @@ const Language = () => {
                   </div>
                   <div className="flex-1 w-full h-fit">
                     <Button
-                      text={isLoading ? (<Loading />) : from ? "Save" : "Select Language"}
+                      text={isLoading ? (<Loading />) : from ? t("language.save") : t("language.selectLanguage")}
                       disabled={isLoading}
                       onClick={handleNext}
                     />

@@ -110,8 +110,8 @@ export default function SetupFaceVerification() {
             <div className="container py-[48px]">
                 <div className="w-full mx-auto flex flex-col justify-center items-center sm:gap-[48px] gap-[24px]">
                     <h6 className="sm:text-[28px] text-[24px] text-center sm:font-semibold font-medium text-white ">Camera not found</h6>
-                    <img src="/images/face-verification/camera-not-found.svg" alt="camera not found" className="sm:w-[300px] w-[200px]" />
-                    {/* <button onClick={handleSendRequest}>accept</button> */}
+                    <img src="/images/face-verification/camera-not-found.svg" alt="camera not found" className="sm:w-[300px] w-[200px]"/>
+                        {/* <button onClick={handleSendRequest}>accept</button> */}
                     <p className="text-[18px] max-w-[90%] md:max-w-[70%] text-center sm:font-medium font-normal text-[#E43530]">
                         You can not use face verification feature on this device, please
                         retry in your mobile or a device which has working camara.

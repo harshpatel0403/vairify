@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Modal from "react-modal";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import Slider from "react-slick";
 import VaripayService from "../../services/VaripayServices";
@@ -22,7 +23,7 @@ const sugar_apps = {
 };
 export default function MyVairipayRequest() {
   const { state } = useLocation();
-
+  const { t } = useTranslation();
   const [messageOpen, setMessageOpen] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -149,7 +150,6 @@ export default function MyVairipayRequest() {
     userVaripay.unshift(sugar_apps);
   }, [userVaripay]);
 
-
   // useEffect(() => {
   //   if (userVaripay?.length) {
   //     const alreadyAdded = userVaripay.some(app => app._id === sugar_apps._id);
@@ -158,7 +158,6 @@ export default function MyVairipayRequest() {
   //     }
   //   }
   // }, [userVaripay]);
-
 
   useEffect(() => {
     compareUserVaripays();
@@ -185,13 +184,13 @@ export default function MyVairipayRequest() {
       })
       .finally(() => {
         setIsDenyLoading(false);
-      })
+      });
   };
 
   const handelUpdateRequest = (e, id) => {
     e.preventDefault();
     setIsLoading(true);
-    VaripayService.updateUserVairipayRequest(id, { slug: 'paid' })
+    VaripayService.updateUserVairipayRequest(id, { slug: "paid" });
     navigate("/my-vairipay");
     // .then((res) => {
     //   setIsLoading(false);
@@ -233,18 +232,21 @@ export default function MyVairipayRequest() {
     setMessageOpen(false);
     setQRCode(true);
     setSelectedVaripayId(item);
-  }
+  };
 
   return (
     <div>
       <div className="container mb-[48px]">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Request Payment"} />
+          <PageTitle title={t("vairipayrequest.pageTitle")} />
         </div>
         <div className="grid md:grid-cols-2 gap-[24px]">
           {state.map((item, index) => {
             return (
-              <div key={item.id} className="w-full p-[16px] bg-[#919EAB33] rounded-[16px]">
+              <div
+                key={item.id}
+                className="w-full p-[16px] bg-[#919EAB33] rounded-[16px]"
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex gap-[8px] flex-grow">
                     <div>
@@ -252,11 +254,12 @@ export default function MyVairipayRequest() {
                         className="w-[48px] h-[48px] bg-[#fff] rounded-full overflow-hidden object-cover"
                         src={
                           currentRequest?.requester?.profilePic != ""
-                            ? `${import.meta.env.VITE_APP_S3_IMAGE}/${item?.requester?.profilePic
-                            }`
+                            ? `${import.meta.env.VITE_APP_S3_IMAGE}/${
+                                item?.requester?.profilePic
+                              }`
                             : currentRequest?.requester?.gender === "Male"
-                              ? "/images/male.png"
-                              : "/images/female.png"
+                            ? "/images/male.png"
+                            : "/images/female.png"
                         }
                         alt={item?.requester?.name}
                       />
@@ -265,8 +268,8 @@ export default function MyVairipayRequest() {
                       <div className="sm:text-base text-sm text-white font-medium">
                         {item?.requester?.name}
                       </div>
-                      <div className="sm:text-sm text-xs font-normal text-[#919EAB] uppercase">ID# {' '}
-                        {item?.requester?.vaiID}
+                      <div className="sm:text-sm text-xs font-normal text-[#919EAB] uppercase">
+                        ID# {item?.requester?.vaiID}
                       </div>
                     </div>
                   </div>
@@ -282,28 +285,35 @@ export default function MyVairipayRequest() {
 
                 <div className="mt-[16px]">
                   <div className="flex flex-col">
-                    <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs"> You have Request to pay</div>
-                    <h5 className="text-white font-medium sm:text-[28px] text-[20px]"> ${item.amount}.00</h5>
+                    <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                      {" "}
+                      {t("vairipayrequest.requestToPay")}
+                    </div>
+                    <h5 className="text-white font-medium sm:text-[28px] text-[20px]">
+                      {" "}
+                      ${item.amount}.00
+                    </h5>
                   </div>
                 </div>
 
                 <div className="mt-[16px] flex gap-[8px]">
                   <Button
                     onClick={() => HandleProfile(item)}
-                    text={'Profile'}
-                    className={'py-[4px]'}
+                    text={t("vairipayrequest.profile")}
+                    className={"py-[4px]"}
                   />
                   <Button
                     onClick={() => handleView(item, index)}
-                    className={'py-[4px] !bg-transparent secondary-btn border-2 border-[#919EAB33] hover:!bg-[#919EAB33]'}
-                    text={'View'}
+                    className={
+                      "py-[4px] !bg-transparent secondary-btn border-2 border-[#919EAB33] hover:!bg-[#919EAB33]"
+                    }
+                    text={t("vairipayrequest.view")}
                   />
                 </div>
               </div>
-            )
+            );
           })}
         </div>
-
 
         <Modal
           isOpen={messageOpen}
@@ -320,7 +330,9 @@ export default function MyVairipayRequest() {
           >
             <IoCloseCircleOutline size={26} />
           </button>
-          <h3 className="text-[20px] text-center font-medium text-[#212B36] mb-[24px]">Payment Request</h3>
+          <h3 className="text-[20px] text-center font-medium text-[#212B36] mb-[24px]">
+            {t("vairipayrequest.amountRequested")}
+          </h3>
           <div>
             <div className="flex justify-between items-center gap-2 w-full">
               <div className="flex items-center gap-2">
@@ -328,11 +340,12 @@ export default function MyVairipayRequest() {
                   onClick={() => HandleProfile(selectedItem)}
                   src={
                     selectedItem?.requester?.profilePic != ""
-                      ? `${import.meta.env.VITE_APP_S3_IMAGE}/${selectedItem?.requester?.profilePic
-                      }`
+                      ? `${import.meta.env.VITE_APP_S3_IMAGE}/${
+                          selectedItem?.requester?.profilePic
+                        }`
                       : selectedItem?.requester?.gender === "Male"
-                        ? "/images/male.png"
-                        : "/images/female.png"
+                      ? "/images/male.png"
+                      : "/images/female.png"
                   }
                   alt="profile"
                   className="w-[48px] h-[48px] rounded-full object-cover cursor-pointer"
@@ -358,22 +371,22 @@ export default function MyVairipayRequest() {
               <div className="flex items-start text-center justify-between gap-2 sm:mt-[24px] mt-[16px]">
                 <div>
                   <p className="sm:text-[16px] text-sm font-medium text-[#212B36] opacity-60">
-                    Amount Requested
+                    {t("vairipayrequest.amountRequested")}
                   </p>
                   <p className="text-[24px] font-medium text-[#212B36] text-left">{`$${selectedItem?.amount}`}</p>
                 </div>
                 <div>
                   <p className="sm:text-[16px] text-sm font-medium text-[#212B36] opacity-60">
-                    Request Type
+                    {t("vairipayrequest.requestType")}
                   </p>
                   <p className="text-[24px] font-medium text-[#212B36] text-right uppercase">
-                    Intial
+                    {t("vairipayrequest.intial")}
                   </p>
                 </div>
               </div>
               <div className="mt-[16px]">
                 <p className="sm:text-[16px] text-sm font-medium text-[#212B36] opacity-60">
-                  Comments
+                  {t("vairipayrequest.comments")}
                 </p>
                 <div className="rounded-lg vairipay-comment">
                   <span className="pl-3">{`${selectedItem?.comment}`}</span>
@@ -381,20 +394,29 @@ export default function MyVairipayRequest() {
               </div>
 
               <div className="">
-                <h5 className="sm:text-[16px] text-sm font-medium text-[#212B36] opacity-60 mt-[24px] mb-2">Choose Options below to pay to view</h5>
+                <h5 className="sm:text-[16px] text-sm font-medium text-[#212B36] opacity-60 mt-[24px] mb-2">
+                  {t("vairipayrequest.chooseOption")}
+                </h5>
                 <div className="flex items-center gap-2 flex-wrap">
                   {userVaripays.map((item) => {
                     return (
-                      <div onClick={() => openQRCode(item)} className="bg-white rounded-lg w-full border border-[#919EAB29] max-w-[145px] h-[54px] flex items-center justify-center">
-                        <img className="max-h-[30px]" src={
-                          item?.paymentImage
-                            ? import.meta.env
-                              .VITE_APP_API_USER_VARIPAY_IMAGE_URL +
-                            `/${item?.paymentImage}`
-                            : "images/no-wallet-white.png"
-                        } alt="icon" />
+                      <div
+                        onClick={() => openQRCode(item)}
+                        className="bg-white rounded-lg w-full border border-[#919EAB29] max-w-[145px] h-[54px] flex items-center justify-center"
+                      >
+                        <img
+                          className="max-h-[30px]"
+                          src={
+                            item?.paymentImage
+                              ? import.meta.env
+                                  .VITE_APP_API_USER_VARIPAY_IMAGE_URL +
+                                `/${item?.paymentImage}`
+                              : "images/no-wallet-white.png"
+                          }
+                          alt="icon"
+                        />
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -402,11 +424,11 @@ export default function MyVairipayRequest() {
               <div className="flex justify-center items-center sm:pt-[24px] pt-[16px] w-full sm:gap-[24px] gap-[16px]">
                 {/* <div className="my-1 flex justify-center h-[34px] flex justify-center items-center pt-2"> */}
                 <Button
-                  className={'!bg-[#008F34] secondary-btn'}
+                  className={"!bg-[#008F34] secondary-btn"}
                   disabled={isLoading}
                   text={
                     !isLoading ? (
-                      "Accept"
+                      t("vairipayrequest.accept")
                     ) : (
                       <div className="flex items-center	justify-center ">
                         <Loading />
@@ -421,7 +443,7 @@ export default function MyVairipayRequest() {
                   disabled={isDenyLoading}
                   text={
                     !isDenyLoading ? (
-                      "Deny"
+                      t("vairipayrequest.deny")
                     ) : (
                       <div className="flex items-center	justify-center ">
                         <Loading />
@@ -432,7 +454,6 @@ export default function MyVairipayRequest() {
                 ></Button>
                 {/* </div> */}
               </div>
-
             </div>
           </div>
         </Modal>
@@ -444,7 +465,6 @@ export default function MyVairipayRequest() {
             "bg-[#FFFFFF] relative mx-auto  rounded-[16px] p-[24px] w-[90%] max-w-[548px] overflow-y-auto max-h-[86vh]"
           }
           contentLabel="#"
-
         >
           <button
             onClick={() => setQRCode(false)}
@@ -452,26 +472,31 @@ export default function MyVairipayRequest() {
           >
             <IoCloseCircleOutline size={26} />
           </button>
-          <h3 className="text-[20px] text-center font-medium text-[#212B36] mb-[24px]">View {selectedVaripayId?.paymentAppName}</h3>
+          <h3 className="text-[20px] text-center font-medium text-[#212B36] mb-[24px]">
+            View {selectedVaripayId?.paymentAppName}
+          </h3>
           <p className="text-[16px] font-medium text-[#212B36] opacity-60">
-            QR Code
+            {t("vairipayrequest.qrCode")}
           </p>
           <div className="flex items-center justify-center my-6">
-            <img className="w-[200px] h-[200px] object-cover" src={
-              selectedVaripayId?.qrCode
-                ? import.meta.env
-                  .VITE_APP_S3_IMAGE +
-                `/${selectedVaripayId?.qrCode}`
-                : "images/no-wallet-white.png"
-            } alt="icon" />
+            <img
+              className="w-[200px] h-[200px] object-cover"
+              src={
+                selectedVaripayId?.qrCode
+                  ? import.meta.env.VITE_APP_S3_IMAGE +
+                    `/${selectedVaripayId?.qrCode}`
+                  : "images/no-wallet-white.png"
+              }
+              alt="icon"
+            />
           </div>
           <div className="flex justify-center items-center pt-[24px] w-full gap-[24px]">
             <Button
-              className={'secondary-btn'}
+              className={"secondary-btn"}
               disabled={isLoading}
               text={
                 !isLoading ? (
-                  "Download"
+                  t("vairipayrequest.download")
                 ) : (
                   <div className="flex items-center	justify-center ">
                     <Loading />
@@ -480,12 +505,12 @@ export default function MyVairipayRequest() {
               }
               onClick={() => {
                 if (!isLoading) {
-                  window.open(selectedVaripayId.paymentLink, '_blank');
+                  window.open(selectedVaripayId.paymentLink, "_blank");
                 }
               }}
             ></Button>
             <Button
-              text={"Cancel"}
+              text={t("vairipayrequest.cancel")}
               onClick={() => setQRCode(false)}
             ></Button>
           </div>
@@ -494,7 +519,6 @@ export default function MyVairipayRequest() {
     </div>
   );
 }
-
 
 // <div
 //   className="main-container mt-[100px]"

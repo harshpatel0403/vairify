@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../components/Button";
 import MarketPlaceModale from "../../../components/MarketPlace/MarketPlaceModale";
@@ -51,6 +52,7 @@ const months = [
 ];
 
 const EscortType = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();

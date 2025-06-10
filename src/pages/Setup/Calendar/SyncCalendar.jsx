@@ -1,10 +1,13 @@
+
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../components/Button";
 import CalendarService from "../../../services/CalendarService";
 import Header from "../../../components/Header/Header";
 import PageTitle from "../../../components/PageTitle";
 export default function SyncCalendar() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const userType = UserDetails?.user_type; //'companion-provider'
@@ -43,11 +46,11 @@ export default function SyncCalendar() {
     <div>
       <div className="container pb-[48px]">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Sync Calendar"} />
+          <PageTitle title={t("syncCalendar.title")} />
         </div>
         <div className="w-full mx-auto flex flex-col justify-center items-center">
           <div className="w-full mx-auto text-[#919EAB] text-lg text-center">
-            Select the popular calendar you would like to sync your<br /> VAIRIFY CALENDAR
+            {t("syncCalendar.description")}
           </div>
           <div className="flex gap-[16px] mt-6">
             <div className="w-full mx-auto flex flex-col justify-center items-center ">
@@ -58,7 +61,7 @@ export default function SyncCalendar() {
                 src={"/images/setup/google-sync.png"}
                 alt="Google Sync Logo"
               />
-              <p className="mt-[8px] text-lg font-normal text-white">Google</p>
+              <p className="mt-[8px] text-lg font-normal text-white">{t("syncCalendar.google")}</p>
             </div>
             <div className="w-full mx-auto flex flex-col justify-center items-center">
               <img
@@ -68,7 +71,7 @@ export default function SyncCalendar() {
                 src={"/images/setup/microsoft-sync.png"}
                 alt="Microsoft Sync Logo"
               />
-              <p className="mt-[8px] text-lg font-normal text-white">Microsoft</p>
+              <p className="mt-[8px] text-lg font-normal text-white">{t("syncCalendar.microsoft")}</p>
             </div>
           </div>
           {/* <div className="w-full mx-auto flex flex-col justify-center items-center">

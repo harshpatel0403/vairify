@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import data from "../../db/lan-coun.json";
 import SearchBox from "../../components/SearchBox";
+import { useTranslation } from "react-i18next";
 
 export default function MyVairipayCountrySearch() {
+  const { t } = useTranslation();
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countries, setCountries] = useState([]);
   const [filterdCountries, setFilteredCountries] = useState([]);
@@ -49,14 +51,14 @@ export default function MyVairipayCountrySearch() {
           value={selectedCountry}
           onChange={handleSelectChange}
         >
-          <option value="">Search Country (Any)</option>
+          <option value="">{t("vairipaycountrysearch.selectPlaceholder")}</option>
           {countries?.map((country, index) => (
             <option key={index} value={country.name}>{country.name}</option>
           ))}
         </select>
         <SearchBox
           onSearch={handleSearch}
-          placeholder="Search Country"
+          placeholder={t("vairipaycountrysearch.searchPlaceholder")}
           bgColor={"gray-100"}
           className={
             "w-[100%] max-w-[297px] rounded-lg border-0 border-[#D9D9D9] text-[21.38px] font-extrabold text-[#02227E] px-5"

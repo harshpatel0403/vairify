@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Webcam from "react-webcam";
 import Button from "../../../components/Button";
 import DateGuardService from "../../../services/DateGuardService";
@@ -17,6 +18,7 @@ const videoConstraints = {
 };
 
 export default function SuccessChangedCode() {
+  const { t } = useTranslation();
   const webcamRef = React.useRef(null);
   const [imgSrc, setImgSrc] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
@@ -95,7 +97,7 @@ export default function SuccessChangedCode() {
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Date Guard"} />
+        <PageTitle title={t("successchangedcode.pageTitle")} />
       </div>
       <div className="mb-[48px]">
 
@@ -140,7 +142,7 @@ export default function SuccessChangedCode() {
           <img src="/images/face-verification/camera.svg" alt="camera img" />
         </button>
         {faceCompareLoading && (
-          <p className="text-[#ffffff]">Please wait...</p>
+          <p className="text-[#ffffff] text-center mt-5">{t("successchangedcode.pleaseWait")}</p>
         )}
         {false && imgSrc && (
           <div className="mt-3 flex gap-3">
@@ -148,13 +150,13 @@ export default function SuccessChangedCode() {
               disabled={loading}
               text={loading ? <div className="flex items-center	justify-center">
                 <Loading />
-              </div> : "Approve"}
+              </div> : t("successchangedcode.approve")}
               className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
               size="41px"
               onClick={handleApprove}
             />
             <Button
-              text={"Reject"}
+              text={t("successchangedcode.reject")}
               className="bg-[#05B7FD] rounded-[10px] font-bold text-[30px] h-[41px] flex items-center justify-center change-font-family px-10"
               size="41px"
               onClick={handleReject}

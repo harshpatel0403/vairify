@@ -11,10 +11,12 @@ import { BrowserQRCodeReader } from "@zxing/library";
 import Loading from "../../../components/Loading/Index";
 import PageTitle from "../../../components/PageTitle";
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 const videoConstraints = {
   width: 400,
   height: 400,
-  facingMode: "user",
+  facingMode: isMobile ? { exact: 'environment' } : "user",
 };
 
 export default function ScanQR() {
@@ -102,8 +104,9 @@ export default function ScanQR() {
           videoElement
         );
         const Qrtext = codeResult?.getText();
+        const lastId = Qrtext.split('/').pop();
         const userDetails = await VaridateService.fetchMarketPlaceUserDetails(
-          Qrtext
+          lastId
         );
         const payload = {
           clientId: { ...UserDetails },

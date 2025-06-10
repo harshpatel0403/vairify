@@ -24,12 +24,28 @@ export default function organizeNotificationsByDay(notifications) {
                 (n) => n.type === type && n.senderId?._id === senderId
             );
 
-            if (
-                !existingNotification ||
-                moment(notification.createdAt).isAfter(moment(existingNotification.createdAt))
-            ) {
+            // if (
+            //     !existingNotification ||
+            //     moment(notification.createdAt).isAfter(moment(existingNotification.createdAt))
+            // ) {
+            //     if (existingNotification) {
+            //         if (!existingNotification.read) {
+            //             reducedCount++;
+            //         }
+            //         existingEntry.notifications = existingEntry.notifications.filter(
+            //             (n) => !(n.type === type && n.senderId?._id === senderId)
+            //         );
+            //     }
+            //     existingEntry.notifications.push(notification);
+            // }
+            // else {
+            //     reducedCount++;
+            // }
+            if (!existingNotification || moment(notification.createdAt).isAfter(moment(existingNotification.createdAt))) {
                 if (existingNotification) {
-                    if (!existingNotification.read) {
+                    const isReplacingUnreadWithRead =
+                        !existingNotification.read && notification.read;
+                    if (isReplacingUnreadWithRead) {
                         reducedCount++;
                     }
                     existingEntry.notifications = existingEntry.notifications.filter(
@@ -37,10 +53,13 @@ export default function organizeNotificationsByDay(notifications) {
                     );
                 }
                 existingEntry.notifications.push(notification);
+            } else {
+                // Only increase reducedCount if the existing one is unread
+                if (!notification.read) {
+                    reducedCount++;
+                }
             }
-            else {
-                reducedCount++;
-            }
+
         };
 
         if (notification.type === "CHAT") {

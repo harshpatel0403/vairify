@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../components/Button";
@@ -34,6 +35,7 @@ const CustomNextArrow = ({ onClick }) => (
 );
 
 export default function MyCalendar() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -213,7 +215,7 @@ export default function MyCalendar() {
     <div className="container">
       <div className="max-w-[400px] mx-auto sm:my-[48px] my-[24px]">
         <div className="post-section">
-          <h4 className="font-medium text-[18px] text-white mb-1 text-center">Select Date</h4>
+          <h4 className="font-medium text-[18px] text-white mb-1 text-center">{t("calendar.selectDate")}</h4>
           <div className="mt-[24px]">
             <DatePicker
               selected={startDate}
@@ -230,7 +232,7 @@ export default function MyCalendar() {
 
           <div className="flex items-center justify-between gap-2 mt-[10px]">
             <button className="bg-[#FFFFFF] rounded-[8px] py-[7px] px-[20px] w-full max-w-[144px] text-[14px] font-medium text-[#060C4D] hover:scale-[0.97] transition-all duration-200">
-              Done
+              {t("calendar.done")}
             </button>
             <button
               className="bg-[#FFFFFF29] rounded-[8px] py-[7px] px-[20px] w-full max-w-[144px] text-[14px] font-medium text-white hover:scale-[0.97] transition-all duration-200"
@@ -239,12 +241,12 @@ export default function MyCalendar() {
                 setStartDate(new Date());
               }}
             >
-              Reset
+              {t("calendar.reset")}
             </button>
           </div>
           <div className="mt-[24px]">
             <div className="flex flex-col items-start justify-start">
-              <div className="text-white text-[18px] font-medium mb-1">Select Timing</div>
+              <div className="text-white text-[18px] font-medium mb-1">{t("calendar.selectTiming")}</div>
               <div className="flex gap-2 sm:justify-between sm:flex-nowrap flex-wrap items-center w-full">
                 <div className="flex gap-2 justify-center items-center">
                   {/* <SelectBox_
@@ -337,9 +339,9 @@ export default function MyCalendar() {
               </div>
             </div>
             <div className="mt-[24px] flex items-center justify-between">
-              <div className="text-white text-[18px] font-medium mb-1">Location</div>
+              <div className="text-white text-[18px] font-medium mb-1">{t("calendar.location")}</div>
               <Button
-                text={"+ Add"}
+                text={t("calendar.add")}
                 className={'max-w-[60px] !p-0'}
                 onClick={() => setAddSearchLocation(!addSearchLocation)}
               />
@@ -375,7 +377,7 @@ export default function MyCalendar() {
             {addSearchLocation && (
               <div className="flex flex-col items-start w-full mt-6 mb-1">
                 <p className="text-[18px] text-white text-start font-medium">
-                  Search
+                  {t("calendar.search")}
                 </p>
                 <div className="flex items-center justify-center w-full gap-4 sm:gap-5">
                   <div className="relative w-full">
@@ -387,7 +389,7 @@ export default function MyCalendar() {
                       }}
                     >
                       <option selected disabled className="text-black">
-                        Country
+                        {t("calendar.country")}
                       </option>
                       {Location.map((item) => {
                         return <option value={item} className="text-black">{item}</option>;
@@ -402,7 +404,7 @@ export default function MyCalendar() {
                       onChange={(e) => setSelectedCity(e.target.value)}
                       value={selectedCity}
                     >
-                      <option selected={!selectedCity} className="text-black">City</option>
+                      <option selected={!selectedCity} className="text-black">{t("calendar.city")}</option>
                       {City.map((item) => {
                         return (
                           <option
@@ -420,7 +422,7 @@ export default function MyCalendar() {
                 </div>
                 <Button
                   className={'my-[24px]'}
-                  text={"Save location "}
+                  text={t("calendar.saveLocation")}
                   onClick={() => {
                     HandleLocation();
                     setAddSearchLocation(!addSearchLocation);
@@ -438,7 +440,7 @@ export default function MyCalendar() {
                     value={frequency}
                   >
                     <option selected disabled>
-                      Frequency
+                      {t("calendar.frequency")}
                     </option>
                     {Frequency.map((item) => {
                       return <option value={item} className="text-black">{item}hrs</option>;
@@ -465,7 +467,7 @@ export default function MyCalendar() {
                     />
                   </FormGroup>
                   <p className="text-[18px] text-white text-start font-normal">
-                    Feature
+                    {t("calendar.feature")}
                   </p>
                 </div>
               </div>
@@ -476,15 +478,15 @@ export default function MyCalendar() {
               )}
             </div>
             <div className="my-[24px]">
-              <p className="text-[14px] font-normal text-white opacity-[0.7]">*1GRT Per Post</p>
+              <p className="text-[14px] font-normal text-white opacity-[0.7]">*{t("calendar.perPost")}</p>
               <p className="text-[14px] font-normal text-white opacity-[0.7]">
                 {" "}
-                *2GRT per day for Feature listing
+                *{t("calendar.featureListing")}
               </p>
             </div>
             <div className="w-full">
               <Button
-                text={"Review"}
+                text={t("calendar.review")}
                 onClick={HandleButton}
               />
             </div>

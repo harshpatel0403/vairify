@@ -6,8 +6,10 @@ import SetupService from "../../../services/SetupService";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../components/Header/Header";
 import PageTitle from "../../../components/PageTitle";
+import { useTranslation } from "react-i18next";
 
 const GoldenToken = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [token, setTokens] = useState(0);
   const [packages, setPackages] = useState([]);
@@ -52,7 +54,7 @@ const GoldenToken = () => {
     <div>
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Setup Payment"} />
+          <PageTitle title={t("goldentoken.pageTitle")} />
         </div>
       </div>
       <div className="container sm:p-[30px] p-0">
@@ -60,10 +62,9 @@ const GoldenToken = () => {
           <div className="p-[16px]">
             <div className="sm:flex hidden">
               <img src="/images/setup/rose.svg" alt="rose" />
-              <h3 className="text-[18px] font-normal text-white">Golden Rose <br />
-                Token</h3>
+              <h3 className="text-[18px] font-normal text-white">{t("goldentoken.tokenLabel")}</h3>
             </div>
-            <h4 className="text-[14px] font-normal text-white">Available Point</h4>
+            <h4 className="text-[14px] font-normal text-white">{t("goldentoken.availablePoints")}</h4>
             <h4 className="text-[32px] font-bold text-white">{token}</h4>
           </div>
           <img src="/images/setup/rose-file.svg" alt="file" className="mr-[20px] mt-[20px]" />
@@ -87,15 +88,16 @@ const GoldenToken = () => {
                 className={`${background} rounded-[18px] p-[16px] flex justify-between`}
               >
                 <div>
-                  <h4 className="text-[18px] font-normal text-white opacity-50">Golden Rose</h4>
+                  <h4 className="text-[18px] font-normal text-white opacity-50">{t("goldentoken.tokenLabel")}</h4>
                   <h5 className="text-[20px] font-medium text-white">
-                    {item.totalTokens} GTR’s for ${item.price}
+                    {/* {item.totalTokens} GTR’s for ${item.price} */}
+                    {t("goldentoken.packageLabel", { tokens: item.totalTokens, price: item.price })}
                   </h5>
                   <button
                     onClick={(e) => handelNavigate(e, item)}
                     className="bg-white px-[24px] py-1 rounded-[100px] border text-[#060C4D] border-white text-[14px] font-medium mt-[16px] shadow-2xl hover:scale-[0.95] transition-all duration-300"
                   >
-                    Buy
+                   {t("goldentoken.buy")}
                   </button>
                 </div>
                 <img src="/images/setup/gold-coins.svg" alt="gold" className="mt-auto" />

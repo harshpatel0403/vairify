@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "start:dev": "env-cmd -f .env.development npm start",
     "build:beta": "env-cmd -f .env.production npm run build",
-    "deploy": "scp -i ~/Downloads/vairify_splash.pem -r ~/Desktop/Work/upwork/Brian/varifiydate-pwa-v4/dist/* ubuntu@vairify.date:/var/www/vairify_v4_frontend",
+    "deploy-old": "scp -i ~/Downloads/vairify_splash.pem -r ~/Desktop/Work/upwork/Brian/varifiydate-pwa-v4/dist/* ubuntu@vairify.date:/var/www/vairify_v4_frontend",
+    "deploy": "scp -r ./dist/* root@54.177.71.106:/home/vairify-app/htdocs/app.vairify.io",
     "deployDirect": "scp -r ./dist/* vairify-app@54.177.71.106:/home/vairify-app/htdocs/app.vairify.io",
     "generate-pwa-assets": "pwa-assets-generator --preset minimal public/varify_logo.png"
   },

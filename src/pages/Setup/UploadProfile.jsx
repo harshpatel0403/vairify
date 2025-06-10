@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import Button from "../../components/Button";
 import UserService from "../../services/userServices";
 import React, { useState } from "react";
@@ -8,6 +9,7 @@ import { toast } from "react-toastify";
 import Loading from "../../components/Loading/Index";
 
 const UploadProfile = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -25,7 +27,7 @@ const UploadProfile = () => {
         .then((res) => {
           console.log(res);
           dispatch(HandleUser(UserDetails?._id));
-          toast("Profile Pic Uplaoded Successfully", {
+          toast(t("uploadprofile.success"), {
             hideProgressBar: true,
             autoClose: 1000,
             type: "success",
@@ -39,7 +41,7 @@ const UploadProfile = () => {
           });
         });
     } else {
-      toast("Please Upload your profile picture", {
+      toast(t("uploadprofile.errorNoFile"), {
         type: "error",
         hideProgressBar: false,
       });
@@ -52,7 +54,7 @@ const UploadProfile = () => {
     const file = e.target.files[0];
     if (file) {
       if (Math.round(file?.size / 1024 / 1024 > 1)) {
-        toast("Too Large File", {
+        toast(t("uploadprofile.errorTooLarge"), {
           type: "error",
           hideProgressBar: false,
         });
@@ -73,7 +75,7 @@ const UploadProfile = () => {
   return (
     <div className="main-container form-field-container flex flex-col justify-around h-[calc(100vh-210px)]">
       <div className="text-[27px] font-extrabold pt-7 pb-7 flex-0">
-        <span>Upload Profile Image</span>
+        <span>{t("uploadprofile.title")}</span>
       </div>
       <div className="w-full max-auto flex flex-col justify-center items-center image-upload-data flex-auto">
         <div className="w-full flex flex-col justify-center items-center">
@@ -105,7 +107,7 @@ const UploadProfile = () => {
             onClick={handleBrowseClick}
             className="photo-upload-btn text-white text-[20px] font-extrabold"
           >
-            Browse
+            {t("uploadprofile.browse")}
           </button>
           <input
             type="file"
@@ -121,7 +123,7 @@ const UploadProfile = () => {
       ) : (
         <Button
           onClick={handelUpload}
-          text="Upload"
+          text={t("uploadprofile.browse")}
           className={
             "flex items-center max-w-sm justify-center bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold text-[26px] py-2 shadow-[0px_10px_22px_rgba(0,0,0,0.5)]"
           }

@@ -1,23 +1,26 @@
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import NewPost from "../../../components/MarketPlace/NewPost";
 import ExistingPost from "../../../components/MarketPlace/ExistingPost";
 import MyCalendar from "./MyCalendar";
 import PageTitle from "../../../components/PageTitle";
 
-const tabs = [
-  { id: 1, name: "New Post" },
-  { id: 2, name: "Existing Post" },
-];
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export default function PostAnnouncement() {
+  const { t } = useTranslation();
   const [selecterdTab, setSelecterdTab] = useState(1);
+
+  const tabs = [
+    { id: 1, name: t("postAnnouncement.newPost") },
+    { id: 2, name: t("postAnnouncement.existingPost") },
+  ];
 
   return (
     <div className="container pb-[50px]">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Post Announcement"} />
+        <PageTitle title={t("postAnnouncement.title")} />
       </div>
       <div className="lg:grid grid-cols-12 gap-[24px] hidden">
         <div className=" xl:col-span-4 col-span-5">
@@ -60,9 +63,8 @@ export default function PostAnnouncement() {
   );
 }
 
-
-
-{/* <div className="container">
+{
+  /* <div className="container">
 <h3 className="text-white text-[28px] font-semibold text-center my-[48px]">
   Post Announcement
 </h3>
@@ -91,4 +93,5 @@ export default function PostAnnouncement() {
 {selecterdTab === 1 && <NewPost />}
 
 {selecterdTab === 2 && <ExistingPost />}
-</div> */}
+</div> */
+}

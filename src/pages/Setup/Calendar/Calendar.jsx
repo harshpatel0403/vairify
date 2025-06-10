@@ -1,4 +1,5 @@
 import React, { Children, cloneElement, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { views } from "react-big-calendar/lib/utils/constants"; // Import 'views' separately from the constants module
 import format from "date-fns/format";
@@ -14,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { Select, MenuItem } from "@mui/material";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+// import "react-big-calendar/lib/css/react-big-calendarSchedules.css";
 import enUSLocale from "date-fns/locale/en-US";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { addMonths, subMonths } from "date-fns";
@@ -101,6 +102,7 @@ const TouchCellWrapper = ({ children, value, onSelectSlot }) =>
 Modal.setAppElement("#root");
 
 export default function CalendarSchedules() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -371,7 +373,7 @@ export default function CalendarSchedules() {
           }}
           disabled={view === views.MONTH}
         >
-          Month
+          {t("calendarSchedules.month")}
         </button>
         <button
           className={` w-full min-w-fit border border-[#919EAB33]  pl-3 pr-3 h-[48px] font-bold text-base text-white
@@ -381,7 +383,7 @@ export default function CalendarSchedules() {
           }}
           disabled={view === views.WEEK}
         >
-          Week
+          {t("calendarSchedules.week")}
         </button>
         <button
           className={` w-full min-w-fit border border-[#919EAB33]  pl-3 pr-3 h-[48px] font-bold text-base text-white
@@ -389,7 +391,7 @@ export default function CalendarSchedules() {
           onClick={goToDayView}
           disabled={view === views.DAY}
         >
-          Day
+          {t("calendarSchedules.day")}
         </button>
         <button
           className={` w-full min-w-fit border border-[#919EAB33]  pl-3 pr-3 h-[48px] font-bold text-base text-white
@@ -402,7 +404,7 @@ export default function CalendarSchedules() {
           }}
           disabled={view === views.AGENDA}
         >
-          Agenda
+          {t("calendarSchedules.agenda")}
         </button>
       </div>
     );
@@ -450,7 +452,7 @@ export default function CalendarSchedules() {
     <div className="min-h-[calc(100vh-[282px)]">
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Calendar"} />
+          <PageTitle title={t("calendarSchedules.title")} />
         </div>
         <div className="w-full mx-auto flex flex-col justify-center items-center sm:my-[48px] my-[24px]">
           <div className="w-full mx-auto flex flex-row p-2 justify-center items-center gap-[24px] bg-[#FFFFFF14] border border-[#919EAB33] border-b-0">
@@ -529,7 +531,7 @@ export default function CalendarSchedules() {
                   <div>
                     <div className="mb-[50px]">
                       <h3 className="font-bold text-center sm:text-[18px] text-[14px] sm:w-[90%] w-[70%] mx-auto text-black break-all text-wrap">
-                        Appt ID# {selectEvent?.id}
+                        {t("calendarSchedules.appointmentId")} #{selectEvent?.id}
                         {UserDetails?.user_type}
                       </h3>
 
@@ -590,13 +592,13 @@ export default function CalendarSchedules() {
                  */}
                     </div>
                     <div className="flex items-center gap-5 w-full mb-[12px]">
-                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">Location</p>
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">{t("calendarSchedules.location")}</p>
                       <h6 className="font-normal text-[14px] text-black">
                         {selectEvent?.type}
                       </h6>
                     </div>
                     <div className="flex items-center gap-5 w-full mb-[12px]">
-                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">Client Name & ID</p>
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">{t("calendarSchedules.clientNameId")}</p>
                       <h6 className="font-normal text-[14px] text-black">
                         {
                           selectEvent?.[
@@ -619,15 +621,15 @@ export default function CalendarSchedules() {
                       </h6>
                     </div>
                     <div className="flex items-center gap-5 w-full mb-[8px]">
-                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">Descriptions </p>
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">{t("calendarSchedules.description")}</p>
                       <h6 className="font-normal text-[14px] text-black">
                         {selectEvent?.title}
                       </h6>
                     </div>
                     <div className="flex items-center gap-5 w-full mb-[8px]">
-                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">start time </p>
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">{t("calendarSchedules.startTime")}</p>
                       <h6 className="font-normal text-[14px] text-black">
-                        {new Date(selectEvent.startDateTime).toLocaleString('en-GB', {
+                        {new Date(selectEvent?.startDateTime).toLocaleString('en-GB', {
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric',
@@ -639,9 +641,9 @@ export default function CalendarSchedules() {
                       </h6>
                     </div>
                     <div className="flex items-center gap-5 w-full mb-[8px]">
-                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">end time </p>
+                      <p className="text-[#212B36] text-[14px] font-medium w-full max-w-[140px]">{t("calendarSchedules.endTime")}</p>
                       <h6 className="font-normal text-[14px] text-black">
-                        {new Date(selectEvent.endDateTime).toLocaleString('en-GB', {
+                        {new Date(selectEvent?.endDateTime).toLocaleString('en-GB', {
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric',
@@ -651,7 +653,7 @@ export default function CalendarSchedules() {
                           timeZone: 'UTC'
                         }).replace(',', ' -')}
                       </h6>
-                    </div>c
+                    </div>
                     {/* <div className="w-full mx-auto flex flex-row justify-between items-center gap-2 relative py-2 calendar-picker ">
                       <DatePicker
                         showIcon
@@ -672,7 +674,7 @@ export default function CalendarSchedules() {
                       />
                     </div> */}
                   </div>
-                  <Button text={'View'} onClick={() => navigateToviewall(selectEvent)} className={'secondary-btn !mt-[24px] sm:mt-auto'} />
+                  <Button text={t("calendarSchedules.view")} onClick={() => navigateToviewall(selectEvent)} className={'secondary-btn !mt-[24px] sm:mt-auto'} />
                 </div>
               </Modal>
             </div>

@@ -17,6 +17,7 @@ import PostDetails from "./PostDetails";
 import Modal from 'react-modal';
 import Button from "../../../components/Button";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import Loading from "../../../components/Loading/Index";
 const vairipayOptions = [
   { img: "images/fe (1).png", dis: "Lexi 57I90H7" },
   { img: "images/fe (2).png", dis: "Lexi 57I90H7" },
@@ -123,7 +124,7 @@ const Featured = () => {
   const [orientationOptions, setOrientationOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [particularPostItem, setParticularPostItem] = useState({});
-  const [like, setLike] = useState(false);
+  const [likeUnlike, setLikeUnlike] = useState(false);
   const [selectedOption, setSelectedOption] = useState({
     businesstype: "All",
     orientation: "",
@@ -141,7 +142,7 @@ const Featured = () => {
 
   useEffect(() => {
     dispatch(HandleGetAllPost());
-  }, []);
+  }, [likeUnlike]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -178,6 +179,8 @@ const Featured = () => {
       setSelectedOption({ ...selectedOption, swingers: value });
     } else if (type == "resorts") {
       setSelectedOption({ ...selectedOption, resorts: value });
+    } else if (type === "store") {
+      setSelectedOption({ ...selectedOption, store: value });
     } else if (type == "fetish") {
       setSelectedOption({ ...selectedOption, fetish: value });
     } else if (type == "advocacy") {
@@ -189,17 +192,22 @@ const Featured = () => {
 
   const closeModal = () => {
     setIsOpen(false);
+    setParticularPostItem({})
+    dispatch(HandleGetAllPost());
   }
   const HandleLike = async (id) => {
     try {
+      setLikeUnlike(true);
       const body = {
         userId: UserDetails?._id,
       };
-      dispatch(HandleLikePost(id, body));
+      await dispatch(HandleLikePost(id, body));
       dispatch(HandleGetAllPost());
     } catch (error) {
       console.error(error);
-      setLike(false);
+    }
+    finally {
+      setLikeUnlike(false);
     }
   };
   const updateOrientationOptions = (selectedGender) => {
@@ -928,13 +936,12 @@ const Featured = () => {
                       <div
                         className="flex items-center gap-[6px] cursor-pointer"
                         onClick={() => {
-                          setLike(like ? false : true);
-                          HandleLike(item?._id)
-                        }
-                        }
+                          HandleLike(item?._id);
+                        }}
+
                       >
-                        {(like || likedByUser) ? <img src="/images/home/like.svg" alt={(like || likedByUser) ? "Liked" : "Like"}
-                        /> : <img src="/images/home/like_outline.svg" alt={(like || likedByUser) ? "Liked" : "Like"}
+                        {likedByUser ? <img src="/images/home/like.svg" alt={likedByUser ? "Liked" : "Like"}
+                        /> : <img src="/images/home/like_outline.svg" alt={likedByUser ? "Liked" : "Like"}
                         />}
                         <span
                           className=" text-white font-medium text-base"
@@ -971,7 +978,7 @@ const Featured = () => {
                       <div className="mt-2"></div>
                     ) : (
                       <div className="mt-2 mb-4 w-fit">
-                        {UserDetails?.user_type === "client-hobbyist" ? (
+                        {UserDetails?.user_type === "client-hobbyist" && item?.userId?.user_type !== "client-hobbyist" ? (
                           <Button className={'px-2 !py-1 !text-[14px]'} onClick={() => handleRequestVairidate(item)} text={'Request VAIRIDATE'} />
                         ) : (
                           ""

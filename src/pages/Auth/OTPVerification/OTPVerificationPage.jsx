@@ -14,7 +14,7 @@ import BackButton from "../../../components/BackButton/backArrowButton";
 
 export default function OTPVerificationPage() {
   const dispatch = useDispatch();
-   const { t } = useTranslation();
+  const { t } = useTranslation();
   const { state } = useLocation();
   const OTPEmail = useSelector((state) => state?.Auth?.OTPEmail);
   const [error, setError] = useState(false);
@@ -93,7 +93,8 @@ export default function OTPVerificationPage() {
                     if (usr?.isKycCompleted) {
                       navigate("/featured");
                     } else {
-                      navigate("/vai");
+                      // navigate("/vai");
+                      navigate('/setup')
                     }
                   } else {
                     navigate("/get-vai")
@@ -160,80 +161,80 @@ export default function OTPVerificationPage() {
   return (
     <div className="signup-backgound-design">
       <div className="signup-container container">
-    <div className="signup-content relative">
-      <div className="backnavigation"><BackButton /></div>
-      <div className="logo-img-container"> 
-        <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
-        <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
-      </div>
-      <div className="main-container grid grid-cols-12 w-[100%] form-field-container mt-[64px]">
-        <div className="lg:col-span-5 col-span-12">
-         <div className="lg:block flex justify-center items-center">
-         <img src={"/images/signup/otp-img.svg"} alt="otp Image" />
-         </div>
-        </div>
-        <div className=" lg:col-span-7 col-span-12">
-          <h4 className='sm:text-[28px] text-[24px] font-semibold text-white'> {t("otp.verifyTitle")}</h4>
-          <h5 className='text-[18px] font-normal text-white opacity-80'>{t("otp.verifySubtitle")}</h5>
-          {!error ? (
-            <div className="text-[14px] sm:text-[18px] font-normal text-white mt-[24px]">
-              <span className=''>
-                {t("otp.otpSentMsg")}
-              </span>
-            </div>
-          ) : (
-            <div className="text-red-500">
-              <div className="text-[14px] sm:text-[18px] font-normal mt-[24px] w-[70%]">
-                {t("otp.incorrectCode")}
+        <div className="signup-content relative">
+          <div className="backnavigation"><BackButton /></div>
+          <div className="logo-img-container">
+            <img src="/images/signup/logo.svg" className="sm:flex hidden" alt="img" />
+            <img src="/images/signup/mobile-logo.svg" className="sm:hidden flex" alt="img" />
+          </div>
+          <div className="main-container grid grid-cols-12 w-[100%] form-field-container mt-[64px]">
+            <div className="lg:col-span-5 col-span-12">
+              <div className="lg:block flex justify-center items-center">
+                <img src={"/images/signup/otp-img.svg"} alt="otp Image" />
               </div>
-              {/* <a href="#" className="text-black text-[22px] font-bold">
+            </div>
+            <div className=" lg:col-span-7 col-span-12">
+              <h4 className='sm:text-[28px] text-[24px] font-semibold text-white'> {t("otp.verifyTitle")}</h4>
+              <h5 className='text-[18px] font-normal text-white opacity-80'>{t("otp.verifySubtitle")}</h5>
+              {!error ? (
+                <div className="text-[14px] sm:text-[18px] font-normal text-white mt-[24px]">
+                  <span className=''>
+                    {t("otp.otpSentMsg")}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-red-500">
+                  <div className="text-[14px] sm:text-[18px] font-normal mt-[24px] w-[70%]">
+                    {t("otp.incorrectCode")}
+                  </div>
+                  {/* <a href="#" className="text-black text-[22px] font-bold">
               resend
             </a> */}
-              <button className="text-[16px] sm:!text-[18px] font-normal w-full text-white mt-[10px] text-center underline" onClick={handleResendOtp}>
-                {t("otp.resend")}
-              </button>
-            </div>
-          )}
-          <div className="mt-[24px] otp-field-collection max-w-[500px]">
-            <OtpInput
-              value={otp}
-              onChange={handleOtpChange}
-              numInputs={6}
-              renderSeparator={<span> </span>}
-              renderInput={(props) => (
-                <input
-                  {...props}
-                  className={`flex-1 rounded-[8px] mr-2 border-2 border-[#919EAB] w-full sm:!h-[67px] h-[50px] h-[40px] max-w-[76px] text-center form-control otp_input bg-transparent sm:text-[30px] text-[18px] text-white "
-                    type="text`}
-                  style={{
-                    borderColor: errorMessage.otp ? `#ef4444` : "#919EAB",
-                  }}
-                />
-              )}
-            />
-          </div>
-          {errorMessage.otp && (
-            <label className="text-red-500 text-sm flex items-baseline pt-[2px]">
-              {errorMessage.otp}
-            </label>
-          )}
-          <div className="flex w-full h-fit justify-center mt-[24px] max-w-[500px] mb-4">
-            <Button
-              text={!isLoading ? ("Verify now") : (
-                <div className="flex items-center	justify-center">
-                  <Loading />
+                  <button className="text-[16px] sm:!text-[18px] font-normal w-full text-white mt-[10px] text-center underline" onClick={handleResendOtp}>
+                    {t("otp.resend")}
+                  </button>
                 </div>
-              )
-              }
-              onClick={submitOtp}
-              disabled={isLoading}
-            />
+              )}
+              <div className="mt-[24px] otp-field-collection max-w-[500px]">
+                <OtpInput
+                  value={otp}
+                  onChange={handleOtpChange}
+                  numInputs={6}
+                  renderSeparator={<span> </span>}
+                  renderInput={(props) => (
+                    <input
+                      {...props}
+                      className={`flex-1 rounded-[8px] mr-2 border-2 border-[#919EAB] w-full sm:!h-[67px] h-[50px] h-[40px] max-w-[76px] text-center form-control otp_input bg-transparent sm:text-[30px] text-[18px] text-white "
+                    type="text`}
+                      style={{
+                        borderColor: errorMessage.otp ? `#ef4444` : "#919EAB",
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              {errorMessage.otp && (
+                <label className="text-red-500 text-sm flex items-baseline pt-[2px]">
+                  {errorMessage.otp}
+                </label>
+              )}
+              <div className="flex w-full h-fit justify-center mt-[24px] max-w-[500px] mb-4">
+                <Button
+                  text={!isLoading ? ("Verify now") : (
+                    <div className="flex items-center	justify-center">
+                      <Loading />
+                    </div>
+                  )
+                  }
+                  onClick={submitOtp}
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
           </div>
         </div>
-
       </div>
     </div>
-        </div>
-        </div>
   );
 }

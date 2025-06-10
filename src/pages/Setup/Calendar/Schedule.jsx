@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "react-modal";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Button from "../../../components/Button";
@@ -16,6 +17,7 @@ import Header from "../../../components/Header/Header";
 import PageTitle from "../../../components/PageTitle";
 
 export default function Schedule() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { state } = useLocation();
@@ -110,16 +112,16 @@ export default function Schedule() {
       <div className="container ">
         <div className="">
           <div className="md:flex hidden justify-center items-center relative w-full mt-[48px]">
-            <Button text={'+ Create New'} className='!w-fit px-4 !absolute left-0 py-[6px] navy-text-btn' onClick={() => navigate("/set-schedule")} />
+            <Button text={t("schedule.createNew")} className='!w-fit px-4 !absolute left-0 py-[6px] navy-text-btn' onClick={() => navigate("/set-schedule")} />
             <div className="sm:text-[28px] text-2xl font-semibold text-white md:block hidden">
               Schedule
             </div>
           </div>
           <div className="md:hidden block md:mb-0 sm:mb-[30px] mb-0">
-            <PageTitle title={'Schedule'} />
+            <PageTitle title={t("schedule.title")} />
           </div>
           <div className="md:hidden block">
-            <Button text={'+ Create New'} className='!w-fit px-4  py-[6px] navy-text-btn mt-4' onClick={() => navigate("/set-schedule")} />
+            <Button text={t("schedule.createNew")} className='!w-fit px-4  py-[6px] navy-text-btn mt-4' onClick={() => navigate("/set-schedule")} />
           </div>
           {/* <div className="w-full mx-auto flex flex-row justify-around items-center mt-2">
           {staff == "schedule" ? (
@@ -223,7 +225,7 @@ export default function Schedule() {
                           : "text-[#08FA5A] bg-[#008F3429]"
                           }`}
                       >
-                        {event.status !== "active" ? "In active" : "Active"}
+                        {event.status !== "active" ? t("schedule.deactivate") :t("schedule.activate") }
                       </div>
                     </div>
                     <div className="flex gap-[10px] items-center mt-[14px]">
@@ -314,7 +316,7 @@ export default function Schedule() {
               ) : (
                 <div className="col-span-2 flex justify-center items-center h-[100px]">
                   <span className="text-xl text-white font-bold text-center opacity-[0.7]">
-                    Schedules are not found
+                     {t("schedule.noSchedules")}
                   </span>
                 </div>
               )}
@@ -337,7 +339,7 @@ export default function Schedule() {
           </button>
           <div className="w-full mx-auto flex flex-col justify-center items-center mt-2">
             <div className="font-bold text-base text-[#212B36] text-center mt-6 w-[90%] mx-auto">
-              Are you sure you want to delete your schedule?
+               {t("schedule.deleteConfirm")}
             </div>
             <div className="w-full flex items-center mt-4 gap-[16px]">
               <button
@@ -348,14 +350,14 @@ export default function Schedule() {
                 {isLoading ? (
                   <Loading size={24} />
                 ) : (
-                  "Yes"
+                  t("common.yes")
                 )}
               </button>
               <button
                 onClick={() => setIsDeleteOpen(false)}
                 className="bg-[#008F34] rounded-[8px] font-Roboto font-normal text-sm text-white py-2 px-2 w-full"
               >
-                No
+                {t("common.no")}
               </button>
             </div>
           </div>

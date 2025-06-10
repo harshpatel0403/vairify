@@ -2,17 +2,29 @@ import Button from "../../../components/Button";
 import { Link } from "react-router-dom";
 import Header from "../../../components/Header/Header";
 import PageTitle from "../../../components/PageTitle";
+import { useTranslation } from "react-i18next";
 
 export default function Varipay() {
+  const { t } = useTranslation();
   return (
     <div className="container">
       <div className="sm:pb-[48px] pb-[24px]">
-      <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Setup Payment"} />
+        <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
+          <PageTitle title={t("vairipaysetup.pageTitle")} />
         </div>
         <div className="mt-[28px] grid sm:grid-cols-2 grid-cols-1 gap-[24px]">
-          <div> <Link to="/vairipay-search"><img src="/images/setup/pay.svg" alt="img" /></Link></div>
-          <div> <Link to="/goldentoken"><img src="/images/setup/golden-rose.svg" alt="img" /></Link></div>
+          <div>
+            {" "}
+            <Link to="/vairipay-search">
+              <img src="/images/setup/pay.svg" alt="img" />
+            </Link>
+          </div>
+          <div>
+            {" "}
+            <Link to="/goldentoken">
+              <img src="/images/setup/golden-rose.svg" alt="img" />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -43,7 +55,7 @@ export default function Varipay() {
     </Link>
   </div>
   <p className="text-[22px] font-bold text-center pb-[3px]">
-    Payment Apps
+    {t("vairipaysetup.paymentApps")}
   </p>
   </div>
   <div className="golden-block mt-4">
@@ -58,7 +70,7 @@ export default function Varipay() {
     </Link>
   </div>
   <p className="text-[22px] font-bold text-center pb-[3px]">
-    Golden Rose Tokens
+    {t("vairipaysetup.goldenRose")}
   </p>
   </div>
   
@@ -78,5 +90,3 @@ export default function Varipay() {
     </div>
   );
 }
-
-

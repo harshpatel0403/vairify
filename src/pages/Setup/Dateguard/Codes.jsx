@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "../../../components/Button";
+import { useTranslation } from "react-i18next";
 import OtpInput from "react-otp-input";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,6 +10,7 @@ import PageTitle from "../../../components/PageTitle";
 
 const Codes = () => {
   const navigation = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [disarm, setDisarm] = useState("");
   const [decoy, setDecoy] = useState("");
@@ -17,10 +19,10 @@ const Codes = () => {
     try {
       setLoading(true);
       if (!decoy || !disarm) {
-        throw new Error("Both codes are required");
+        throw new Error(t("dateguardcodes.errorBothCodes"));
       }
       if (decoy === disarm) {
-        throw new Error("Codes cannot be the same");
+        throw new Error(t("dateguardcodes.errorSameCode"));
       }
       // await DateGuardService.setupCodes('64f598f712862abd5beb1e4b', {
       //     decoy,
@@ -40,12 +42,12 @@ const Codes = () => {
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Date Guard"} />
+        <PageTitle title={t("dateguardcodes.pageTitle")} />
       </div>
       <form onSubmit={handleCodeSubmit}>
         <div className="flex items-center justify-center gap-[24px] flex-col mb-[48px]">
           <img src="/images/setup/Disarm.svg" alt="Disarm" />
-          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white">Set Disarm Code</h3>
+          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white">{t("dateguardcodes.setDisarmHeading")}</h3>
 
           <div>
             <OtpInput
@@ -66,7 +68,7 @@ const Codes = () => {
                 <input className='flex-1 m-2 border-2 border-[#4200FF] h-[78px] max-w-[61px] text-center bg-[#D9D9D9] text-[35px] input-code-box' type="text" id="third" maxLength='1' /> */}
           </div>
 
-          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white">Set Decoy Code</h3>
+          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white">{t("dateguardcodes.setDecoyHeading")}</h3>
 
           <div>
             <OtpInput
@@ -91,7 +93,7 @@ const Codes = () => {
             disabled={loading}
             text={loading ? <div className="flex items-center	justify-center">
               <Loading />
-            </div> : "Set"}
+            </div> : t("dateguardcodes.submitButton")}
             className={'max-w-[500px]'}
           />
         </div>

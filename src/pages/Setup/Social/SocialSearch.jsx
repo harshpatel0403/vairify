@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../../services/AuthService";
 import SearchBox from "../../../components/SearchBox";
@@ -8,10 +9,12 @@ import InputText from "../../../components/InputText";
 import Button from "../../../components/Button";
 import Loading from "../../../components/Loading/Index";
 import SocialServices from "../../../services/SocialServices";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PageTitle from "../../../components/PageTitle";
 
 const SocialSearch = () => {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countries, setCountries] = useState([]);
   const [social, setSocial] = useState([]);
@@ -63,7 +66,7 @@ const SocialSearch = () => {
     const filledLinks = platforms.filter((platform) => socialLinks[platform]);
 
     if (filledLinks.length === 0) {
-      toast.error("Please enter a valid social link");
+      toast.error(t("socialsearch.errorNoLink"));
       return;
     }
     setLoading(true);
@@ -78,8 +81,12 @@ const SocialSearch = () => {
     });
 
     Promise.all(promises)
-      .then(() => {
-        toast.success("Social links added successfully");
+      .then((response) => {
+        toast.success(t("socialsearch.success"));
+        dispatch({
+          type: "GET_SOCIAL_LINKS_SUCCESS",
+          payload: response?.data,
+        })
         setLoading(false);
         navigate(-1);
       })
@@ -144,7 +151,7 @@ const SocialSearch = () => {
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Social"} />
+        <PageTitle title={t("socialsearch.title")} />
       </div>
       <div className="w-full mx-auto flex flex-col justify-center items-center">
         <div className="select-arrow w-full mb-[24px]">
@@ -154,7 +161,7 @@ const SocialSearch = () => {
             value={selectedCountry}
             onChange={handleSelectChange}
           >
-            <option value="" className="text-black">Search Country (Any)</option>
+            <option value="" className="text-black">{t("socialsearch.searchCountry")}</option>
             {countries?.map((country) => (
               <option key={country._id} value={country.name} className="text-black">
                 {country.name}
@@ -204,9 +211,9 @@ const SocialSearch = () => {
         <div>
           <div className="flex gap-2 items-center mb-2">
             <img src="/images/setup/facebook.svg" alt="facebook" />
-            <p className="text-sm font-normal text-white">Facebook</p>
+            <p className="text-sm font-normal text-white">{t("socialsearch.facebook")}</p>
           </div>
-          <InputText placeholder='Facebook URL' className='rounded-[8px] border-[#919EAB33]' value={socialLinks?.facebook} onChange={(e) => {
+          <InputText placeholder={t("socialsearch.facebookPlaceholder")} className='rounded-[8px] border-[#919EAB33]' value={socialLinks?.facebook} onChange={(e) => {
             setSocialLinks((prevVal) => ({
               ...prevVal,
               facebook: e.target.value
@@ -255,7 +262,7 @@ const SocialSearch = () => {
           <div className="flex justify-center items-center">
             <Loading />
           </div>
-        ) : 'Save'} className='max-w-[500px] mb-[48px]' size='48px' onClick={handleSubmit} />
+        ) : t("socialsearch.save")} className='max-w-[500px] mb-[48px]' size='48px' onClick={handleSubmit} />
       </div>
     </div>
   );

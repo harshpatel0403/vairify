@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment-timezone";
@@ -10,6 +11,7 @@ import { useEffect } from "react";
 import { HandleUser } from "../../../redux/action/Auth";
 
 export default function PostReview() {
+  const { t } = useTranslation();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -110,7 +112,7 @@ export default function PostReview() {
     <div className="container mb-[48px]">
       <div>
         <h3 className="text-white text-center text-[28px] font-medium my-[48px]">
-          Review Post
+          {t("postReview.reviewPost")}
         </h3>
       </div>
       <div className="bg-white rounded-[16px] p-[24px] max-w-[500px] mx-auto">
@@ -138,7 +140,7 @@ export default function PostReview() {
         <div className="w-full flex flex-col items-center bg-[#919EAB29] rounded-[16px] p-[16px] mt-[24px]">
           <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Date</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">{t("postReview.date")}</h5>
             </div>
             <h5 className="text-[16px] font-medium text-end text-[#212B36]">
               {formattedDateRange}
@@ -146,7 +148,7 @@ export default function PostReview() {
           </div>
           <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Time</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">{t("postReview.time")}</h5>
             </div>
             <h5 className="text-[16px] font-medium text-end text-[#212B36]">
               {state?.Repost ? convertToLocalTime(`${state?.time?.from?.split(' ')[1]} to ${state?.time?.to?.split(' ')[1]}`)
@@ -157,7 +159,7 @@ export default function PostReview() {
           </div>
           <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Location</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">{t("postReview.location")}</h5>
             </div>
             <h5 className="text-[16px] font-medium text-end text-[#212B36]">
               {state?.city ? `${state?.location} - ${state?.city}` : state?.location}
@@ -165,7 +167,7 @@ export default function PostReview() {
           </div>
           <div className="flex itmes-center justify-between gap-2 w-full mb-[8px]">
             <div className="text-start">
-              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">Frequency</h5>
+              <h5 className="text-[16px] font-normal text-[#212B36] opacity-70">{t("postReview.frequency")}</h5>
             </div>
             <h5 className="text-[16px] font-medium text-end text-[#212B36]">
               {state?.frequency}hr Intervals
@@ -175,7 +177,7 @@ export default function PostReview() {
 
         <div className="w-full flex items-center justify-between bg-[#919EAB29] rounded-[16px] p-[16px] mt-[24px]">
           <div>
-            <h3 className="text-[16px] font-medium text-[#212B36]">Total</h3>
+            <h3 className="text-[16px] font-medium text-[#212B36]">{t("postReview.total")}</h3>
           </div>
           <h3 className="text-[16px] font-medium text-end text-[#212B36]">
             {state?.totalGRT}
@@ -186,7 +188,7 @@ export default function PostReview() {
             <div className="w-full flex items-center justify-between bg-[#919EAB29] rounded-[16px] p-[16px] my-[24px]">
               <div>
                 <h3 className="text-[16px] font-medium text-[#212B36]">
-                  Credits:
+                   {t("postReview.credits")}
                 </h3>
               </div>
               <h3 className="text-[16px] font-medium text-end text-[#212B36]">
@@ -199,7 +201,7 @@ export default function PostReview() {
                 className={'secondary-btn'}
                 text={
                   !isLoading ? (
-                    "Checkout"
+                    t("postReview.checkout")
                   ) : (
                     <div className="flex items-center justify-center">
                       <Loading />

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { HandleSelectServices } from "../../redux/action/Services";
+import { useTranslation } from "react-i18next";
 
 export default function Massage() {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const service = useSelector((state) => state?.Services?.selectServices);
   console.log("🚀 ~ file: Massage.jsx:8 ~ Massage ~ service:", service)
 
@@ -89,7 +91,7 @@ export default function Massage() {
     <div className="w-full">
       <div className="w-full mx-auto flex flex-col justify-center items-center ">
         <div className="pb-[24px] text-lg text-white font-medium">
-          Traditional Massage
+          {t("massage.traditionalTitle")}
         </div>
         <div className="grid grid-cols-2 sm:gap-[24px] gap-[16px] w-full">
           {traditionalMassage.map((item) => (
@@ -117,7 +119,7 @@ export default function Massage() {
           ))}
         </div>
         <div className="py-[24px] text-lg text-white font-medium">
-          Sensual Massage
+          {t("massage.sensualTitle")}
         </div>
         <div className="grid grid-cols-2 sm:gap-[24px] gap-[16px] w-full">
           {sensualMassage.map((items) => (
@@ -145,7 +147,7 @@ export default function Massage() {
           ))}
         </div>
         <div className="py-[24px] text-lg text-white font-medium">
-          Release
+          {t("massage.release")}
         </div>
         <div className="grid grid-cols-2 sm:gap-[24px] gap-[16px] w-full">
           {release.map((data) => (

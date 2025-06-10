@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import DateGuardService from "../../../services/DateGuardService";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -10,9 +11,9 @@ import Loading from "../../../components/Loading/Index";
 import { MdPersonAdd } from "react-icons/md";
 import PageTitle from "../../../components/PageTitle";
 
-
 export default function DateGuardAddMember() {
   const params = useParams();
+  const { t } = useTranslation();
   const nav = useNavigate();
   const { state } = useLocation();
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,7 @@ export default function DateGuardAddMember() {
 
   useEffect(() => {
     if (!params.groupId) {
-      toast.error("Invalid Url");
+      toast.error(t("dateguardaddmember.invalidUrl"));
       nav(-1);
       return;
     }
@@ -75,7 +76,7 @@ export default function DateGuardAddMember() {
   const handelAddMembers = (e) => {
     e.preventDefault();
     nav(`/dateguard/add-member/${params.groupId}/select-member`, {
-      state: { body: state?.body }
+      state: { body: state?.body },
     });
   };
 
@@ -94,18 +95,19 @@ export default function DateGuardAddMember() {
           <PageTitle title={groupDetails?.name} isSmall={true} />
         </div>
         <div className="relative md:py-0 py-[40px] md:block hidden">
-          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white my-[48px] md:block hidden">{groupDetails?.name}</h3>
+          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white my-[48px] md:block hidden">
+            {groupDetails?.name}
+          </h3>
           <div className=" absolute right-0 md:top-0 top-[40px]">
             <Button
               onClick={(e) => handelAddMembers(e)}
-              text='+ Add Members'
+              text={t("dateguardaddmember.addMembersBtn")}
               className={
                 "font-medium text-[14px] text-[#060C4D] text-center py-[6px] px-[12px]"
               }
             />
           </div>
         </div>
-
 
         <div className="my-[48px] grid sm:grid-cols-2 grid-cols-1 gap-[24px]">
           {groupDetails?.members?.map((member, index) => {
@@ -114,34 +116,52 @@ export default function DateGuardAddMember() {
               .split(" ")
               .filter(Boolean)
               .slice(0, 2)
-              .map(word => word[0])
+              .map((word) => word[0])
               .join("")
               .toUpperCase();
             return (
-              <div key={index} className="flex items-center justify-between gap-2">
+              <div
+                key={index}
+                className="flex items-center justify-between gap-2"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-[50px] h-[50px] rounded-full bg-[#FFFFFF14] flex items-center gap-1 justify-center text-white text-lg font-semibold">
                     {initials}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h2 className="text-white text-[14px] font-normal">{member?.memberId?.name}</h2>
-                    <h2 className="text-white text-[14px] opacity-70 font-normal">{member?.memberId?.phoneNumber}</h2>
+                    <h2 className="text-white text-[14px] font-normal">
+                      {member?.memberId?.name}
+                    </h2>
+                    <h2 className="text-white text-[14px] opacity-70 font-normal">
+                      {member?.memberId?.phoneNumber}
+                    </h2>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="text-white text-[12px] font-normal">{member.status == "Invited" ? (<span className='bg-[#0085B9] py-[8px] px-[16px] rounded-lg'>Invited</span>) : (<span className='bg-[#4700B9] py-[8px] px-[16px] rounded-lg'>Accepted</span>)}</div>
-                  <button
-                    onClick={() => handleShowDelete(member)}
-                  >
+                  <div className="text-white text-[12px] font-normal">
+                    {member.status == "Invited" ? (
+                      <span className="bg-[#0085B9] py-[8px] px-[16px] rounded-lg">
+                        {t("dateguardaddmember.invited")}
+                      </span>
+                    ) : (
+                      <span className="bg-[#4700B9] py-[8px] px-[16px] rounded-lg">
+                        {t("dateguardaddmember.accepted")}
+                      </span>
+                    )}
+                  </div>
+                  <button onClick={() => handleShowDelete(member)}>
                     <RiDeleteBin6Line color="#ffffff" size={20} />
                   </button>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
         <div className="md:hidden block fixed right-[16px] bottom-[32px] z-50">
-          <button className="bg-white rounded-full h-[52px] w-[52px] flex items-center justify-center" onClick={(e) => handelAddMembers(e)}>
+          <button
+            className="bg-white rounded-full h-[52px] w-[52px] flex items-center justify-center"
+            onClick={(e) => handelAddMembers(e)}
+          >
             <MdPersonAdd color="#060C4D" size={20} />
           </button>
         </div>
@@ -149,11 +169,9 @@ export default function DateGuardAddMember() {
         {showModal ? (
           <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-              <div
-                className="relative w-[90%] mx-auto p-[24px] rounded-2xl max-w-[500px] bg-white"
-              >
+              <div className="relative w-[90%] mx-auto p-[24px] rounded-2xl max-w-[500px] bg-white">
                 {/*content*/}
-                <form onSubmit={() => { }}>
+                <form onSubmit={() => {}}>
                   <div className="">
                     {/*header*/}
                     <button
@@ -164,15 +182,29 @@ export default function DateGuardAddMember() {
                     </button>
                     {/*body*/}
                     <div className="relative">
-                      <h2 className="text-[#212B36] font-medium text-[20px] text-center">{memberToDelete?.memberId?.name} </h2>
-                      <p className="text-[#212B36] font-medium text-[16px] text-center opacity-80 mt-1">Remove from the group {groupDetails.name}</p>
+                      <h2 className="text-[#212B36] font-medium text-[20px] text-center">
+                        {t("dateguardaddmember.removeModalTitle", {
+                          name: memberToDelete?.memberId?.name,
+                        })}{" "}
+                      </h2>
+                      <p className="text-[#212B36] font-medium text-[16px] text-center opacity-80 mt-1">
+                        {t("dateguardaddmember.removeModalMessage", {
+    groupName: groupDetails.name
+  })}
+                      </p>
                       <div className="w-full mx-auto flex flex-col justify-center items-center">
                         <div className="max-w-[500px] w-full mx-auto mt-[24px]">
                           <Button
                             disabled={deleteInProgress}
-                            text={deleteInProgress ? <div className="flex items-center	justify-center">
-                              <Loading />
-                            </div> : "Remove"}
+                            text={
+                              deleteInProgress ? (
+                                <div className="flex items-center	justify-center">
+                                  <Loading />
+                                </div>
+                              ) : (
+                                t("dateguardaddmember.removeBtn")
+                              )
+                            }
                             className=" secondary-btn"
                             onClick={handleDelete}
                           />

@@ -1,14 +1,16 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import DigitalTimer from '../../../components/DigitalTimer';
 import Header from '../../../components/Header/Header';
 import PageTitle from '../../../components/PageTitle';
 
 export default function DateGuardCountUp() {
+    const { t } = useTranslation();
     return (
 
         <div className="container">
             <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-                <PageTitle title={"Date Guard"} />
+                <PageTitle title={t("dateguardcountup.pageTitle")} />
             </div>
             <div className="pb-[48px]">
                 <div className='w-full mx-auto flex items-center justify-center mt-4'>

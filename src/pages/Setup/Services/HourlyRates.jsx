@@ -3,6 +3,7 @@ import InputText from "../../../components/InputText";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Selecter from "../../../components/Selecter/Selecter";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import {
   HandleGetServices,
   HandleSelectServices,
@@ -16,6 +17,7 @@ import SelectBox from "../../../components/SelectBox";
 import PageTitle from "../../../components/PageTitle";
 
 const HourlyRates = () => {
+  const { t } = useTranslation();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const updatedServices = useSelector(
     (state) => state?.Services?.services?.updatedServices
@@ -133,7 +135,7 @@ const HourlyRates = () => {
       setHourlyData(updatedData);
     } else {
       setErrors({
-        message: "*Amount should be number only",
+        message: t("hourlyrates.errorNumeric"),
       });
     }
   };
@@ -147,7 +149,7 @@ const HourlyRates = () => {
 
     if (hasAllIncompleteData) {
       setErrors({
-        message: "Incall or Outcall is required for at least one item",
+        message: t("hourlyrates.errorIncomplete"),
       });
       setIsLoading(false);
       return;
@@ -175,7 +177,7 @@ const HourlyRates = () => {
           });
           dispatch(HandleSelectServices([]));
           dispatch(HandleGetServices(UserDetails?._id, UserDetails?.user_type));
-          navigate(-3)
+          navigate(-3);
           setIsLoading(false);
         } else {
           toast(result?.payload?.data?.error, {
@@ -187,7 +189,7 @@ const HourlyRates = () => {
         }
       })
       .catch((err) => {
-        navigate(-3)
+        navigate(-3);
         setIsLoading(false);
         console.error(err, "Error");
       });
@@ -196,12 +198,13 @@ const HourlyRates = () => {
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px] md:hidden block">
-        <PageTitle title={'Hourly Rates'} />
+        <PageTitle title={t("hourlyrates.pageTitle")} />
       </div>
       <div className="flex flex-col justify-center items-center  mx-auto ">
-        
         <div className="flex justify-center items-center relative w-full md:my-[48px] my-[24px]">
-        <div className="text-center  sm:text-[28px] text-2xl text-white font-semibold md:block hidden">Hourly Rates</div>
+          <div className="text-center  sm:text-[28px] text-2xl text-white font-semibold md:block hidden">
+            Hourly Rates
+          </div>
           <div className="absolute right-0 md:top-[-5px] top-[-24px]">
             {/* <FormControl className='bg-[#040c50] text-white rounded-[30px]' sx={{ minWidth: 160 }}>
               <Select
@@ -237,10 +240,18 @@ const HourlyRates = () => {
         <div className="sm:w-full w-[calc(100vw-32px)] mx-auto overflow-auto scrollbar-hidden">
           <div className=" sm:w-full font-[500] text-[18px] mt-[5%] mx-auto w-fit">
             <div className="flex flex-row text-white items-center mt-4 text-[14px] font-[500]">
-              <div className="w-[100px] flex justify-start items-center">Time</div>
-              <div className="flex-1 px-5">Incall</div>
-              <div className="flex-1 px-2">Outcall</div>
-              <div className="w-[100px] flex justify-center items-center">Currency</div>
+              <div className="w-[100px] flex justify-start items-center">
+                {" "}
+                {t("hourlyrates.table.time")}
+              </div>
+              <div className="flex-1 px-5">{t("hourlyrates.table.incall")}</div>
+              <div className="flex-1 px-2">
+                {t("hourlyrates.table.outcall")}
+              </div>
+              <div className="w-[100px] flex justify-center items-center">
+                {" "}
+                {t("hourlyrates.table.currency")}
+              </div>
             </div>
 
             <div className="flex flex-col gap-4 mt-4 text-white text-[13px] font-[400]">
@@ -257,9 +268,11 @@ const HourlyRates = () => {
                     <div className="flex-1 min-w-0">
                       <InputText
                         value={hour?.incall}
-                        placeholder="Enter amount"
+                        placeholder={t("hourlyrates.placeholder")}
                         className="w-full text-[12px] border border-[#919EAB33] rounded-[10px] py-2 px-2 min-w-[100px]"
-                        onChange={(e) => handleChange(index, "incall", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(index, "incall", e.target.value)
+                        }
                       />
                     </div>
 
@@ -268,7 +281,9 @@ const HourlyRates = () => {
                         value={hour?.outcall}
                         placeholder="Enter amount"
                         className="w-full text-[12px] border border-[#919EAB33] rounded-[10px] py-2 px-2 min-w-[100px]"
-                        onChange={(e) => handleChange(index, "outcall", e.target.value)}
+                        onChange={(e) =>
+                          handleChange(index, "outcall", e.target.value)
+                        }
                       />
                     </div>
 
@@ -281,7 +296,6 @@ const HourlyRates = () => {
           </div>
         </div>
 
-
         {errors?.message && (
           <label className="text-red-500 text-lg pt-5 flex items-baseline ">
             {errors.message}
@@ -291,7 +305,7 @@ const HourlyRates = () => {
           <Button
             text={
               !isLoading ? (
-                "Submit"
+                t("hourlyrates.submit")
               ) : (
                 <div className="flex items-center	justify-center">
                   <Loading />

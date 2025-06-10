@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import InputText from "../../../components/InputText";
 import Button from "../../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -37,6 +38,7 @@ const customStyles = {
 };
 
 export default function SetRules() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { state } = useLocation();
@@ -321,11 +323,11 @@ export default function SetRules() {
     <div className="min-h-[calc(100vh - 282px)]">
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Calendar Settings"} isSmall={true} />
+          <PageTitle title={t("calendarSettings.title")} isSmall={true} />
         </div>
         <div className="">
           <div className="sm:text-xl text-lg font-medium text-white">
-            Notification Rules
+            {t("calendarSettings.notificationRules")}
           </div>
           <div className="w-full mx-auto flex flex-row justify-center items-center mt-3 gap-3">
             <div className="relative w-full">
@@ -428,7 +430,7 @@ export default function SetRules() {
             }
           </div>
           <div className="mt-[24px] sm:text-xl text-lg font-medium text-white">
-            Buffer Time
+            {t("calendarSettings.bufferTime")}
           </div>
           <div className="w-full max-w-[420px] mx-auto flex flex-row justify-around items-center mt-4">
             <div className="flex flex-row justify-around items-end duration-row">
@@ -491,7 +493,7 @@ export default function SetRules() {
             </div>
           </div>
           <div className="mt-[24px] sm:text-xl text-lg font-medium text-white">
-            Black Out Period
+            {t("calendarSettings.blackoutPeriod")}
           </div>
           <div className="w-full max-w-[420px] mx-auto flex flex-col justify-around items-center">
             <div className="flex flex-row justify-around items-end mt-4">
@@ -557,13 +559,13 @@ export default function SetRules() {
 
           <div className="flex justify-between items-center mt-[24px]">
             <div className=" sm:text-xl text-lg font-medium text-white">
-              Member Exemptions
+              {t("calendarSettings.memberExemptions")}
             </div>
             <div>
               <Button
                 onClick={handleAddExemption}
                 className="!py-0 !w-fit px-3"
-                text={<><FontAwesomeIcon icon={faPlus} className="pr-1" /> Add </>}
+                text={<><FontAwesomeIcon icon={faPlus} className="pr-1" /> {t("common.add")}</>}
                 size="38px"
               />
             </div>
@@ -575,7 +577,7 @@ export default function SetRules() {
                 <div key={exemption._id} className="w-full flex items-center mb-2 last:mb-0">
                   <InputText
                     className="rounded-md h-[26px] border-[#919EAB33]"
-                    placeholder="Enter Verify ID"
+                    placeholder={t("calendarSettings.enterVerifyId")}
                     size="48px"
                     value={exemption.VIAid}
                     onChange={(e) => handleInputChange(exemption._id, e.target.value)}
@@ -596,14 +598,14 @@ export default function SetRules() {
           <div className="w-full mx-auto flex flex-row justify-center items-center mt-[24px] gap-5 mb-[48px]">
             <Button
               onClick={() => handleNavigateToCalendar()}
-              text={"Calendar"}
+             text={t("common.calendar")}
               size="45px"
             />
             <Button
               disabled={isLoading}
               text={
                 !isLoading ? (
-                  "Save Rules"
+                  t("calendarSettings.saveRules")
                 ) : (
                   <div className="flex items-center	justify-center pt-[0px]">
                     <Loading />
@@ -619,13 +621,13 @@ export default function SetRules() {
         <Modal isOpen={isOpen} onRequestClose={closeModal} style={customStyles}>
           <div className="w-full mx-auto flex flex-col justify-center items-cener ">
             <div className="font-bold text-[36px] text-white text-center leading-9">
-              Rules
+              {t("calendarSettings.rules")}
             </div>
             <div className="font-bold text-[36px] text-white text-center leading-9">
-              Saved
+               {t("calendarSettings.saved")}
             </div>
             <div className="font-bold text-[36px] text-white text-center leading-9">
-              successfully
+               {t("calendarSettings.successfully")}
             </div>
             <div className=" flex justify-center">
               <Button
@@ -633,7 +635,7 @@ export default function SetRules() {
                   "mt-6 text-[#040C50] justify-center max-w-[200px] font-[800] w-full from-0% to-65% from-[#0CA36C] to-[#08FA5A] bg-gradient-to-b text-[24px]"
                 }
                 onClick={() => navigate("/cal-setting")}
-                text="Calendar"
+                text={t("calendarSettings.calendar")}
               />
             </div>
           </div>

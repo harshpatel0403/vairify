@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Button from "../../components/Button";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HandleGetProfile,
@@ -255,6 +256,7 @@ let Location = [];
 const BreastSize = ["A", "B", "C", "D", "DD", "DDD", "E or higher"];
 
 const PersonalInformationOrientation = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -564,7 +566,7 @@ const PersonalInformationOrientation = () => {
     <div>
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Personal information"} isSmall={true} />
+          <PageTitle title={t("personalinformation.personalinformations")} isSmall={true} />
         </div>
         <div className="mt-[48px]">
           <div className="w-full max-auto flex flex-col justify-center items-center image-upload-data flex-auto">
@@ -593,11 +595,12 @@ const PersonalInformationOrientation = () => {
               </div>
             </div>
             <div className="custom-select-border">
+              <p className="text-white text-center mt-4">Profile Picture <span style={{ color: "red" }}>*</span></p>
               <button
                 onClick={handleBrowseClick}
                 className="photo-upload-btn text-white text-[20px] font-extrabold"
               >
-                Browse
+                {t("personalinformation.browse")}
               </button>
               <input
                 type="file"
@@ -647,8 +650,9 @@ const PersonalInformationOrientation = () => {
                       value={selectedGender}
                       name="gender"
                       onChange={handleGenderChange}
-                      placeholder="Gender"
+                      placeholder={"Gender *"}
                     >
+                      <option selected disabled>Gender *</option>
                       {genderOptions?.map((gender) => (
                         <option key={gender} value={gender} className="text-black">
                           {gender}

@@ -9,10 +9,12 @@ import DateGuardService from "../../../services/DateGuardService";
 import DetectRTC from "detectrtc";
 import { Button } from "@mui/material";
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 const videoConstraints = {
   width: 400,
   height: 400,
-  facingMode: { exact: "environment" },
+  facingMode: isMobile ? { exact: "environment" } : "user",
 };
 
 const FrontID = ({

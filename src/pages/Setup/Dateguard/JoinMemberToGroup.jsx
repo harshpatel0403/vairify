@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import Button from '../../../components/Button';
 import OtpInput from "react-otp-input";
 import DateGuardService from '../../../services/DateGuardService';
@@ -7,6 +8,7 @@ import { toast } from 'react-toastify';
 import Header from '../../../components/Header/Header';
 
 export default function JoinMemberToGroup() {
+    const { t } = useTranslation();
 
     const [otp, setOtp] = useState("");
     const [groupData, setGroupData] = useState({});
@@ -21,7 +23,7 @@ export default function JoinMemberToGroup() {
     const handleSubmit = async () => {
         try {
             if (!(otp?.length === 6)) {
-                return toast('Please enter valid Code', {
+                return toast(t("joingroup.invalidCodeLength"), {
                     hideProgressBar: true,
                     autoClose: 1000,
                     type: "error",
@@ -31,7 +33,7 @@ export default function JoinMemberToGroup() {
             nav('/dateguard/join-member-to-group/success')
         } catch (error) {
             console.log(error)
-            toast('Invalid Code!', {
+            toast(t("joingroup.invalidCode"), {
                 hideProgressBar: true,
                 autoClose: 1000,
                 type: "error",
@@ -59,7 +61,7 @@ export default function JoinMemberToGroup() {
         <div className="container">
     
             <div className="sm:py-[48px] py-[24px]">
-                <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white">Join {groupData?.name || ''} Group</h3>
+                <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white">{t("joingroup.title", { group: groupData?.name || '' })}</h3>
             </div>
             <div className='grid md:grid-cols-2 grid-cols-1'>
 
@@ -67,8 +69,8 @@ export default function JoinMemberToGroup() {
                     <img src="/images/setup/addgroup.svg" alt="add img" />
                 </div>
                 <div className='flex justify-center w-full flex-col'>
-                    <h3 className='sm:text-[28px] text-[24px] font-medium text-white'>Join Group {groupData?.name || ''}</h3>
-                    <p className='sm:text-[18px] text-[16px] font-normal text-white mb-[24px]'>Please enter the 6-character invite code</p>
+                    <h3 className='sm:text-[28px] text-[24px] font-medium text-white'>{t("joingroup.subtitle", { group: groupData?.name || '' })}</h3>
+                    <p className='sm:text-[18px] text-[16px] font-normal text-white mb-[24px]'>{t("joingroup.instruction")}</p>
                     <OtpInput
                         value={otp}
                         onChange={handleOtpChange}
@@ -82,7 +84,7 @@ export default function JoinMemberToGroup() {
                             </div>
                         )}
                     />
-                    <Button onClick={handleSubmit} text="Submit" className={'mt-[24px] max-w-[400px]'} />
+                    <Button onClick={handleSubmit} text={t("joingroup.submit")} className={'mt-[24px] max-w-[400px]'} />
                 </div>
             </div>
         </div>

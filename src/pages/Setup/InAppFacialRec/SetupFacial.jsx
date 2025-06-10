@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import Header from "../../../components/Header/Header";
 import PageTitle from "../../../components/PageTitle";
 
 const SetupFacial = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleSubmit = () => {
@@ -13,11 +15,11 @@ const SetupFacial = () => {
     <div className="">
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px] md:hidden block">
-          <PageTitle title={"Facial Recognition"} />
+          <PageTitle title={t("setupfacial.title")} />
         </div>
         <div className="w-full mx-auto flex flex-col justify-center items-center sm:my-[48px] my-[24px]">
-          <p className="font-bold sm:text-[28px] text-2xl text-white sm:block hidden">In-App Facial Recognition</p>
-          <p className="text-white text-base font-normal mt-4 opacity-[0.7]">Turn on Facial Recognition </p>
+          <p className="font-bold sm:text-[28px] text-2xl text-white sm:block hidden">{t("setupfacial.heading")}</p>
+          <p className="text-white text-base font-normal mt-4 opacity-[0.7]">{t("setupfacial.description")}</p>
           <div className="w-[90%] mx-auto max-w-[300px] h-[300px] mt-[24px]">
             <img
               src={"/images/facialRecognitionLogo.png"}
@@ -37,13 +39,13 @@ const SetupFacial = () => {
           {/* <div className="w-[163.8px]">
             <Button
               onClick={() => handleSubmit()}
-              text="Skip>>"
+              text={`${t("setupfacial.skip")} >>`}
               className="font-bold text-[23.4px] text-[#01195C] bg-transparent shadow-none focus:bg-transparent"
             />
           </div> */}
           <Button
             onClick={() => handleSubmit()}
-            text="Submit>>"
+            text={`${t("setupfacial.submit")} >>`}
             className="max-w-[500px] mx-auto mt-5 mb-[48px]"
             size='48px'
           />

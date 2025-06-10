@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import DateGuardService from "../../../services/DateGuardService";
 import { toast } from "react-toastify";
@@ -12,6 +13,7 @@ import PageTitle from "../../../components/PageTitle";
 
 
 export default function DateGuardSelectGroup() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [groups, setGroups] = useState([]);
   const [fromAppointment, setFromAppointment] = useState(false);
@@ -57,7 +59,7 @@ export default function DateGuardSelectGroup() {
         return;
       }
     } else {
-      toast.error("Members are not selected");
+      toast.error(t("dateguardselectgroup.errorNoMembers"));
     }
   };
 
@@ -77,12 +79,12 @@ export default function DateGuardSelectGroup() {
         <div className="md:my-[48px] my-[24px] ">
           <div className=" relative md:block hidden">
             <h4 className="font-medium sm:text-[28px] text-[24px] text-white text-center md:block hidden">
-              Select Group
+               {t("dateguardselectgroup.pageTitle")}
             </h4>
             <div className="w-[132px] absolute right-0 sm:top-0 top-[40px]">
               <Button
                 onClick={() => nav("/dateguard/create-group")}
-                text="+ Create Group"
+                text={t("dateguardselectgroup.createGroupButton")}
                 className={
                   "font-medium sm:text-[14px] text-[#060C4D] text-center py-[6px] px-[12px]"
                 }
@@ -91,10 +93,10 @@ export default function DateGuardSelectGroup() {
           </div>
 
           <div className="md:hidden block md:mb-0 sm:mb-[30px] mb-[16px]">
-            <PageTitle title={'Select Group'} isSmall={true} />
+            <PageTitle title={t("dateguardselectgroup.pageTitle")} isSmall={true} />
           </div>
 
-          <p className="font-normal opacity-70 sm:text-[18px] text-[14px] text-[#D9D9D9] text-center sm:block hidden">Select a group to active your guard</p>
+          <p className="font-normal opacity-70 sm:text-[18px] text-[14px] text-[#D9D9D9] text-center sm:block hidden"> {t("dateguardselectgroup.pageSubtitle")}</p>
 
 
           {loading ? (
@@ -118,14 +120,14 @@ export default function DateGuardSelectGroup() {
                       </div>
                     </div>
                     <h5 className="font-normal opacity-50 text-[14px] text-white">
-                      {group?.members?.length || 0} members
+                      {t("dateguardselectgroup.membersCount", { count: group?.members?.length || 0 })}
                     </h5>
                   </div>
                   <div className="flex items-center gap-2">
                     {fromAppointment && (
                       <Button
                         onClick={() => handleSelectGroup(group)}
-                        text="Select"
+                        text={t("dateguardselectgroup.selectButton")}
                         className={
                           "font-medium sm:!text-[14px] !text-[12px] sm:py-[5px] py-[2px] sm:px-[18px] px-[12px]"
                         }
@@ -134,7 +136,7 @@ export default function DateGuardSelectGroup() {
                     {!fromAppointment && (
                       <Button
                         onClick={(e) => handelAddMember(e, group)}
-                        text="Edit"
+                        text={t("dateguardselectgroup.editButton")}
                         className={
                           "font-medium sm:!text-[14px] !text-[12px] sm:py-[5px] py-[2px] sm:px-[18px] px-[12px]"
                         }

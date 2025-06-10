@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import TimePicker from '../../../components/TimePicker';
 import Button from '../../../components/Button';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -9,6 +10,7 @@ import Loading from '../../../components/Loading/Index';
 import PageTitle from '../../../components/PageTitle';
 
 export default function DateGuardSetTimeAlarm() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false)
     const [range, setRange] = useState(() => 50);
     const [time, setTime] = useState({
@@ -91,15 +93,15 @@ export default function DateGuardSetTimeAlarm() {
     return (
         <div className="container">
             <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-                <PageTitle title={"Date Guard"} />
+                <PageTitle title={t("settimealarm.pageTitle")} />
             </div>
             <div className="sm:pb-[48px] pb-[24px]">
                 <div className="flex items-center justify-center sm:mt-[48px] mt-[24px]">
                     <img src="/images/setup/Disarm.svg" alt="guard" />
                 </div>
-                <h3 className='sm:text-[28px] text-2xl font-medium text-white text-center mt-[24px]'>Set yor Time</h3>
+                <h3 className='sm:text-[28px] text-2xl font-medium text-white text-center mt-[24px]'>{t("settimealarm.setYourTime")}</h3>
                 <div className='mx-auto flex items-center justify-center sm:mt-4'><TimePicker time={time} setTime={setTime} /></div>
-                <div className='mx-auto flex items-center justify-center sm:mt-4'><span className='sm:text-[28px] text-[24px] font-semibold text-center text-white sm:block hidden'>Alarm Delay</span></div>
+                <div className='mx-auto flex items-center justify-center sm:mt-4'><span className='sm:text-[28px] text-[24px] font-semibold text-center text-white sm:block hidden'>{t("settimealarm.alarmDelay")}</span></div>
                 <div className='mx-auto flex items-center justify-center mt-2'><div className='bg-[#919EAB33] py-[8px] sm:px-[32px] px-[20px] rounded-[8px] sm:w-[104px] w-[80px] appearance-none outline-none border-none text-white'><span className='font-normal text-white text-[14px]'>{range}<span className='font-normal text-white text-[14px]'>min</span></span></div></div>
                 <div className='w-full mx-auto flex flex-row items-center justify-center mt-9 overflow-auto max-w-[500px]'>
                     <div><span className='font-normal text-[14px] text-white'>1min</span></div>
@@ -109,7 +111,7 @@ export default function DateGuardSetTimeAlarm() {
                     <div><span className='font-normal text-[14px] text-white'>59min</span></div>
                 </div>
                 <div className='w-full mx-auto flex items-center justify-center mt-9'>
-                    <Button onClick={handleSubmit} text="Select" className={'max-w-[500px]'} />
+                    <Button onClick={handleSubmit} text={t("settimealarm.selectButton")} className={'max-w-[500px]'} />
                 </div>
             </div>
         </div>

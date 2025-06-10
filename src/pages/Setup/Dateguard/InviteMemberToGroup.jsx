@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import SearchBox from "../../../components/DateguardSearchbox";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DateGuardService from "../../../services/DateGuardService";
@@ -15,6 +16,7 @@ import PageTitle from "../../../components/PageTitle";
 
 
 export default function InviteMemberToGroup() {
+  const { t } = useTranslation();
   const params = useParams();
   const nav = useNavigate();
   const { state } = useLocation();
@@ -23,7 +25,7 @@ export default function InviteMemberToGroup() {
   const [members, setMembers] = useState([]);
   const [allMembers, setAllMembers] = useState([]);
   const [groupDetails, setGroupDetails] = useState({});
-  const [inviteInprogress, setInviteInprogress] = useState(false)
+  const [inviteInprogress, setInviteInprogress] = useState(null)
 
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -77,7 +79,7 @@ export default function InviteMemberToGroup() {
 
   const handleInvite = async (member) => {
     try {
-      setInviteInprogress(true)
+      setInviteInprogress(member._id)
       await DateGuardService.inviteToGroup(params.groupId, {
         memberId: member?._id,
       });
@@ -86,17 +88,17 @@ export default function InviteMemberToGroup() {
       console.log(error);
       toast.error(error?.response?.data?.error || error.message);
     } finally {
-      setInviteInprogress(false)
+      setInviteInprogress(null)
     }
   };
 
   const handleCreateMember = async (e) => {
     e.preventDefault();
     if (!name) {
-      return toast.error('Name is required!')
+      return toast.error(t("invitemember.nameRequired"));
     }
     if (!isValidPhoneNumber) {
-      return toast.error('Valid phone number is required!')
+      return toast.error(t("invitemember.validPhoneRequired"));
     }
     try {
       setCreateMemberLoading(true)
@@ -168,14 +170,14 @@ export default function InviteMemberToGroup() {
     <>
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px] md:hidden block">
-          <PageTitle title={`Invite to Group ${groupDetails?.name || ''}`} isSmall={true} />
+          <PageTitle title={t("invitemember.pageTitle", { groupName: groupDetails?.name || "" })} isSmall={true} />
         </div>
         <div className="relative md:block hidden">
-          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white sm:my-[48px] mt-[24px]">Invite to Group {groupDetails?.name || ''}</h3>
+          <h3 className="sm:text-[28px] text-[24px] font-semibold text-center text-white sm:my-[48px] mt-[24px]">{t("invitemember.pageTitle", { groupName: groupDetails?.name || "" })}</h3>
           <div className=" absolute right-0 sm:top-0 top-6 sm:block hidden">
             <Button
               onClick={() => setShowModal(true)}
-              text='+ Add Contacts'
+              text={t("invitemember.addContacts")}
               className={
                 "font-medium text-[14px] text-[#060C4D] text-center py-[6px] px-[12px]"
               }
@@ -197,7 +199,7 @@ export default function InviteMemberToGroup() {
             classname={
               "focus:outline-none focus:shadow-none !font-normal !text-[14px] py-[14px] px-[16px] text-white !border !rounded-lg !border-[#919EAB33] bg-transparent"
             }
-            placeholder="Search Contacts"
+            placeholder={t("invitemember.searchPlaceholder")}
           />
         </div>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-[24px] my-[40px]">
@@ -244,13 +246,19 @@ export default function InviteMemberToGroup() {
                   </div>
 
                   {/* Invite Button */}
-                  <div className={`py-[4px] px-[16px]  ${isInvited ? " bg-[#0085B9] text-white" : "text-[#060C4D] bg-white"}  rounded-[8px]`}>
+                  <div className={`py-[4px] px-[16px]  ${isInvited ? " bg-[#0085B9] text-white" : "text-[#060C4D] bg-white"}  rounded-[8px] cursor-pointer`}>
                     <div
                       // disabled={isInvited || inviteInprogress}
-                      onClick={() => handleInvite(member)}
+                      onClick={() => !isInvited && !inviteInprogress && handleInvite(member)}
                     >
                       <span className={`text-[12px] font-semibold`}>
-                        {isInvited ? "Invited" : "Invite"}
+                         {inviteInprogress === member._id ? (
+                            <Loading className="border-blue !h-4 !w-4 !mt-1" />
+                          ) : (
+                            <span className="text-[12px] font-semibold">
+                              {isInvited ? t("invitemember.invited") : t("invitemember.invite")}
+                            </span>
+                          )}
                       </span>
                     </div>
                   </div>
@@ -285,11 +293,11 @@ export default function InviteMemberToGroup() {
                     </button>
                     {/*body*/}
                     <div className="relative p-[24px] flex-auto">
-                      <h2 className="text-center text-[#212B36] text-[20px] font-medium mb-4">Add to Contacts</h2>
+                      <h2 className="text-center text-[#212B36] text-[20px] font-medium mb-4">{t("invitemember.addModalTitle")}</h2>
                       <input
                         className=" border border-[#919EAB33] p-[14px] mb-3 placeholder:!text-black text-black text-[14px] font-normal bg-transparent rounded-lg w-full max-w-[500px]"
                         type="text"
-                        placeholder="Name"
+                        placeholder={t("invitemember.namePlaceholder")}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                       />
@@ -327,7 +335,7 @@ export default function InviteMemberToGroup() {
                             disabled={createMemberLoading}
                             text={createMemberLoading ? <div className="flex items-center	justify-center">
                               <Loading />
-                            </div> : "Invite"}
+                            </div> : t("invitemember.inviteBtn")}
                             // onClick={handleCreateMember}
                             type="submit"
                             className={'secondary-btn'}

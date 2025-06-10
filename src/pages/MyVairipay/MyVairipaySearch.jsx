@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import SearchBox from "../../components/SearchBox";
 import AuthService from "../../services/AuthService";
 import Loading from "../../components/Loading/Index";
+import { useTranslation } from "react-i18next";
 import Header from "../../components/Header/Header";
 import PageTitle from "../../components/PageTitle";
 
 export default function MyVairipaySearch() {
+  const { t } = useTranslation();
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countries, setCountries] = useState([]);
   const [varipays, setVaripays] = useState([]);
@@ -82,7 +84,7 @@ export default function MyVairipaySearch() {
     <>
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"My Mpay"} />
+           <PageTitle title={t("vairipaysearch.pageTitle")} />
         </div>
       </div>
       <div className="container mb-[48px]">
@@ -91,7 +93,7 @@ export default function MyVairipaySearch() {
             <div className="w-full max-w-[840px] mx-auto input-serach-veiripay">
               <SearchBox
                 onSearch={handleSearch}
-                placeholder="Search"
+                 placeholder={t("vairipaysearch.searchPlaceholder")}
                 className={
                   "w-[100%] bg-transparent rounded-lg border-1 border-[#919EAB33] text-[16px] font-noemal text-white"
                 }
@@ -127,7 +129,7 @@ export default function MyVairipaySearch() {
                     <div className="image-not">
                       <img src="/images/notFound.png" alt="logo" />
                     </div>
-                    Result not found
+                    {t("vairipaysearch.noResults")}
                   </div>
                 )
               ) : (

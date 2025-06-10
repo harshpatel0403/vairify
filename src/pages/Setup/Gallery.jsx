@@ -12,9 +12,12 @@ import GalleryDetails from "../User/GalleryDetails";
 import LayoutHeader from "../layout/Header";
 import BackButton from "../../components/BackButton/backArrowButton";
 import PageTitle from "../../components/PageTitle";
+import { useTranslation } from "react-i18next";
+
 
 const Gallery = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const location = useLocation();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -33,7 +36,7 @@ const Gallery = () => {
 
   const handelUpload = () => {
     if (!image) {
-      toast.error("Please select image");
+      toast.error(t("gallery.uploadError"));
       return;
     }
     setButtonLoading(true);
@@ -124,33 +127,33 @@ const Gallery = () => {
       <div className="container min-h-[calc(100vh-282px)]">
 
         <div className=" justify-center items-center relative w-full mt-[48px] md:flex hidden">
-          <Button text={'+ Add Image'} className='!w-fit px-4 !absolute left-0 py-[6px] navy-text-btn' onClick={() => setIsModalOpen(true)} />
+          <Button text={t("gallery.addImage")} className='!w-fit px-4 !absolute left-0 py-[6px] navy-text-btn' onClick={() => setIsModalOpen(true)} />
           <div className="sm:text-[28px] text-2xl font-semibold text-white ">
-            Photo Gallery
+            {t("gallery.pageTitle")}
           </div>
         </div>
         <div className="md:hidden block md:mb-0 sm:mb-[30px] mb-0">
-          <PageTitle title={'Photo Gallery'} />
+          <PageTitle title={t("gallery.pageTitle")} />
         </div>
         <div className="md:hidden block mb-[24px]">
-          <Button text={'+ Add Image'} className='!w-fit px-4  py-[6px] navy-text-btn mt-[16px]' onClick={() => setIsModalOpen(true)} />
+          <Button text={t("gallery.addImage")} className='!w-fit px-4  py-[6px] navy-text-btn mt-[16px]' onClick={() => setIsModalOpen(true)} />
         </div>
         {isModalOpen && (
           <div className="fixed inset-0 sm:z-50 z-[99999] bg-[#060C4D] bg-opacity-50 flex items-center justify-center">
             <div className="sm:bg-white bg-[#060C4D] sm:rounded-xl sm:p-6 px-[16px] py-[24px] sm:w-[90%] sm:h-fit sm:max-w-[500px] w-[100%] h-[100vh] relative z-[10000]">
               <div className="relative flex justify-center items-center mb-[24px] max-sm:mt-[24px]">
-                <h6 className="sm:text-[#212B36] text-white font-bold sm:text-xl text-2xl">Add Image</h6>
+                <h6 className="sm:text-[#212B36] text-white font-bold sm:text-xl text-2xl">{t("gallery.modalTitle")}</h6>
                 <button
                   className="absolute right-0 text-black text-xl font-bold sm:block hidden"
                   onClick={closeModal}
                 >
                   &times;
                 </button>
-                <div className="absolute left-0 sm:hidden block" >
+                {/* <div className="absolute left-0 sm:hidden block" >
                   <button onClick={closeModal} className={`bg-[#FFFFFF14] sm:w-[40px] sm:h-[40px] w-[30px] h-[30px] rounded-full flex items-center justify-center border-none`}>
                     <img src="/images/signup/left-arrow.svg" className="w-[12px] sm:w-auto" alt="logo" />
                   </button>
-                </div>
+                </div> */}
               </div>
               <div className="flex flex-col ">
                 <div className="w-full max-auto flex flex-col justify-center items-center image-upload-data flex-auto">
@@ -172,14 +175,14 @@ const Gallery = () => {
                             src={"/images/setup/upload-icon.svg"}
                             alt="Vector Camera"
                           />
-                          <p className="mt-3 text-[14px] font-bold sm:text-black text-white">Select file</p>
+                          <p className="mt-3 text-[14px] font-bold sm:text-black text-white">{t("gallery.selectFile")}</p>
                         </div>
                         <div >
                           <button
                             onClick={handleBrowseClick}
                             className="photo-upload-btn text-white text-[20px] font-extrabold"
                           >
-                            Browse
+                            {t("gallery.browse")}
                           </button>
                           <input
                             type="file"
@@ -200,7 +203,7 @@ const Gallery = () => {
                 {isUploaded && (
                   <>
                     <div className="mt-[24px] flex justify-center items-center gap-[10px]">
-                      <p className="text-[#008F34] text-xl font-medium">Upload Successfully</p>
+                      <p className="text-[#008F34] text-xl font-medium">{t("gallery.uploadSuccess")}</p>
                       <img src="/images/setup/checked.svg" alt="Check Mark" />
                     </div>
                     <div className="w-full flex justify-center mt-[24px] gap-4">
@@ -208,7 +211,7 @@ const Gallery = () => {
                         onClick={closeModal}
                         type="button"
                         size="45px"
-                        text='View Gallery'
+                        text={t("gallery.viewGallery")}
                         className={'navy-text-btn'}
                       />
                       <Button
@@ -216,7 +219,7 @@ const Gallery = () => {
                           handelAddMore(e);
                         }}
                         type="button"
-                        text="Add More"
+                        text={t("gallery.addMore")}
                         size="45px"
                         className='secondary-btn max-sm:!bg-[#FFFFFF29]'
                       />
@@ -234,7 +237,7 @@ const Gallery = () => {
                       text={
                         buttonLoading ?
                           <Loading />
-                          : "Upload image"
+                          : t("gallery.uploadImage")
                       }
                       disabled={buttonLoading}
                     />

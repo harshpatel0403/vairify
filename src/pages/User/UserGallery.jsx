@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import UserGalleryService from "../../services/UserGalleryService";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -7,6 +8,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../components/Loading/Index";
 import PageTitle from "../../components/PageTitle";
 const UserGallery = (props) => {
+  const { t } = useTranslation();
   const loc = useLocation();
   const userId = props?.userId || loc?.state?.userId;
   const user = props?.user || loc?.state?.user;
@@ -70,7 +72,7 @@ const UserGallery = (props) => {
       <div>
         {!isFromProp &&
           <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-            <PageTitle title={"Gallery"} />
+           <PageTitle title={t("usergallery.title")} />
           </div>
         }
       </div>

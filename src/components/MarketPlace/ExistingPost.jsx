@@ -72,7 +72,7 @@ export default function ExistingPost() {
   return (
     <div className="overflow-auto max-h-[1334px] no-scrollbar pt-[24px] lg:pt-0 min-h-[calc(100vh-100px)]">
       <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
-        {NewPost && NewPost.length < 0 ? (
+        {NewPost && NewPost.length > 0 ? (
           NewPost?.map((item, index) => {
             item.Repost = true;
             return (
@@ -171,10 +171,10 @@ export default function ExistingPost() {
             );
           })) : (
           <>
-          <div className="w-full flex flex-col justify-center items-center md:col-span-2">
-                  <img src="/images/home/no-post.svg" alt="no post"/>
-                  <p className="text-white font-bold text-xl mt-[24px]">There is no posts yet </p>
-                </div>
+            <div className="w-full flex flex-col justify-center items-center md:col-span-2">
+              <img src="/images/home/no-post.svg" alt="no post" />
+              <p className="text-white font-bold text-xl mt-[24px]">There is no posts yet </p>
+            </div>
           </>
         )}
         <Modal

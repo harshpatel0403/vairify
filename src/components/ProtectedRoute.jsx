@@ -13,11 +13,12 @@ export default function ProtectedRoute(props) {
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user) || {};
   const GallaryData = useSelector((state) => state?.Gallary?.userGallary?.images) || [];
   const ServicesData = useSelector((state) => state?.Services?.getservices) || [];
-  const SocialData = useSelector((state) => state?.Social?.socialData) || [];
+  const SocialData = useSelector((state) => state?.Social) || [];
   const GallaryDataLoading = useSelector((state) => state?.Gallary?.loading)
   const ServicesDataLoading = useSelector((state) => state?.Services?.loading);
   const UserDetailsLoading = useSelector((state) => state?.Auth?.loading);
   const SocialDataLoading = useSelector((state) => state?.Social?.loading);
+  const LanguagesData = useSelector((state) => state?.Auth?.language);
 
   const CurrentUser = sessionStorage.getItem("Current_Profile");
 
@@ -67,8 +68,6 @@ export default function ProtectedRoute(props) {
         HourllyRate = true;
         Services = true;
       } else if (CurrentUser === "agency-business" || UserDetails?.user_type === "agency-business") {
-        HourllyRate = true;
-        Services = true;
         HourllyRate = ServicesData?.some((item) => item?.businessHourlyRates?.length > 0);
         Services = true;
       } else if (
@@ -77,8 +76,6 @@ export default function ProtectedRoute(props) {
         UserDetails?.user_type === "companion-provider" ||
         UserDetails?.user_type === "influencer-affiliate"
       ) {
-        // HourllyRate = true;
-        // Services = true;
         HourllyRate = ServicesData?.some((item) => item?.hourlyRates?.length > 0);
         Services = ServicesData?.some((item) => item?.services?.length > 0);
       }
@@ -87,35 +84,94 @@ export default function ProtectedRoute(props) {
     return { HourllyRate, Services };
   }, [UserDetails, ServicesData]);
 
+  // useEffect(() => {
+  //   if (Object.keys(UserDetails).length === 0) return;
+
+  //   if (isLoading) return;
+
+  //   if (!UserDetails?.faceVerificationImage || UserDetails?.faceVerificationImage === "") {
+  //     if (!props.path0) {
+  //       navigate("/setup-face-verification");
+  //     }
+  //   } else if (!membershipDaysRemaining || !kycDaysRemaining) {
+  //     if (!props?.path1) {
+  //       navigate("/get-vai");
+  //     }
+  //   } else if (!UserDetails?.isKycCompleted) {
+  //     //Acess payment-success screen
+  //     if (!props?.path2) {
+  //       navigate("/vai");
+  //     }
+  //   } else if (props?.path3) {
+  //     //Access self-verification-completed screen
+  //     navigate("/self-verification-completed");
+  //   } else {
+  //     //Check Setup required feilds status 
+  //     StepWisePagesProtection();
+  //   }
+
+  //   setIsMounted(false);
+  // }, [
+  //   location.pathname,
+  //   UserDetails?.faceVerificationImage,
+  //   UserDetails?.isKycCompleted,
+  //   HourllyRate,
+  //   Services,
+  //   UserDetails?.gender,
+  //   UserDetails?.vaiNowAvailable?.availableFrom,
+  //   UserDetails?.profilePic,
+  //   UserDetails?.mutualContractSigned,
+  //   UserDetails?.varipayActivity,
+  //   UserDetails?.incallAddresses?.length > 0,
+  //   (GallaryData?.userGallary?.images?.length > 0 || GallaryData?.length > 0),
+  //   UserDetails?.dateGuardActivity,
+  //   (LanguagesData || UserDetails?.language),
+  //   membershipDaysRemaining,
+  //   kycDaysRemaining,
+  //   ServicesData,
+  //   isLoading
+  // ]);
   useEffect(() => {
-    if (Object.keys(UserDetails).length === 0) return;
-
-    if (isLoading) return;
-
-    if (!UserDetails?.faceVerificationImage || UserDetails?.faceVerificationImage === "") {
-      if (!props.path0) {
-        navigate("/setup-face-verification");
+    const delay = setTimeout(() => {
+      if (location?.state) {
+        setIsMounted(false);
+        return;
       }
-    } else if (!membershipDaysRemaining || !kycDaysRemaining) {
-      if (!props?.path1) {
-        navigate("/get-vai");
-      }
-    } else if (!UserDetails?.isKycCompleted) {
-      //Acess payment-success screen
-      if (!props?.path2) {
-        navigate("/vai");
-      }
-    } else if (props?.path3) {
-      //Access self-verification-completed screen
-      navigate("/self-verification-completed");
-    } else {
-      //Check Setup required feilds status 
-      StepWisePagesProtection();
-    }
 
-    setIsMounted(false);
+      if (Object.keys(UserDetails).length === 0) return;
+
+      if (isLoading) return;
+
+      if (!UserDetails?.faceVerificationImage || UserDetails?.faceVerificationImage === "") {
+        if (!props.path0) {
+          navigate("/setup-face-verification");
+        }
+      } else if (!membershipDaysRemaining || !kycDaysRemaining) {
+        if (!props?.path1) {
+          navigate("/get-vai");
+        }
+      }
+      //  else if (!UserDetails?.isKycCompleted) {
+      // if (!props?.path2) {
+      //   navigate("/vai");
+      // }
+      // if (FACE_VERIFICATION) {
+      //   navigate('/setup')
+      // }
+      // } 
+      else if (props?.path3) {
+        navigate("/self-verification-completed");
+      } else {
+        StepWisePagesProtection();
+      }
+
+      setIsMounted(false);
+    }, 100); // Optional 100ms delay to ensure redux state is ready
+
+    return () => clearTimeout(delay);
   }, [
     location.pathname,
+    location.state,
     UserDetails?.faceVerificationImage,
     UserDetails?.isKycCompleted,
     HourllyRate,
@@ -125,10 +181,10 @@ export default function ProtectedRoute(props) {
     UserDetails?.profilePic,
     UserDetails?.mutualContractSigned,
     UserDetails?.varipayActivity,
-    UserDetails?.incallAddresses,
-    GallaryData?.length > 0,
+    UserDetails?.incallAddresses?.length > 0,
+    (GallaryData?.userGallary?.images?.length > 0 || GallaryData?.length > 0),
     UserDetails?.dateGuardActivity,
-    UserDetails?.language,
+    (LanguagesData || UserDetails?.language),
     membershipDaysRemaining,
     kycDaysRemaining,
     ServicesData,
@@ -137,8 +193,6 @@ export default function ProtectedRoute(props) {
 
 
   function StepWisePagesProtection() {
-    const socialdata = !SocialData?.find((item) => item)?.message;
-
     //prevent back navigation on setup page
     // if (props?.step) {
     //   navigate("/setup");
@@ -146,19 +200,18 @@ export default function ProtectedRoute(props) {
     // }
 
     //Access main features like search ,vairidate,vai-now
-
     if (
       UserDetails?.gender &&
       UserDetails?.vaiNowAvailable?.availableFrom &&
       UserDetails?.profilePic &&
       UserDetails?.mutualContractSigned &&
       UserDetails?.varipayActivity &&
-      UserDetails?.incallAddresses.length > 0 &&
-      (HourllyRate || Services) &&
-      GallaryData?.length > 0 &&
+      UserDetails?.incallAddresses?.length > 0 &&
+      (HourllyRate && Services) &&
+      (GallaryData?.userGallary?.images?.length > 0 || GallaryData?.length > 0) &&
       UserDetails?.dateGuardActivity &&
-      UserDetails?.language &&
-      socialdata
+      (LanguagesData || UserDetails?.language) &&
+      !SocialData?.socialData?.find((item) => item)?.message
     ) {
       if (location.pathname === "/marketplace/post/review" && !location.state) {
         navigate('/marketplace/post')

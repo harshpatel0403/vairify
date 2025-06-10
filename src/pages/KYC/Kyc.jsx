@@ -144,7 +144,7 @@ const Kyc = () => {
     if (!documentCheckId) {
       throw new Error(`DocumentCheckId Not Found`);
     }
-    const maxAttempts = 20;
+    const maxAttempts = 300;
     const interval = 3000;
 
     for (let attempts = 0; attempts < maxAttempts; attempts++) {
@@ -168,6 +168,7 @@ const Kyc = () => {
           }
           return;
         } else if (response?.status === "failed") {
+          localStorage.setItem('kycStatus', response?.status);
           throw new Error("Document Check Failed");
         }
         await new Promise((resolve) => setTimeout(resolve, interval));
@@ -183,7 +184,7 @@ const Kyc = () => {
     if (!checkId || !userId) {
       throw new Error(`CheckId and UserId Not Found`);
     }
-    const maxAttempts = 10;
+    const maxAttempts = 300;
     const interval = 3000;
 
     for (let attempts = 0; attempts < maxAttempts; attempts++) {
@@ -195,14 +196,15 @@ const Kyc = () => {
 
         const response = await dispatch(isKycCompletedStatus(data));
         const livenessCheckScore = response?.kycStatus?.result?.breakdown?.authenticityAnalysis?.breakdown?.livenessCheckScore
+        localStorage.setItem("kycStatus", response?.kycStatus?.status);
         if (typeof livenessCheckScore === "number" && livenessCheckScore < 30) {
           throw new Error("Liveness check score too low");
         }
 
         if (response?.kycStatus?.status === "complete") {
-          if (response?.kycStatus?.result?.outcome === "clear") {
-            return;
-          }
+          // if (response?.kycStatus?.result?.outcome === "clear") {
+          return;
+          // }
         } else if (response?.kycStatus?.status === "failed") {
           throw new Error("Identity Check Failed");
         }
@@ -274,6 +276,8 @@ const Kyc = () => {
         .getElementById("verification-button")
         ?.scrollIntoView({ behavior: "smooth" });
     } finally {
+      let kycCheckCount = 0;
+      localStorage.setItem("kycCheckCount", kycCheckCount + 1);
       //   dispatch(HandleUpdateUser(UserData?._id));
       setIsLoading(false);
     }
@@ -544,29 +548,33 @@ const Kyc = () => {
                   )}
 
                   {stepKyc !== 6 && (
-                    <div className="max-w-[500px] flex items-center justify-center mx-auto mt-[32px]">
-                      <Button
-                        onClick={UserDetails?.checkCount < maxVerificationAttempts ? stepKyc === 2 ? NextStep : NextStep : ""}
-                        disabled={isLoading}
-                        text={
-                          !isLoading ? (
-                            (stepKyc === 1 && "Start Verification" || "Next Step")
-                          ) : (
-                            <div className="flex items-center	justify-center">
-                              <Loading />
-                            </div>
-                          )
+                    <>
+                      <div className="max-w-[500px] flex items-center justify-center mx-auto mt-[32px]">
+                        <Button
+                          onClick={UserDetails?.checkCount < maxVerificationAttempts ? stepKyc === 2 ? NextStep : NextStep : ""}
+                          disabled={isLoading}
+                          text={
+                            !isLoading ? (
+                              (stepKyc === 1 && "Start Verification" || "Next Step")
+                            ) : (
+                              <div className="flex items-center	justify-center">
+                                <Loading />
+                              </div>
+                            )
+                          }
+                          size="55px"
+                        />
+                        {UserDetails?.checkCount >= maxVerificationAttempts ? (
+                          <p className="text-red-500 text-center font-bold">
+                            You&apos;ve reached the maximum number of attempts. Please
+                            Contact us.
+                          </p>) :
+                          ("")
                         }
-                        size="55px"
-                      />
-                      {UserDetails?.checkCount >= maxVerificationAttempts ? (
-                        <p className="text-red-500 text-center font-bold">
-                          You&apos;ve reached the maximum number of attempts. Please
-                          Contact us.
-                        </p>) :
-                        ("")
-                      }
-                    </div>
+
+                      </div>
+
+                    </>
                   )}
 
                   {stepKyc !== 1 && stepKyc !== 2 && (
@@ -580,6 +588,16 @@ const Kyc = () => {
                       />
                     </div>
                   )}
+
+                  <div className="mt-[20px] mb-[40px]">
+                    <p className="text-[16px] text-white font-normal text-center">
+                      {`Attempt${parseInt(localStorage.getItem("kycCheckCount"), 10) == 1 ? '' : 's'} - ${parseInt(localStorage.getItem("kycCheckCount") || 0, 10)} / ${maxVerificationAttempts}`}{` `}
+                      {`( ${maxVerificationAttempts - (parseInt(localStorage.getItem("kycCheckCount"), 10) || 0)} Attempts left  )`}
+                    </p>
+                    {localStorage.getItem("kycStatus") && <p className="text-[16px] text-white font-normal text-center mt-[10px]">
+                      KYC Status - {localStorage.getItem("kycStatus")}
+                    </p>}
+                  </div>
                 </div>
               </div>
             </div>

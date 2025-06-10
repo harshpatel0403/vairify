@@ -6,9 +6,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Selecter from "../../../components/Selecter/Selecter";
 import { useSelector } from "react-redux";
 import PageTitle from "../../../components/PageTitle";
+import { useTranslation } from "react-i18next";
 
 export default function ServiceExtra() {
   const { state: Service } = useLocation();
+  const { t } = useTranslation();
   const [errors, setErrors] = useState({});
   const savedServices = useSelector((state) => state?.Services?.getservices);
   const updatedServices = useSelector(
@@ -81,96 +83,101 @@ export default function ServiceExtra() {
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Service/Extra’s"} />
+        <PageTitle title={t("serviceextra.pageTitle")} />
       </div>
       <div className="relative">
-        <div className="">
-          <div className="grid grid-cols-12 sm:gap-[24px] gap-[16px]">
-            <div className=" sm:col-span-4 col-span-3">
-              <span className="text-white items-center mt-4 text-[14px] font-[500]">
-                Service
-              </span>
+        <div className="sm:w-full w-[calc(100vw-32px)] mx-auto max-sm:overflow-x-auto scrollbar-hidden">
+          <div className="w-full">
+            <div className="flex sm:gap-[24px] gap-[16px] !w-full" >
+              <div className=" sm:w-full max-sm:min-w-[140px]">
+                <span className="text-white items-center mt-4 text-[14px] font-[500]">
+                  {t("serviceextra.table.service")}
+                </span>
+              </div>
+              <div className=" sm:w-full  max-sm:min-w-[140px]">
+                <span className="text-white items-center mt-5 text-[14px] font-[500]">
+                  {t("serviceextra.table.includedExtra")}
+                </span>
+              </div>
+              <div className=" sm:w-full max-sm:min-w-[140px]">
+                <span className="text-white items-center mt-4 text-[14px] font-[500]">
+                  {t("serviceextra.table.amount")}
+                </span>
+              </div>
+              <div className="sm:w-[30%] max-sm:min-w-[80px]">
+                <SelectBox
+                  options={currencyOptions}
+                  value={currency}
+                  onChange={(e) => changeCurrency(e)}
+                  className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px]  relative"
+                  size={"h-[42px]"}
+                  textAlign={"text-left"}
+                  rounded={"rounded-2xl"}
+                  fontWeight={"font-bold"}
+                  textColor={"text-white"}
+                  textSize={"text-[14px]"}
+                />
+              </div>
             </div>
-            <div className="sm:col-span-4 col-span-5">
-              <span className="text-white items-center mt-5 text-[14px] font-[500]">
-                Included/Extra
-              </span>
-            </div>
-            <div className="col-span-4">
-              <span className="text-white items-center mt-4 text-[14px] font-[500]">
-                Amount
-              </span>
-            </div>
-          </div>
-          <div className="absolute right-0 md:top-[-5px] top-[50px]">
-            <SelectBox
-              options={currencyOptions}
-              value={currency}
-              onChange={(e) => changeCurrency(e)}
-              className1="text-[14px] font-normal border border-[#919EAB33] w-[100%] rounded-[8px]"
-              size={"h-[42px]"}
-              textAlign={"text-left"}
-              rounded={"rounded-2xl"}
-              fontWeight={"font-bold"}
-              textColor={"text-white"}
-              textSize={"text-[14px]"}
-            />
-          </div>
 
 
 
-          <div className="sm:w-full w-[calc(100vw-32px)] mx-auto overflow-auto scrollbar-hidden">
-            {rows?.map((item, i) => {
-              console.log("Checkig itemsss", item);
-              return (
-                <div className="w-full grid grid-cols-12 mt-5 sm:gap-[24px] gap-[16px]">
-                  <div className="sm:col-span-4 col-span-3">
-                    <span className="text-[14px] font-normal text-white">
-                      {item?.servicesName}
-                    </span>
-                  </div>
-                  <div className="w-full flex flex-col justify-center items-center input-select-box sm:col-span-4 col-span-5">
-                    <SelectBox
-                      options={item?.options}
-                      className1="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
-                      value={item?.service}
-                      size={"h-[49px]"}
-                      textAlign={"text-left"}
-                      fontWeight={"font-bold"}
-                      textColor={"text-[#ffffff]"}
-                      textSize={"text-[14px]"}
-                      onChange={(e) => {
-                        const updatedRows = [...rows];
-                        updatedRows[i].service = e.target.value;
-                        setRows(updatedRows);
-                      }}
-                    />
-                  </div>
-                  <div className="w-full flex justify-center items-center gap-2 col-span-4">
-                    <InputText
-                      value={item?.amount}
-                      className="w-full text-[12px] border text-white border-[#919EAB33] rounded-[10px] py-2 px-2"
-                      disabled={item?.service === "Included"}
-                      placeholder="Enter amount"
-                      onChange={(e) => {
-                        const updatedRows = [...rows];
-                        updatedRows[i].amount = e.target.value;
-                        setRows(updatedRows);
-                      }}
-                      border={errors[i] && `#ef4444`}
-                    />
-                    <div className="w-[80px] flex flex-col justify-center items-center">
-                      <span className="text-[14px] font-medium text-white">{currency}</span>
+            <div className="sm:w-full ">
+              {rows?.map((item, i) => {
+                console.log("Checkig itemsss", item);
+                return (
+                  <div className=" flex mt-5 sm:gap-[24px] gap-[16px] items-center">
+                    <div className="sm:w-full max-sm:min-w-[140px]">
+                      <span className="text-[14px] w-full  font-normal text-white whitespace-nowrap">
+                        {item?.servicesName}
+                      </span>
+                    </div>
+                    <div className=" sm:w-full max-sm:min-w-[140px] flex flex-col justify-center items-center input-select-box">
+                      <SelectBox
+                        options={item?.options}
+                        className1="text-[14px] font-normal focus-visible:border-1 focus-visible:border-[#0247ff] border border-[#919EAB33] w-[100%] rounded-[8px]"
+                        value={item?.service}
+                        size={"h-[49px]"}
+                        textAlign={"text-left"}
+                        fontWeight={"font-bold"}
+                        textColor={"text-[#ffffff]"}
+                        textSize={"text-[14px]"}
+                        onChange={(e) => {
+                          const updatedRows = [...rows];
+                          updatedRows[i].service = e.target.value;
+                          setRows(updatedRows);
+                        }}
+                      />
+                    </div>
+                    <div className=" sm:w-full max-sm:min-w-[140px] w-[140px] flex justify-center items-center gap-2">
+                      <InputText
+                        value={item?.amount}
+                        className="w-full text-[12px] border text-white border-[#919EAB33] rounded-[10px] py-2 px-2"
+                        disabled={item?.service === "Included"}
+                        placeholder={t("serviceextra.placeholder")}
+                        onChange={(e) => {
+                          const updatedRows = [...rows];
+                          updatedRows[i].amount = e.target.value;
+                          setRows(updatedRows);
+                        }}
+                        border={errors[i] && `#ef4444`}
+                      />
+
+                    </div>
+                    <div className=" sm:w-[30%] max-sm:min-w-[80px]">
+                      <div className="flex justify-end items-center">
+                        <span className="text-[14px] font-medium text-white text-right">{currency}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-center w-full max-w-[500px] mx-auto sm:my-[48px] my-[24px]">
           <Button
-            text={"Submit"}
+            text={t("serviceextra.submit")}
             size="42px"
             onClick={handleSubmit}
           />

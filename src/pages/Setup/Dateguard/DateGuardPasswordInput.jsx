@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import DateGuardService from "../../../services/DateGuardService";
 import { toast } from "react-toastify";
@@ -9,6 +10,7 @@ import Loading from "../../../components/Loading/Index";
 import PageTitle from "../../../components/PageTitle";
 
 export default function DateGuardPasswordInput() {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
@@ -33,7 +35,7 @@ export default function DateGuardPasswordInput() {
     try {
       setLoading(true);
       if (!decoy || !disarm || !password) {
-        throw new Error("Codes and Password both are required");
+        throw new Error(t("dateguardpassword.errorMissing"));
       }
       await DateGuardService.setupCodesPassword(UserDetails?._id, {
         decoy,
@@ -55,26 +57,26 @@ export default function DateGuardPasswordInput() {
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Date Guard"} />
+        <PageTitle title={t("dateguardpassword.pageTitle")} />
       </div>
       <div className="flex items-center justify-center flex-col gap-[24px] mb-[48px]">
         <img src="/images/setup/Disarm.svg" alt="guard" />
         <div>
-          <h3 className="sm:text-[28px] text-[24px] font-medium text-center text-white">We were not able to complete your Facial ID</h3>
-          <p className="sm:text-[18px] text-[16px] font-normal text-center text-white opacity-70">Please enter your password</p>
+          <h3 className="sm:text-[28px] text-[24px] font-medium text-center text-white"> {t("dateguardpassword.heading")}</h3>
+          <p className="sm:text-[18px] text-[16px] font-normal text-center text-white opacity-70">{t("dateguardpassword.subheading")}</p>
         </div>
         <form onSubmit={handleCodeSubmit} className="w-full flex items-center justify-center flex-col gap-[24px]">
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="text-white bg-transparent rounded-[8px] border border-[#919EAB33] text-[14px] font-normal w-full max-w-[500px] p-[16px]"
-            placeholder="Enter Password"
+            placeholder={t("dateguardpassword.passwordPlaceholder")}
             type="password"
             id="password"
           />
           <Button
             type="submit"
-            text={loading ? <Loading /> : "Enter"}
+            text={loading ? <Loading /> :t("dateguardpassword.enterBtn")}
             disabled={loading}
             className="max-w-[500px]"
             size="48px"

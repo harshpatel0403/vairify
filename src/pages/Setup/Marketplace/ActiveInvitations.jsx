@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ import PageTitle from "../../../components/PageTitle";
 export default function ActiveInvitation() {
   const { state } = useLocation();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -87,13 +88,13 @@ export default function ActiveInvitation() {
       className="container pb-[48px]"
     >
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={`${state?.status} invitation`} />
+        <PageTitle title={t(`activeInvitation.title`, { status: state?.status })} />
       </div>
       <div className="w-full mx-auto flex flex-col justify-center items-center">
         <div className="w-full flex flex-row sm:justify-around justify-between items-end mt-[60px] sm:p-[16px] sm:bg-[#FFFFFF0A] rounded-[16px]">
           <div className="flex flex-col items-center justify-center sm:min-w-[120px] min-w-[80px]">
             <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
-              VAIRIFY ID
+              {t("activeInvitation.vaiID")}
             </div>
             <div className="font-bold sm:text-lg text-base text-white uppercase">
               {state?.userId?.vaiID}
@@ -124,7 +125,7 @@ export default function ActiveInvitation() {
             </div>
             <div className="flex-col flex justify-center items-center mt-[24px]">
               <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
-                Name
+                {t("activeInvitation.name")}
               </div>
               <span className="font-bold sm:text-lg text-base text-white">
                 {state?.userId?.name}
@@ -133,7 +134,7 @@ export default function ActiveInvitation() {
           </div>
           <div className="leading-[18px] sm:min-w-[120px] min-w-[80px] flex flex-col justify-center items-center">
             <div className="text-white font-normal sm:text-base text-sm opacity-[0.6]">
-              TruRevu
+              {t("activeInvitation.truRevu")}
             </div>
             <div className="flex justify-center items-center gap-1">
               <div className="sm:text-lg text-base text-white font-bold ">
@@ -146,7 +147,7 @@ export default function ActiveInvitation() {
 
         <div className="my-[24px] flex justify-between items-center w-full gap-3">
           <div className="text-lg text-white font-medium">
-            Invitation Details
+            {t("activeInvitation.invitationDetails")}
           </div>
           <div className={`py-[2px] px-[6px] rounded-[8px] text-sm font-bold ${state?.status === "pending" ? "text-[#0085B9] bg-[#0085B929]" : "text-[#008F34] bg-[#008F3429]"}`}>
             {state?.status} invitation
@@ -155,28 +156,28 @@ export default function ActiveInvitation() {
 
         <div className="bg-[#FFFFFF14] rounded-[16px] w-full p-[16px]">
           <div className="flex justify-between gap-2 items-center">
-            <div className="text-white opacity-[0.6] font-normal text-base">Date/Time</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.dateTime")}</div>
             <p className="text-white font-medium text-base">{moment(state?.createdAt).format("DD/mm/yy")} at{" "}
               {state?.invitationtime?.from} - {state?.invitationtime?.to}</p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">Services</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.services")}</div>
             <p className="text-white font-medium text-base"> {state?.service}</p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">Durations</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.duration")}</div>
             <p className="text-white font-medium text-base">{hours} hr {minutes} m</p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">Rate</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.rate")}</div>
             <p className="text-white font-medium text-base"> ${state?.priceoffered}</p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">Extra’s</div>
+            <div className="text-white opacity-[0.6] font-normal text-base"> {t("activeInvitation.extras")}</div>
             <p className="text-white font-medium text-base">{state?.advancedservices?.length ? state.advancedservices.join(", ") : "-"}</p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">Outcall</div>
+            <div className="text-white opacity-[0.6] font-normal text-base"> {t("activeInvitation.outcall")}</div>
             <p className="text-white font-medium text-base">
               1439 Inverness Miami FI 34598
               {/* was static  */}
@@ -186,28 +187,28 @@ export default function ActiveInvitation() {
 
         <div className="my-[24px] w-full">
           <div className="text-lg text-white font-medium text-left">
-            More Details
+            {t("activeInvitation.moreDetails")}
           </div>
         </div>
 
         <div className="bg-[#FFFFFF14] rounded-[16px] w-full p-[16px]">
           <div className="flex justify-between gap-2 items-center">
-            <div className="text-white opacity-[0.6] font-normal text-base">Gender</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.gender")}</div>
             <p className="text-white font-medium text-base">{state?.gender}</p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">VAIRIFY ID</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.vairifyId")}</div>
             <p className="text-white font-medium text-base upppercase">{state?.userId?.vaiID}</p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">VAIRIDATE</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.vairidate")}</div>
             <p className="text-white font-medium text-base">
               0046893490
               {/* was static  */}
             </p>
           </div>
           <div className="flex justify-between gap-2 items-center mt-[8px]">
-            <div className="text-white opacity-[0.6] font-normal text-base">Total Offered for this appointment</div>
+            <div className="text-white opacity-[0.6] font-normal text-base">{t("activeInvitation.totalOffer")}</div>
             <p className="text-white font-medium text-base">
               ${state?.priceoffered}
             </p>
@@ -227,7 +228,7 @@ export default function ActiveInvitation() {
                   onClick={HandleAccept}
                   text={
                     !isLoading ? (
-                      "Accept and Send Profile"
+                      t("activeInvitation.acceptAndSend")
                     ) : (
                       <Loading />
                     )
@@ -240,7 +241,7 @@ export default function ActiveInvitation() {
                   onClick={() => handleCancelInvite(state._id)}
                   text={
                     !cancelLoading ? (
-                      "Cancel"
+                      t("activeInvitation.cancel")
                     ) : (
                       <Loading />
                     )
@@ -251,7 +252,7 @@ export default function ActiveInvitation() {
             ) : (
               <div className="w-full mx-auto flex flex-row justify-center items-center mt-7 mb-4">
                 <Button
-                  text="View Results"
+                  text={t("activeInvitation.viewResults")}
 
                   size="48px"
                   onClick={HandleResult}

@@ -99,7 +99,7 @@ export default function AddStaff() {
                 });
             })
             .catch((err) => {
-                toast(err?.response?.data?.data, {
+                toast(err?.response?.data?.error, {
                     hideProgressBar: true,
                     autoClose: 1000,
                     type: "error",

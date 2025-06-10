@@ -10,7 +10,7 @@ const PaymentSuccess = () => {
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const HandleOnClick = () => {
     console.log(UserData);
-    navigate('/vai');
+    navigate('/setup');
 
   };
   return (
@@ -43,7 +43,7 @@ const PaymentSuccess = () => {
           </div>
         </div>
       </div>
-      </div>
+    </div>
 
 
   );

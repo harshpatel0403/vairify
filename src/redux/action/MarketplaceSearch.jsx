@@ -297,10 +297,11 @@ export const HandleLikePost = (postId, data) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(`/market/post/like/${postId}`, data);
-      return dispatch({
+      dispatch({
         type: "CREATE_POST_LIKE",
         payload: response,
       });
+      return response;
     } catch (err) {
       return dispatch({
         type: "SET_LOADING",

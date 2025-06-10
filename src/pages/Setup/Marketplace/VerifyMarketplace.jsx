@@ -21,6 +21,7 @@ import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import { FreeMode } from "swiper/modules";
 import PageTitle from "../../../components/PageTitle";
+import { useTranslation } from "react-i18next";
 const marketplace = [
   {
     title: "GFE Dubai Search",
@@ -90,6 +91,7 @@ function classNames(...classes) {
 }
 
 const VerifyMarketplace = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
@@ -125,7 +127,7 @@ const VerifyMarketplace = () => {
 
   const handleSubmitSearch = async () => {
     if (!vairifyId) {
-      return toast.error("VaiID is required!");
+      return toast.error(t("verifyMarketplace.errorVairifyRequired"));
     }
     setLoading(true);
     dispatch(HandleSearchWithVaiId(vairifyId))
@@ -135,11 +137,11 @@ const VerifyMarketplace = () => {
             state: { item: res?.payload?.result?.[0]?.profile, market: true },
           });
         } else {
-          toast.error("Invalid vaiID!");
+          toast.error(t("verifyMarketplace.errorInvalidVairify"));
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong!");
+        toast.error(t("verifyMarketplace.errorSomethingWrong"));
         console.log(error);
       })
       .finally(() => {
@@ -151,7 +153,7 @@ const VerifyMarketplace = () => {
     <div>
       <div className="container">
         <div className=" relative md:block hidden">
-          <h3 className="text-center text-white sm:text-[28px] text-[24px] font-medium sm:my-[48px] mt-[-32px] mb-[70px]">Search/Invite</h3>
+          <h3 className="text-center text-white sm:text-[28px] text-[24px] font-medium sm:my-[48px] mt-[-32px] mb-[70px]">{t("verifyMarketplace.searchInvite")}</h3>
           {
             //   <div className=" w-full bg-[#040C50]/[26%] h-[40px]">
             //   <h1 className="capitalize text-[30px] font-roboto-serif text-[#01195C]">
@@ -186,7 +188,7 @@ const VerifyMarketplace = () => {
 
           <div className=" absolute right-0 top-[50px] sm:top-0">
             <Button
-              text={"VAIrify-now"}
+               text={t("verifyMarketplace.vairifyNow")}
               onClick={() => navigate("/vairify-search")}
               className={'px-[20px] !py-[6px]'}
             />
@@ -194,11 +196,11 @@ const VerifyMarketplace = () => {
         </div>
 
         <div className="md:hidden block md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={'Marketplace Search'} isSmall={true} />
+          <PageTitle title={t("verifyMarketplace.pageTitle")} isSmall={true} />
         </div>
         <div className="md:hidden block mb-[24px]">
           <Button
-            text={"VAIrify-now"}
+             text={t("verifyMarketplace.vairifyNow")}
             onClick={() => navigate("/vairify-search")}
             className={'px-[20px] !py-[6px] !w-fit'}
           />
@@ -253,16 +255,16 @@ const VerifyMarketplace = () => {
         </div>
       </div>
       <div className="container">
-        <h3 className="font-medium sm:text-[20px] text-lg text-white mb-[8px] sm:text-left text-center">Find a Member</h3>
+        <h3 className="font-medium sm:text-[20px] text-lg text-white mb-[8px] sm:text-left text-center">{t("verifyMarketplace.findMember")}</h3>
         {/* <strong className="change-font-family font-bold">VAI</strong>RIFY <strong className="change-font-family font-bold">Marketplace</strong> */}
         <div className="w-full mx-auto flex justify-center items-center gap-4 mb-[24px]">
           <Button
-            text={"Enter VAIRIFY ID#"}
+            text={t("verifyMarketplace.enterVairifyIdButton")}
             onClick={() => setVairifyIdModal((prevVal) => !prevVal)}
             className={'px-[20px]'}
           />
           <Button
-            text={" Scan QR Code"}
+            text={t("verifyMarketplace.scanQrCode")}
             onClick={() => navigate("/search/scan-qr")}
             className={'px-[20px]'}
           />
@@ -270,7 +272,7 @@ const VerifyMarketplace = () => {
 
 
         <h2 className="font-medium sm:text-[20px] text-lg text-white mb-[8px] sm:text-left text-center">
-          Saved Search
+          {t("verifyMarketplace.savedSearch")}
         </h2>
         <div className="">
           <nav
@@ -412,7 +414,7 @@ const VerifyMarketplace = () => {
               onChange={(e) => setVairifyId(e.target.value)}
               value={vairifyId}
               disabled={loading}
-              placeholder={'Enter Id'}
+              placeholder={t("verifyMarketplace.inputPlaceholder")}
             />
             {/* {error.name && (
               <label className="text-red-500 text-lg flex items-baseline pl-[12px] pt-[2px]">
@@ -425,7 +427,7 @@ const VerifyMarketplace = () => {
               className={'secondary-btn'}
               text={
                 !loading ? (
-                  "Save"
+                  t("verifyMarketplace.saveButton")
                 ) : (
                   <div className="flex items-center	justify-center">
                     <Loading />

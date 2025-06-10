@@ -18,7 +18,7 @@ function PublicRoute(props) {
             navigate("/setup-face-verification");
         }
 
-        if (UserDetails && props.path) {
+        if(UserDetails && props.path){
             navigate("/business/community")
         }
         setIsMounted(true);
@@ -26,7 +26,7 @@ function PublicRoute(props) {
 
     if (!isMounted) {
         return <div className="text-white text-center mt-10">
-            <Loading />
+       <Loading/>
         </div>
     }
 

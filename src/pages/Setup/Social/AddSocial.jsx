@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import InputText from "../../../components/InputText";
 import { useSelector } from "react-redux";
@@ -8,6 +9,7 @@ import { toast } from "react-toastify";
 import Loading from "../../../components/Loading/Index";
 
 const AddSocial = () => {
+  const { t } = useTranslation();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -28,13 +30,13 @@ const AddSocial = () => {
     console.log("UserDetails: ", UserDetails._id);
 
     if (!stateData?.SocailLink) {
-      toast.error("Please enter a valid social link");
+      toast.error(t("addsocial.invalidLink"));
       return;
     }
 
     // You can add more specific validation criteria here if needed
     if (!isValidUrl(stateData.SocailLink)) {
-      toast.error("Please enter a valid URL");
+      toast.error(t("addsocial.invalidUrl"));
       return;
     }
     setIsLoading(true);
@@ -82,7 +84,7 @@ const AddSocial = () => {
         </div>
         <div className="flex-1 mt-10 w-full flex flex-col justify-center items-start">
           <div className="w-full text-left text-[18px] font-extrabold">
-            <span>Enter the url</span>
+            <span>{t("addsocial.title")}</span>
           </div>
           <div className="mt-custom-14 w-full">
             <InputText
@@ -99,7 +101,7 @@ const AddSocial = () => {
             <Button
               // disabled={stateData?.SocailLink === undefined}
               onClick={handelAddSocial}
-              text="Submit"
+              text={t("addsocial.submit")}
               className="custom-btn-bg bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-extrabold text-[23px] cursor-pointer"
             />)}
         </div>

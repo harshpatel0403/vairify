@@ -1,4 +1,5 @@
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -7,8 +8,8 @@ import Button from "../../../components/Button";
 import { GoPerson } from "react-icons/go";
 import PageTitle from "../../../components/PageTitle";
 
-
 const EscortResults = () => {
+  const { t } = useTranslation();
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const user_type = UserData?.user_type;
 
@@ -53,11 +54,11 @@ const EscortResults = () => {
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Escort Results"} />
+        <PageTitle title={t("escortResults.pageTitle")} />
       </div>
       <div>
         <div className={`sm:grid-cols-2 grid grid-cols-1 gap-[24px] w-full`}>
-          {ResultsData?.length > 0 && (
+          {ResultsData?.length > 0 &&
             ResultsData?.filter(
               (item) => item?.profile?.userId?.user_type !== user_type
             )?.map((data, index) => (
@@ -66,17 +67,15 @@ const EscortResults = () => {
                 data-index={index}
                 className="w-full bg-[#919EAB33] rounded-[16px] p-[16px]"
               >
-                <div
-                  className="flex justify-between gap-2"
-                >
+                <div className="flex justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <img
                       // TODO: add base url if needed for the profile pic image path
                       src={
                         data?.profile?.userId?.profilePic
                           ? import.meta.env.VITE_APP_S3_IMAGE +
-                          "/" +
-                          data?.profile?.userId?.profilePic
+                            "/" +
+                            data?.profile?.userId?.profilePic
                           : "/images/female.png"
                       }
                       // src={
@@ -93,11 +92,12 @@ const EscortResults = () => {
                       <p className="text-[16px] text-white font-normal">
                         {data?.profile?.userId?.name}
                       </p>
-                      <p className="text-[14px] text-[#919EAB] font-normal">{data?.profile?.siteId}</p>
+                      <p className="text-[14px] text-[#919EAB] font-normal">
+                        {data?.profile?.siteId}
+                      </p>
                     </div>
                   </div>
                   <div className="text-center">
-
                     {/* TODO: add trurevu rating here */}
                     {/* <div className="flex flex-row-reverse items-center justify-center gap-1">
                       <FontAwesomeIcon
@@ -142,13 +142,13 @@ const EscortResults = () => {
                         service_type: "escort",
                       },
                     })
-                  }>
+                  }
+                >
                   <GoPerson />
-                  Profile
+                  {t("escortResults.profileButton")}
                 </button>
               </div>
-            ))
-          )}
+            ))}
         </div>
 
         {!ResultsData?.length > 0 && (
@@ -156,10 +156,9 @@ const EscortResults = () => {
             <div>
               <img src="/images/home/notfound.svg" alt="logo" />
             </div>
-            Result not found
+            {t("escortResults.resultNotFound")}
           </div>
         )}
-
       </div>
     </div>
   );

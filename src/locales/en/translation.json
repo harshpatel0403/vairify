@@ -191,5 +191,539 @@
     "noWallet": "No Wallet",
     "goToVairipaySearch": "Go to Vairipay Search",
     "goToGoldenToken": "Go to Golden Token"
+  },
+  "vairipayadd": {
+    "pageTitle": "My Mpay",
+    "paymentIdPlaceholder": "Enter your Payment ID",
+    "paymentIdRequired": "Payment ID is required",
+    "qrRequired": "QR is required",
+    "uploadButton": "Upload",
+    "uploadFileHere": "Upload file here"
+  },
+  "businessprofileqr": {
+    "pageTitle": "My Mpay",
+    "qrTitle": "QR Code",
+    "uploadSuccess": "Upload Successfully",
+    "finished": "Finished",
+    "addMore": "Add More"
+  },
+  "vairipayrequest": {
+    "pageTitle": "Request Payment",
+    "profile": "Profile",
+    "view": "View",
+    "paymentRequest": "Payment Request",
+    "amountRequested": "Amount Requested",
+    "requestType": "Request Type",
+    "comments": "Comments",
+    "chooseOption": "Choose options below to pay to view",
+    "accept": "Accept",
+    "deny": "Deny",
+    "download": "Download",
+    "cancel": "Cancel",
+    "intial": "Intial",
+    "viewApp": "View {{app}}",
+    "qrCode": "QR Code",
+    "requestToPay": "You have Request to pay"
+  },
+  "vairipayrequestsecond": {
+    "requestedLabel": "{{name}} has requested",
+    "amount": "$25.00",
+    "sharedApps": "Our system has detected shared apps with {{name}}. To use",
+    "clickIcon": "please click an icon above",
+    "p2pApps": "P2P APPS",
+    "tokens": "Golden Rose Tokens",
+    "vai": "VAI",
+    "ripay": "RIPAY",
+    "revu": "REVU",
+    "RIFYID": "RIFY ID"
+  },
+  "vairipayuserqr": {
+    "verifyIdLabel": "VAIRIFY ID",
+    "revuTitle": "TruRevu",
+    "paymentId": "Payment ID",
+    "qrCode": "QR Code",
+    "requestedAmount": "Requested Amount",
+    "qrInstruction": "You have selected {{app}}. Touch the QR code to open the app to {{user}}'s account."
+  },
+  "vairipayrequestconfirm": {
+    "verifyIdLabel": "VAIRIFY ID",
+    "revuTitle": "TruRevu",
+    "requestedLabel": "{{name}} has requested",
+    "amount": "$25.00",
+    "noSharedApps": "Our system has not detected shared apps with {{name}}, click the wallet above to see the active apps in {{vai}}",
+    "vai": "VAI",
+    "ripay": "RIPAYⓒ",
+    "p2pApps": "P2P APPS",
+    "tokens": "Golden Rose Tokens"
+  },
+  "vairipaysearch": {
+    "pageTitle": "My Mpay",
+    "searchPlaceholder": "Search",
+    "noResults": "Result not found"
+  },
+  "language": {
+    "selectTitle": "Select Your Language",
+    "searchPlaceholder": "Search Languages",
+    "save": "Save",
+    "selectLanguage": "Select Language"
+  },
+  "goldentoken": {
+    "pageTitle": "Setup Payment",
+    "availablePoints": "Available Point",
+    "tokenLabel": "Golden Rose Token",
+    "buy": "Buy",
+    "packageLabel": "{{tokens}} GTR’s for ${{price}}"
+  },
+  "grtcheckout": {
+    "pageTitle": "Setup Payment",
+    "tokenLabel": "Golden Rose",
+    "package": "{{tokens}} GTR’s for ${{price}}",
+    "totalAmount": "Total : ${{price}}",
+    "cardNumber": "Card Number",
+    "cardHolder": "Card Holder Name",
+    "expirationDate": "Expiration Date",
+    "cvc": "CVC",
+    "checkout": "Checkout",
+    "securePayment": "Make payment securely"
+  },
+  "grtcongrats": {
+    "title": "Congratulations {{tokens}} GRT Tokens have been added to your Wallet",
+    "success": "Your payment has been successfully done.",
+    "balance": "GRT Balance",
+    "buttonLabel": "Go to Wallet"
+  },
+  "personalinformation": {
+    "selectYourLanguage": "Select Your Language",
+    "personalinformations": "Personal information",
+    "languagePlaceholder": "Search Languages",
+    "browse": "Browse",
+    "upload": "Upload",
+    "save": "Save",
+    "selectLanguageButton": "Select Language",
+    "alreadySelected": "Verified Language",
+    "verifiedMarkAlt": "{{language}} is already selected"
+  },
+  "services": {
+    "pageTitle": "Services"
+  },
+  "massage": {
+    "traditionalTitle": "Traditional Massage",
+    "sensualTitle": "Sensual Massage",
+    "releaseTitle": "Release",
+    "traditional": {
+      "Deep Tissue": "Deep Tissue",
+      "Swedish": "Swedish",
+      "Thai": "Thai",
+      "Shiatsu": "Shiatsu"
+    },
+    "sensual": {
+      "Body Rub": "Body Rub",
+      "Tantra": "Tantra",
+      "Dark tantra": "Dark tantra",
+      "Prostate": "Prostate",
+      "Erotic": "Erotic",
+      "Nuru": "Nuru",
+      "Foam": "Foam",
+      "Esalen": "Esalen",
+      "Lingam": "Lingam",
+      "Yoni": "Yoni"
+    },
+    "release": {
+      "Therapeutic": "Therapeutic",
+      "Hand job": "Hand job",
+      "Full Service": "Full Service",
+      "BBBJ": "BBBJ",
+      "Prostate": "Prostate",
+      "CBJ": "CBJ",
+      "Grinding": "Grinding",
+      "Toys": "Toys"
+    }
+  },
+  "vairipaysetup": {
+    "pageTitle": "Setup Payment",
+    "nextButton": "Next >",
+    "paymentApps": "Payment Apps",
+    "goldenRose": "Golden Rose Tokens"
+  },
+  "serviceextra": {
+    "pageTitle": "Service/Extra’s",
+    "table": {
+      "service": "Service",
+      "includedExtra": "Included/Extra",
+      "amount": "Amount"
+    },
+    "placeholder": "Enter amount",
+    "submit": "Submit"
+  },
+  "hourlyrates": {
+    "pageTitle": "Hourly Rates",
+    "currencySelect": "Currency",
+    "table": {
+      "time": "Time",
+      "incall": "Incall",
+      "outcall": "Outcall",
+      "currency": "Currency"
+    },
+    "placeholder": "Enter amount",
+    "errorNumeric": "*Amount should be number only",
+    "errorIncomplete": "Incall or Outcall is required for at least one item",
+    "submit": "Submit"
+  },
+  "setupprofile": {
+    "title": "Congratulations!",
+    "subtitle": "Your verification was successful",
+    "setupPrompt": "Time to set up your profile",
+    "language": "Language",
+    "personalProfile": "Personal Profile",
+    "mutualConsent": "Mutual Consent Contract",
+    "vairipay": "VAIRIPAY",
+    "galleryPhoto": "Gallery Photo",
+    "ratesServices": "Rates/Services",
+    "calendar": "Calendar",
+    "dateGuard": "DateGuard",
+    "social": "Social",
+    "incall": "Incall Addresses",
+    "homeButton": "Home"
+  },
+  "gallery": {
+    "pageTitle": "Photo Gallery",
+    "addImage": "+ Add Image",
+    "modalTitle": "Add Image",
+    "selectFile": "Select file",
+    "browse": "Browse",
+    "uploadSuccess": "Upload Successfully",
+    "viewGallery": "View Gallery",
+    "addMore": "Add More",
+    "uploadImage": "Upload image",
+    "uploadError": "Please select image"
+  },
+  "dateguardsetup": {
+    "pageTitle": "Date Guard",
+    "activateButton": "Activate",
+    "editGroupsButton": "Edit Groups",
+    "editCodesButton": "Edit Codes"
+  },
+  "dateguardcodes": {
+    "pageTitle": "Date Guard",
+    "setDisarmHeading": "Set Disarm Code",
+    "setDecoyHeading": "Set Decoy Code",
+    "submitButton": "Set",
+    "errorBothCodes": "Both codes are required",
+    "errorSameCode": "Codes cannot be the same"
+  },
+  "dateguardselectgroup": {
+    "pageTitle": "Select Group",
+    "pageSubtitle": "Select a group to activate your guard",
+    "createGroupButton": "+ Create Group",
+    "selectButton": "Select",
+    "editButton": "Edit",
+    "editGroupTooltip": "Edit group",
+    "membersCount": "{{count}} members",
+    "errorNoMembers": "Members are not selected"
+  },
+  "dateguardeditgroup": {
+    "pageTitle": "Date Guard",
+    "heading": "Edit Group Name",
+    "inputPlaceholder": "Edit Group Name",
+    "toastSuccess": "Group updated successfully",
+    "toastError": "Invalid URL"
+  },
+  "dateguardaddmember": {
+    "pageTitle": "Add Members",
+    "addMembersBtn": "+ Add Members",
+    "invited": "Invited",
+    "accepted": "Accepted",
+    "removeModalTitle": "{{name}}",
+    "removeModalMessage": "Remove from the group {{groupName}}",
+    "removeBtn": "Remove",
+    "invalidUrl": "Invalid Url"
+  },
+  "invitemember": {
+    "pageTitle": "Invite to Group {{groupName}}",
+    "addContacts": "+ Add Contacts",
+    "searchPlaceholder": "Search Contacts",
+    "invite": "Invite",
+    "invited": "Invited",
+    "addModalTitle": "Add to Contacts",
+    "namePlaceholder": "Name",
+    "inviteBtn": "Invite",
+    "nameRequired": "Name is required!",
+    "validPhoneRequired": "Valid phone number is required!"
+  },
+  "dateguardpassword": {
+    "pageTitle": "Date Guard",
+    "heading": "We were not able to complete your Facial ID",
+    "subheading": "Please enter your password",
+    "passwordPlaceholder": "Enter Password",
+    "enterBtn": "Enter",
+    "errorMissing": "Codes and Password both are required"
+  },
+  "passwordsuccess": {
+    "pageTitle": "Date Guard",
+    "heading": "Codes Successfully\nChanged",
+    "successMessage": "Change Successfully"
+  },
+  "dateguardcountup": {
+    "pageTitle": "Date Guard"
+  },
+  "dateguardphototake": {
+    "pageTitle": "Date Guard",
+    "cameraNotFoundTitle": "Camera not found",
+    "cameraNotFoundMsg": "You cannot use face verification on this device. Please retry using a mobile or another device with a working camera.",
+    "retry": "Retry",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Enter a message",
+    "save": "Save",
+    "uploadFileError": "Please upload a file"
+  },
+  "successchangedcode": {
+    "pageTitle": "Date Guard",
+    "pleaseWait": "Please wait...",
+    "approve": "Approve",
+    "reject": "Reject",
+    "cameraNotAvailable": "Camera not available",
+    "verificationFailed": "Facial verification failed"
+  },
+  "settimealarm": {
+    "pageTitle": "Date Guard",
+    "setYourTime": "Set your Time",
+    "alarmDelay": "Alarm Delay",
+    "minutes": "{{min}}min",
+    "min": "1min",
+    "max": "59min",
+    "selectButton": "Select"
+  },
+  "joingroup": {
+    "title": "Join {{group}} Group",
+    "subtitle": "Join Group {{group}}",
+    "instruction": "Please enter the 6-character invite code",
+    "submit": "Submit",
+    "invalidCode": "Invalid Code!",
+    "invalidCodeLength": "Please enter valid Code"
+  },
+  "socialsearch": {
+    "title": "Social",
+    "searchCountry": "Search Country (Any)",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "whatsapp": "WhatsApp",
+    "twitter": "Twitter",
+    "facebookPlaceholder": "Facebook URL",
+    "instagramPlaceholder": "Instagram URL",
+    "whatsappPlaceholder": "WhatsApp URL",
+    "twitterPlaceholder": "Twitter URL",
+    "save": "Save",
+    "errorNoLink": "Please enter a valid social link",
+    "success": "Social links added successfully"
+  },
+  "addsocial": {
+    "title": "Enter the URL",
+    "submit": "Submit",
+    "invalidLink": "Please enter a valid social link",
+    "invalidUrl": "Please enter a valid URL"
+  },
+  "uploadprofile": {
+    "title": "Upload Profile Image",
+    "browse": "Browse",
+    "upload": "Upload",
+    "errorTooLarge": "Too Large File",
+    "errorNoFile": "Please upload your profile picture",
+    "success": "Profile picture uploaded successfully"
+  },
+  "usergallery": {
+    "title": "Gallery",
+    "loading": "Loading gallery..."
+  },
+  "gallerycomment": {
+    "commentPlaceholder": "Write a comment...",
+    "followSuccess": "Successfully followed!",
+    "unfollowSuccess": "Successfully unfollowed!",
+    "followError": "Unable to follow!",
+    "commentError": "Failed to submit comment.",
+    "loading": "Loading comments..."
+  },
+  "setupfacial": {
+    "title": "Facial Recognition",
+    "heading": "In-App Facial Recognition",
+    "description": "Turn on Facial Recognition",
+    "submit": "Submit",
+    "skip": "Skip"
+  },
+  "uploadfacial": {
+    "title": "Facial Recognition",
+    "submit": "Submit"
+  },
+  "activeInvitation": {
+    "title": "{{status}} invitation",
+    "vaiID": "VAIRIFY ID",
+    "name": "Name",
+    "truRevu": "TruRevu",
+    "invitationDetails": "Invitation Details",
+    "dateTime": "Date/Time",
+    "services": "Services",
+    "duration": "Duration",
+    "rate": "Rate",
+    "extras": "Extras",
+    "outcall": "Outcall",
+    "moreDetails": "More Details",
+    "gender": "Gender",
+    "vairifyId": "VAIRIFY ID",
+    "vairidate": "VAIRIDATE",
+    "totalOffer": "Total Offered for this appointment",
+    "acceptAndSend": "Accept and Send Profile",
+    "cancel": "Cancel",
+    "viewResults": "View Results"
+  },
+  "postReview": {
+    "reviewPost": "Review Post",
+    "date": "Date",
+    "time": "Time",
+    "location": "Location",
+    "frequency": "Frequency",
+    "total": "Total",
+    "credits": "Credits",
+    "checkout": "Checkout"
+  },
+  "postAnnouncement": {
+    "title": "Post Announcement",
+    "newPost": "New Post",
+    "existingPost": "Existing Post"
+  },
+  "calendar": {
+    "title": "My Calendar",
+    "selectDate": "Select Date",
+    "done": "Done",
+    "reset": "Reset",
+    "selectTiming": "Select Timing",
+    "location": "Location",
+    "add": "+ Add",
+    "search": "Search",
+    "saveLocation": "Save location",
+    "country": "Country",
+    "city": "City",
+    "frequency": "Frequency",
+    "perPost": "1 GRT Per Post",
+    "featureListing": "2 GRT per day for Feature listing",
+    "review": "Review",
+    "feature": "Feature"
+  },
+  "calendarSchedules": {
+    "title": "Calendar",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "agenda": "Agenda",
+    "appointmentId": "Appt ID",
+    "location": "Location",
+    "clientNameId": "Client Name & ID",
+    "description": "Descriptions",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "view": "View"
+  },
+  "schedule": {
+    "title": "Schedule",
+    "createNew": "+ Create New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "activate": "Activate",
+    "deactivate": "De Activate",
+    "noSchedules": "Schedules are not found",
+    "deleteConfirm": "Are you sure you want to delete your schedule?"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "add": "Add",
+    "calendar": "Calendar"
+  },
+  "calendarSettings": {
+    "title": "Calendar Settings",
+    "notificationRules": "Notification Rules",
+    "bufferTime": "Buffer Time",
+    "blackoutPeriod": "Black Out Period",
+    "memberExemptions": "Member Exemptions",
+    "enterVerifyId": "Enter Verify ID",
+    "day": "Day",
+    "hour": "Hr",
+    "minute": "Min",
+    "saveRules": "Save Rules",
+    "calendar": "Calendar",
+    "rules": "Rules",
+    "saved": "Saved",
+    "successfully": "successfully",
+    "exemptionError": "Please enter a value for all inputs."
+  },
+  "syncCalendar": {
+    "title": "Sync Calendar",
+    "description": "Select the popular calendar you would like to sync your\n VAIRIFY CALENDAR",
+    "google": "Google",
+    "microsoft": "Microsoft",
+    "apple": "Apple"
+  },
+  "escortResults": {
+    "pageTitle": "Escort Results",
+    "profileButton": "Profile",
+    "resultNotFound": "Result not found"
+  },
+  "marketplace": {
+    "title": "Marketplace Search",
+    "vairifyNow": "VAIrify-now",
+    "enterId": "Enter VAIrify ID",
+    "scanQr": "Scan QR Code",
+    "save": "Save",
+    "searchInvite": "Search/Invite",
+    "savedSearch": "Saved Search",
+    "favSearch": "My Fav Searches",
+    "favInvites": "My Fav Invitation/Post",
+    "invalidId": "Invalid VAIrify ID!",
+    "requiredId": "VAIrify ID is required!",
+    "memberSearchTitle": "Find a Member",
+    "edit": "Edit"
+  },
+  "verifyMarketplace": {
+    "pageTitle": "Marketplace Search",
+    "searchInvite": "Search/Invite",
+    "vairifyNow": "VAIrify-now",
+    "findMember": "Find a Member",
+    "enterVairifyIdButton": "Enter VAIRIFY ID#",
+    "scanQrCode": " Scan QR Code",
+    "savedSearch": "Saved Search",
+    "myFavSearches": "My Fav Searches",
+    "myFavInvitations": "My Fav Invitation/Post",
+    "modalTitle": "Enter VAIrify Id",
+    "inputPlaceholder": "Enter Id",
+    "saveButton": "Save",
+    "errorVairifyRequired": "VaiID is required!",
+    "errorInvalidVairify": "Invalid vaiID!",
+    "errorSomethingWrong": "Something went wrong!"
+  },
+  "invite": {
+    "pageTitle": "Invitations",
+    "priceOffered": "Price Offered",
+    "requestTime": "Request Appt/time",
+    "requestedServiceTime": "Requested Service/time",
+    "requestedLocation": "Requested Location",
+    "message": "Message",
+    "status": "Status",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "viewProfile": "View Profile",
+    "viewInvitation": "View Invitation",
+    "resultNotFound": "Result not found"
+  },
+  "invitations": {
+    "pageTitle": "Invitations",
+    "resultNotFound": "Result not found",
+    "requestedApptTime": "Requested Appt/time",
+    "postingTime": "Invitation Posting time",
+    "elapsedTime": "Elapsed Time",
+    "status": "Status",
+    "pending": "Pending",
+    "cancel": "Cancel",
+    "view": "View",
+    "cancelConfirmation": "Are you sure you want to cancel your invitation",
+    "yes": "Yes",
+    "no": "No"
   }
 }

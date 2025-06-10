@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Button from "../../../components/Button";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HandleDeleteInvitation,
@@ -15,9 +16,12 @@ import PageTitle from "../../../components/PageTitle";
 
 const Invitations = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
-  const marketplacedata = useSelector((state) => state?.Market?.marketplacedata);
+  const marketplacedata = useSelector(
+    (state) => state?.Market?.marketplacedata
+  );
 
   // let marketplacedata;
   // const fetchMarketPlaceData = async () => {
@@ -76,15 +80,12 @@ const Invitations = () => {
       <div className="flex justify-center align-center items-center h-[50vh]">
         <Loading />
       </div>
-    )
-  }
-  else {
+    );
+  } else {
     return (
-      <div
-        className="container pb-[48px]"
-      >
+      <div className="container pb-[48px]">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Invitations"} />
+          <PageTitle title={t("invitations.pageTitle")} />
         </div>
         <div className="flex flex-col justify-between">
           {!marketplacedata?.length && (
@@ -92,7 +93,7 @@ const Invitations = () => {
               <div className="image-not">
                 <img src="/images/home/result-not-found.svg" alt="not found" />
               </div>
-              Result not found
+              {t("invitations.resultNotFound")}
             </div>
           )}
           <div className="grid gap-[24px] md:grid-cols-2">
@@ -124,26 +125,35 @@ const Invitations = () => {
                       </div>
                       <div className="mt-[16px]">
                         <div className="flex justify-between gap-2">
-                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Requested Appt/time</div>
+                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                            {t("invitations.requestedApptTime")}
+                          </div>
                           <p className="text-white sm:text-sm text-xs font-medium text-right">
                             {startTime.format("hh:mm a")}-
                             {endTime.format("hh:mm a")}
                           </p>
                         </div>
                         <div className="flex justify-between gap-2 mt-[4px]">
-                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Invitation Posting time</div>
+                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                            {t("invitations.postingTime")}
+                          </div>
                           <p className="text-white sm:text-sm text-xs font-medium text-right">
-                            {moment(item.createdAt).format("MM/DD/YYYY")} {' '} {moment(item.createdAt).format("hh:mm a")}
+                            {moment(item.createdAt).format("MM/DD/YYYY")}{" "}
+                            {moment(item.createdAt).format("hh:mm a")}
                           </p>
                         </div>
                         <div className="flex justify-between gap-2 mt-[4px]">
-                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Elapsed Time</div>
+                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                            {t("invitations.elapsedTime")}
+                          </div>
                           <p className="text-white sm:text-sm text-xs font-medium text-right">
                             {moment(item.createdAt).fromNow()}
                           </p>
                         </div>
                         <div className="flex justify-between gap-2 mt-[4px]">
-                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Status</div>
+                          <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                            {t("invitations.status")}
+                          </div>
                           <p className="text-white sm:text-sm text-xs font-medium text-right">
                             {item.status || "Pending"}
                           </p>
@@ -152,11 +162,9 @@ const Invitations = () => {
                       <div className="mt-[16px] flex gap-[8px]">
                         <Button
                           onClick={() => handleCancel(item)}
-                          className={
-                            "py-[4px]"
-                          }
-                          text={'Cancel'}
-                          size={'36px'}
+                          className={"py-[4px]"}
+                          text={t("invitations.cancel")}
+                          size={"36px"}
                         />
                         <div className="w-full relative">
                           <Button
@@ -173,8 +181,8 @@ const Invitations = () => {
                               );
                               navigate("/results");
                             }}
-                            text={'View'}
-                            size={'36px'}
+                            text={t("invitations.view")}
+                            size={"36px"}
                           />
                           <span className="absolute top-[7px] right-[8px] bg-[#919EAB33] rounded-full text-[12px] w-[20px] h-[20px] text-white flex justify-center items-center">
                             {activeLength}
@@ -205,15 +213,15 @@ const Invitations = () => {
           </button>
           <div className="">
             <p className="text-[20px] font-medium text-center text-black w-[70%] mx-auto">
-              Are you sure you want to cancel your invitation
+              {t("invitations.cancelConfirmation")}
             </p>
             <div className="flex justify-center items-center w-full pt-2 gap-2 mt-4">
               <div className="w-[40%]">
                 <Button
-                  className={'secondary-btn'}
+                  className={"secondary-btn"}
                   text={
                     !isLoading ? (
-                      "Yes"
+                      t("invitations.yes")
                     ) : (
                       <div className="flex items-center justify-center">
                         <Loading />
@@ -227,7 +235,7 @@ const Invitations = () => {
               </div>
               <div className="w-[40%]">
                 <Button
-                  text={"No"}
+                  text={t("invitations.no")}
                   size="45px"
                   onClick={() => setopen(false)}
                 />

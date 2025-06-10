@@ -14,6 +14,7 @@ import SelectBox from "../../../../components/SelectBox";
 import PageTitle from "../../../../components/PageTitle";
 
 const times = [
+  "Select Time",
   "01:00",
   "02:00",
   "03:00",
@@ -28,6 +29,7 @@ const times = [
   "12:00",
 ];
 const daysOfWeek = [
+  "Select Day",
   "Sunday",
   "Monday",
   "Tuesday",
@@ -36,7 +38,7 @@ const daysOfWeek = [
   "Friday",
   "Saturday",
 ];
-const zones = ["A.M", "P.M"];
+const zones = ["Select Zone", "A.M", "P.M"];
 export default function BusinessHours() {
   const { state } = useLocation();
   const navigate = useNavigate();

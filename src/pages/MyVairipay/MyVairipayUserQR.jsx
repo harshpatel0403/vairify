@@ -1,8 +1,10 @@
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function MyVairipayUserQR() {
+  const { t } = useTranslation();
   const { state } = useLocation();
   console.log("babu: ", state);
   const handleSubmit = () => {
@@ -15,10 +17,7 @@ export default function MyVairipayUserQR() {
           <div className="flex flex-col items-center justify-center">
             <div>
               <span className="text-[18px] text-[#040C50] font-extrabold font-Roboto-Serif">
-                VAI
-                <span className="text-[18px] text-[#040C50] font-medium font-Roboto-Serif">
-                  RIFY ID
-                </span>
+                {t("vairipayuserqr.verifyIdLabel")}
               </span>
             </div>
             <div>
@@ -36,11 +35,12 @@ export default function MyVairipayUserQR() {
                 className="w-[120px] h-[120px] bg-[#fff] rounded-full border-2 overflow-hidden"
                 rc={
                   state?.UserRequest?.requester?.profilePic !== ""
-                    ? `${import.meta.env.VITE_APP_S3_IMAGE}/${state?.UserRequest?.requester?.profilePic
-                    }`
+                    ? `${import.meta.env.VITE_APP_S3_IMAGE}/${
+                        state?.UserRequest?.requester?.profilePic
+                      }`
                     : state?.UserRequest?.requester?.gender === "Male"
-                      ? "/images/male.png"
-                      : "/images/female.png"
+                    ? "/images/male.png"
+                    : "/images/female.png"
                 }
                 alt={state?.UserRequest?.requester?.name}
               />
@@ -55,7 +55,7 @@ export default function MyVairipayUserQR() {
           <div>
             <div>
               <span className="text-[18px] text-[#040C50] font-bold font-Roboto-Serif">
-                TruRevu
+                {t("vairipayuserqr.revuTitle")}
               </span>
             </div>
             <div className="flex flex-row justify-center items-center trurevu-star">
@@ -129,9 +129,13 @@ export default function MyVairipayUserQR() {
             <div className="w-full mx-auto flex flex-col justify-center items-center mt-3 bg-[#3760CB] rounded-[100px] px-10 py-2 shadow-2xl border-2 border-black">
               <span className="text-center">
                 <span className="font-semibold text-[18px] text-white leading-6">
-                  You have selected {state?.App?.paymentAppName} Touch the QR
+                  {/* You have selected {state?.App?.paymentAppName} Touch the QR
                   code to Open the app to {state?.UserRequest?.requester?.name}{" "}
-                  account.
+                  account. */}
+                  {t("vairipayuserqr.qrInstruction", {
+                    app: state?.App?.paymentAppName,
+                    user: state?.UserRequest?.requester?.name,
+                  })}
                 </span>
               </span>
             </div>
@@ -153,7 +157,7 @@ export default function MyVairipayUserQR() {
               </div> */}
                 <div>
                   <span className="text-white text-[16px] font-medium">
-                    Payment ID
+                    {t("vairipayuserqr.paymentId")}
                   </span>
                 </div>
                 <div className="mb-4">
@@ -163,29 +167,30 @@ export default function MyVairipayUserQR() {
                 </div>
                 <div className="mb-2">
                   <span className="text-white text-[16px] font-medium">
-                    QR Code
+                    {t("vairipayuserqr.qrCode")}
                   </span>
                 </div>
                 <div>
                   <img
                     className="w-[126px] h-[129px] pt-1"
-                    src={`${import.meta.env.VITE_APP_S3_IMAGE
-                      }/${state?.App?.qrCode}`}
+                    src={`${import.meta.env.VITE_APP_S3_IMAGE}/${
+                      state?.App?.qrCode
+                    }`}
                     alt="Vairipay Request QR Logo"
                     onError={(e) => {
                       console.error("Error loading image:", e);
                     }}
-                  // src={`${import.meta.env.VITE_APP_API_USER_VARIPAYS_IMAGE_URL
-                  //   }/${state?.App?.qrCode}`}
-                  // alt="Vairipay Request QR Logo"
-                  // onError={(e) => {
-                  //   console.error("Error loading image:", e);
-                  // }}
+                    // src={`${import.meta.env.VITE_APP_API_USER_VARIPAYS_IMAGE_URL
+                    //   }/${state?.App?.qrCode}`}
+                    // alt="Vairipay Request QR Logo"
+                    // onError={(e) => {
+                    //   console.error("Error loading image:", e);
+                    // }}
                   />
                 </div>
                 <div className="mt-3">
                   <span className="text-white text-[16px] font-medium">
-                    Requested Amount
+                    {t("vairipayuserqr.requestedAmount")}
                   </span>
                 </div>
                 <div>

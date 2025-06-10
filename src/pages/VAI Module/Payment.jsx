@@ -213,24 +213,28 @@ const Payment = () => {
             <hr className="border border-dashed border-[#919EAB33]" />
             {totalPayment?.AdditionalVerification > 0 ? (
               <>
-                <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-center">
+              <div className="flex justify-between items-center gap-[16px] mb-[16px] mt-3">
+                <h1 className="col-span-2 sm:text-[18px] text-[14px] font-normal text-white text-center">
                   {`${totalPayment?.currency}${"25" + ".00"} * ${totalPayment?.AdditionalVerification
                     } coupons:`}
                 </h1>
-                <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
+                <h1 className="sm:text-[18px] text-[14px] font-normal text-white text-start">
                   {totalPayment?.currency +
                     25 * totalPayment?.AdditionalVerification}
                   .00
                 </h1>
-                <h1 className="col-span-2 font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                  {t("payment.totalAmount")}:
-                </h1>
-                <h1 className="font-bold text-xl text-[#01195C] w-auto table rounded-lg text-start">
-                  {`${totalPayment?.currency} ${(
-                    25 * totalPayment?.AdditionalVerification +
-                    totalPayment?.totalAmount
-                  ).toFixed(2)}`}
-                </h1>
+              </div>
+              <div className="flex justify-between items-center gap-[16px] mb-[16px] mt-3">
+                  <h1 className="col-span-2 sm:text-[18px] text-[14px] font-normal text-white text-start">
+                    Total Amount:
+                  </h1>
+                  <h1 className="sm:text-[18px] text-[14px] font-normal text-white text-start">
+                    {`${totalPayment?.currency} ${(
+                      25 * totalPayment?.AdditionalVerification +
+                      totalPayment?.totalAmount
+                    ).toFixed(2)}`}
+                  </h1>
+              </div>
               </>
             ) : (
               <>

@@ -110,6 +110,7 @@ export default function Profile() {
     VaripayService.createUserVaripayRequest(body)
       .then((res) => {
         setMessageOpen(false);
+        toast.success("Request sent successfully");
       })
       .catch((err) => {
         console.log(err);

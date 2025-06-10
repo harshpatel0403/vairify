@@ -2,6 +2,7 @@
 import Button from "../../../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 import {
   useStripe,
@@ -20,6 +21,7 @@ import Header from "../../../components/Header/Header";
 import PageTitle from "../../../components/PageTitle";
 
 const TokenCheckout = () => {
+  const { t } = useTranslation();
   const { state } = useLocation();
   const navigate = useNavigate();
   const strip = useStripe();
@@ -102,7 +104,7 @@ const TokenCheckout = () => {
     <>
       <div className="container">
         <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-          <PageTitle title={"Setup Payment"} />
+          <PageTitle title={t("grtcheckout.pageTitle")} />
         </div>
 
 
@@ -114,22 +116,22 @@ const TokenCheckout = () => {
               className={`bg-[linear-gradient(279.9deg,_#093400_15.45%,_#006221_84.15%)] rounded-[18px] p-[16px] flex justify-between max-w-[558px] h-[146px]`}
             >
               <div>
-                <h4 className="text-[18px] font-normal text-white opacity-50">Golden Rose</h4>
+                <h4 className="text-[18px] font-normal text-white opacity-50">{t("grtcheckout.tokenLabel")}</h4>
                 <h5 className="text-[20px] font-medium text-white">
-                  {state?.totalTokens} GTR’s for ${state?.price}
+                  {t("grtcheckout.package", { tokens: state?.totalTokens, price: state?.price })}
                 </h5>
               </div>
               <img src="/images/setup/gold-coins.svg" alt="gold" className="mt-auto" />
             </div>
             <div className="bg-[#FFFFFF14] rounded-[16px] p-[16px] flex flex-col justify-center items-center gap-2 mt-[24px]">
               <img src="/images/setup/payment.svg" alt="img" />
-              <h4 className="text-[20px] font-medium text-white">Total : {state?.price} $</h4>
+              <h4 className="text-[20px] font-medium text-white">{t("grtcheckout.totalAmount", { price: state?.price })}</h4>
             </div>
           </div>
           <div>
             <div className="w-full flex flex-col gap-1 sm:mb-[24px] mb-[16px]">
               <label className="text-[14px] font-normal text-white pl-1">
-                Card Number
+                {t("grtcheckout.cardNumber")}
               </label>
               <div>
                 <CardNumberElement
@@ -151,7 +153,7 @@ const TokenCheckout = () => {
             </div>
             <div className="w-full flex flex-col gap-1 sm:mb-[24px] mb-[16px]">
               <label className="text-[14px] font-normal text-white pl-1">
-                Card Holder Name
+                {t("grtcheckout.cardHolder")}
               </label>
               <InputText
                 value={cardHolderName}
@@ -165,7 +167,7 @@ const TokenCheckout = () => {
 
             <div className="w-full flex flex-col gap-1 sm:mb-[24px] mb-[16px]">
               <label className="text-[14px] font-normal text-white pl-1">
-                Expiration Date
+                {t("grtcheckout.expirationDate")}
               </label>
               <div>
                 <CardExpiryElement
@@ -187,7 +189,7 @@ const TokenCheckout = () => {
             </div>
             <div className="w-full flex flex-col gap-1 sm:mb-[24px] mb-[16px]">
               <label className="text-[14px] font-normal text-white pl-1">
-                CVC
+               {t("grtcheckout.cvc")}
               </label>
               <div>
                 <CardCvcElement
@@ -213,7 +215,7 @@ const TokenCheckout = () => {
                 disabled={isLoading}
                 text={
                   !isLoading ? (
-                    "Checkout"
+                    t("grtcheckout.checkout")
                   ) : (
                     <div className="flex items-center	justify-center">
                       <Loading />
@@ -223,7 +225,7 @@ const TokenCheckout = () => {
                 onClick={handleSubmit}
               />
             </div>
-            <p className="text-center text-[14px] font-normal opacity-70 text-white mt-[12px] flex items-center justify-center gap-1"><img src="/images/face-verification/lock.svg" alt="icon" /> Make payment securely </p>
+            <p className="text-center text-[14px] font-normal opacity-70 text-white mt-[12px] flex items-center justify-center gap-1"><img src="/images/face-verification/lock.svg" alt="icon" /> {t("grtcheckout.securePayment")} </p>
           </div>
         </div>
       </div>

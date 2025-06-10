@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import InputText from "../../components/InputText";
 import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import Button from "../../components/Button";
@@ -10,6 +11,7 @@ import Header from "../../components/Header/Header";
 import PageTitle from "../../components/PageTitle";
 
 export default function MyVairipayAdd() {
+  const { t } = useTranslation();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -25,7 +27,7 @@ export default function MyVairipayAdd() {
   };
 
   const UploadImage = (event) => {
-    setIsUpload(true)
+    setIsUpload(true);
     setQrImage(event.target.files[0]);
     console.log(event.target.files[0]);
     setStateData({
@@ -37,17 +39,17 @@ export default function MyVairipayAdd() {
       const imageURL = URL.createObjectURL(event.target.files[0]);
       setShowImage(imageURL);
     }
-    setIsUpload(false)
+    setIsUpload(false);
   };
 
   console.log(state);
   const handelAddVaripay = () => {
     const validationErrors = {};
     if (!stateData?.PaymentID) {
-      validationErrors.PaymentID = "PaymentID is required";
+      validationErrors.PaymentID = t("vairipayadd.paymentIdRequired");
     }
     if (!qrimage) {
-      validationErrors.qrimage = "QR is required";
+      validationErrors.qrimage = t("vairipayadd.qrRequired");
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -76,13 +78,13 @@ export default function MyVairipayAdd() {
       })
       .finally(() => {
         setIsLoading(false);
-      })
+      });
   };
 
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"My Mpay"} />
+        <PageTitle title={t("vairipayadd.pageTitle")} />
       </div>
       <div className="grid sm:grid-cols-2 grid-cols-1 gap-[24px] mb-[50px]">
         <div className="w-full bg-white flex items-center justify-center sm:rounded-[16px] mx-auto rounded-[8px] sm:h-auto h-[135px]">
@@ -99,8 +101,8 @@ export default function MyVairipayAdd() {
             className="text-[14px] font-normal text-white rounded-[8px] px-[14px] py-[16px] max-h-[54px] !border-[#919EAB33]"
             onChange={HandleData}
             name={"PaymentID"}
-            placeholder={' Enter your Payment ID'}
-            border={error.PaymentID ? '#ef4444' : '#02227E'}
+            placeholder={t("vairipayadd.paymentIdPlaceholder")}
+            border={error.PaymentID ? "#ef4444" : "#02227E"}
           />
           {error.PaymentID && (
             <label className="text-red-500 text-xs flex items-baseline pt-[2px]">
@@ -108,9 +110,10 @@ export default function MyVairipayAdd() {
             </label>
           )}
           <div className="mt-custom-14 w-full">
-            <ImageUpload className=""
+            <ImageUpload
+              className=""
               type="text"
-              buttonName={isUpload ? <Loading /> : "Upload file here"}
+              buttonName={isUpload ? <Loading /> : t("vairipayadd.uploadFileHere")}
               onClick={UploadImage}
               name={"QRCode"}
             />
@@ -125,7 +128,7 @@ export default function MyVairipayAdd() {
             <Button
               text={
                 !isLoading ? (
-                  "Upload"
+                  t("vairipayadd.uploadButton")
                 ) : (
                   <div className="flex items-center	justify-center">
                     <Loading />

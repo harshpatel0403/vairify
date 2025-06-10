@@ -136,7 +136,7 @@ const ChatLogs = () => {
           <>
             <p className="text-white text-[16px] font-medium mb-[8px]">{item}</p>
             {chatsGroupData[item]
-              ?.filter(chat => chat?.receiverId && typeof chat.receiverId === 'object')
+              ?.filter(chat => chat?.receiverId && typeof chat.receiverId === 'object' && chat?.messages?.length > 0)
               ?.map(items => {
 
                 return (

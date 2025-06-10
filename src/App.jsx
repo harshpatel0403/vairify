@@ -36,9 +36,15 @@ import MyVairipaySearch from "./pages/MyVairipay/MyVairipaySearch";
 import MyVairipayCountrySearch from "./pages/MyVairipay/MyVairipayCountrySearch";
 import Language from "./pages/Setup/Language";
 import GoldenToken from "./pages/Setup/Varipay/GoldenToken";
+
+
 import TokenCheckout from "./pages/Setup/Varipay/TokenCheckout";
 import TokenCongratulation from "./pages/Setup/Varipay/TokenCongratulation";
-import PersonalInformationOrientation from "./pages/PersonalInformationOrientation/PersonalInformationOrientation";
+
+
+import PersonalInformationOrientation from "./pages/PersonalInformationOrientation/PersonalInformationOrientation"; //need to work on trans
+
+
 import Services from "./pages/Setup/Services/Home";
 import Massage from "./components/Services/Massage";
 import Varipay from "./pages/Setup/Varipay/Varipay";
@@ -48,19 +54,29 @@ import SetupProfile from "./pages/Setup/SetupProfile";
 import Gallery from "./pages/Setup/Gallery";
 import DateGuardSetup from "./pages/Setup/Dateguard/DateGuardSetup";
 import Codes from "./pages/Setup/Dateguard/Codes";
-import Groups from "./pages/Setup/Dateguard/Groups";
+import Groups from "./pages/Setup/Dateguard/Groups";  //need to work on trans
 import DateGuardSelectGroup from "./pages/Setup/Dateguard/DateGuardSelectGroup";
 import DateGuardEditGroup from "./pages/Setup/Dateguard/DateGuardEditGroup";
 import DateGuardAddMember from "./pages/Setup/Dateguard/DateGuardAddMember";
+
 import InviteMemberToGroup from "./pages/Setup/Dateguard/InviteMemberToGroup";
 import DateGuardPasswordInput from "./pages/Setup/Dateguard/DateGuardPasswordInput";
 import PasswordSuccessChanged from "./pages/Setup/Dateguard/PasswordSuccessChanged";
-import DateGuardInvitedMembers from "./pages/Setup/Dateguard/InviteMemberToGroup";
+
+import DateGuardInvitedMembers from "./pages/Setup/Dateguard/InviteMemberToGroup"; //need to work on trans
+
+
 import DateGuardCountUp from "./pages/Setup/Dateguard/DateGuardCountUp";
 import DateGuardPhotoTake from "./pages/Setup/Dateguard/DateGuardPhotoTake";
-import DateGuardSendMessage from "./pages/Setup/Dateguard/DateGuardSendMessage";
-import DateGuardAlarm from "./pages/Setup/Dateguard/DateGuardAlarm";
+
+import DateGuardSendMessage from "./pages/Setup/Dateguard/DateGuardSendMessage";  //need to work on trans
+import DateGuardAlarm from "./pages/Setup/Dateguard/DateGuardAlarm";  //need to work on trans
+
 import SuccessChangedCode from "./pages/Setup/Dateguard/SuccessChangedCode";
+
+
+
+
 import DateGuardSetTimeAlarm from "./pages/Setup/Dateguard/DateGuardSetTimeAlarm";
 import JoinMemberToGroup from "./pages/Setup/Dateguard/JoinMemberToGroup";
 import SocialSearch from "./pages/Setup/Social/SocialSearch";
@@ -73,21 +89,32 @@ import UploadFacial from "./pages/Setup/InAppFacialRec/UploadFacial";
 import ActiveInvitation from "./pages/Setup/Marketplace/ActiveInvitations";
 import PostReview from "./pages/Setup/Marketplace/PostReview";
 import PostAnnouncement from "./pages/Setup/Marketplace/PostAnnouncement";
-import MarketplacePosts from "./pages/Setup/Marketplace/MarketplacePosts";
-import SetDateGuardDisarmDecoyCode from "./pages/Setup/Dateguard/SetDateGuardDisarmDecoyCode";
+
+
+import MarketplacePosts from "./pages/Setup/Marketplace/MarketplacePosts"; //need to work on trans
+import SetDateGuardDisarmDecoyCode from "./pages/Setup/Dateguard/SetDateGuardDisarmDecoyCode"; //need to work on trans
+
+
 import MyCalendar from "./pages/Setup/Marketplace/MyCalendar";
 import CalendarSchedules from "./pages/Setup/Calendar/Calendar";
 import Schedule from "./pages/Setup/Calendar/Schedule";
 import SetSchedule from "./pages/Setup/Calendar/SetSchedule";
 import SetRules from "./pages/Setup/Calendar/SetRules";
-import CalendarSetting from "./pages/Setup/Calendar/CalendarSetting";
+import CalendarSetting from "./pages/Setup/Calendar/CalendarSetting"; //need to work on trans
 import SyncCalendar from "./pages/Setup/Calendar/SyncCalendar";
-import EscortType from "./pages/Setup/Marketplace/EscortType";
+import EscortType from "./pages/Setup/Marketplace/EscortType"; //need to work on trans
 import EscortResults from "./pages/Setup/Marketplace/EscortResults";
-import AdvancedSearch from "./pages/Setup/Marketplace/AdvancedSearch";
+import AdvancedSearch from "./pages/Setup/Marketplace/AdvancedSearch"; //need to work on trans
+
+
+
 import VerifyMarketplace from "./pages/Setup/Marketplace/VerifyMarketplace";
 import Invite from "./pages/Setup/Marketplace/Invite";
 import Invitations from "./pages/Setup/Marketplace/Invitations";
+
+
+
+
 import Featured from "./pages/Setup/Home/Featured";
 import Comments from "./pages/Setup/Home/Comments";
 import PostDetails from "./pages/Setup/Home/PostDetails";
@@ -366,7 +393,7 @@ function App() {
         <Route
           path="/vai"
           element={
-            <ProtectedRoute level={["login"]} step="Step2" >
+            <ProtectedRoute level={["login"]} step="Step2" path="/vai">
               <Kyc />
             </ProtectedRoute>
           }
@@ -374,7 +401,7 @@ function App() {
         <Route
           path="/kyc-success"
           element={
-            <ProtectedRoute level={["login"]} step="Step2">
+            <ProtectedRoute level={["login"]} step="Step2" path="/kyc-success">
               <KycSuccess />
             </ProtectedRoute>
           }
@@ -488,7 +515,7 @@ function App() {
         <Route
           path="/settings/bussiness-vai-codes"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/bussiness-vai-codes">
+            <ProtectedRoute level={["login"]}>
               <VaiCodes />
             </ProtectedRoute>
           }
@@ -507,7 +534,7 @@ function App() {
         <Route
           path="/view-transfer"
           element={
-            <ProtectedRoute level={["login"]} path="/view-transfer">
+            <ProtectedRoute level={["login"]}>
               <ViewTransfer />
             </ProtectedRoute>
           }
@@ -633,9 +660,9 @@ function App() {
         <Route
           path="/language"
           element={
-            <PublicRoute>
-              <Language />
-            </PublicRoute>
+            // <PublicRoute>
+            <Language />
+            // {/* </PublicRoute> */}
           }
         ></Route>
         <Route
@@ -691,7 +718,7 @@ function App() {
         <Route
           path="/uploadProfile"
           element={
-            <ProtectedRoute level={["login"]} path="/uploadProfile">
+            <ProtectedRoute level={["login"]}>
               <UploadProfile />
             </ProtectedRoute>
           }
@@ -707,7 +734,7 @@ function App() {
         <Route
           path="/add-social"
           element={
-            <ProtectedRoute level={["login"]} path="/add-social">
+            <ProtectedRoute level={["login"]}>
               <AddSocial />
             </ProtectedRoute>
           }
@@ -715,7 +742,7 @@ function App() {
         <Route
           path="/social-done"
           element={
-            <ProtectedRoute level={["login"]} path="/social-done">
+            <ProtectedRoute level={["login"]}>
               <SocialDone />
             </ProtectedRoute>
           }
@@ -723,7 +750,7 @@ function App() {
         <Route
           path="/setup-facial"
           element={
-            <ProtectedRoute level={["login"]} path="/setup-facial">
+            <ProtectedRoute level={["login"]}>
               <SetupFacial />
             </ProtectedRoute>
           }
@@ -790,7 +817,7 @@ function App() {
           path="/vai-now"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]} path="/vai-now">
+              <ProtectedRoute level={["login"]}>
                 <VaiNow />
               </ProtectedRoute>
             </ServiceRoute>
@@ -807,7 +834,7 @@ function App() {
         <Route
           path="/vai-now/show-qr"
           element={
-            <ProtectedRoute level={["login"]} path="/vai-now/show-qr">
+            <ProtectedRoute level={["login"]}>
               <ShowQR />
             </ProtectedRoute>
           }
@@ -816,7 +843,7 @@ function App() {
           path="/vai-now/list"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]} path="/vai-now/list">
+              <ProtectedRoute level={["login"]}>
                 <VaiNowList />
               </ProtectedRoute>
             </ServiceRoute>
@@ -825,7 +852,7 @@ function App() {
         <Route
           path="/vai-check/list"
           element={
-            <ProtectedRoute level={["login"]} path="/vai-check/list">
+            <ProtectedRoute level={["login"]}>
               <VaiCheckList />
             </ProtectedRoute>
           }
@@ -842,7 +869,7 @@ function App() {
         <Route
           path="/marketplace"
           element={
-            <ProtectedRoute level={["login"]} path="/marketplace">
+            <ProtectedRoute level={["login"]}>
               <Marketplace />
             </ProtectedRoute>
           }
@@ -919,7 +946,7 @@ function App() {
           path="/marketplace/invitation"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]} path="/marketplace/invitation">
+              <ProtectedRoute level={["login"]}>
                 <Invite />
               </ProtectedRoute>
             </ServiceRoute>
@@ -954,7 +981,7 @@ function App() {
         <Route
           path="/featured"
           element={
-            <ProtectedRoute level={["login"]} path4="/featured">
+            <ProtectedRoute level={["login"]}>
               <Featured />
             </ProtectedRoute>
           }
@@ -1036,7 +1063,7 @@ function App() {
         <Route
           path="/user/profile"
           element={
-            <ProtectedRoute level={["login"]} path="/user/profile">
+            <ProtectedRoute level={["login"]}>
               <Profile />
             </ProtectedRoute>
           }
@@ -1167,7 +1194,7 @@ function App() {
         <Route
           path="/dateguard/pick-group/:appointmentId"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/pick-group/:appointmentId">
               <DateGuardSelectGroup />
             </ProtectedRoute>
           }
@@ -1207,7 +1234,7 @@ function App() {
         <Route
           path="/dateguard/add-member/:groupId/select-member"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/add-member/:groupId/select-member">
               <InviteMemberToGroup />
             </ProtectedRoute>
           }
@@ -1215,7 +1242,7 @@ function App() {
         <Route
           path="/dateguard/join-member-to-group/:guardianId/:groupId"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/join-member-to-group/:guardianId/:groupId">
               <JoinMemberToGroup />
             </ProtectedRoute>
           }
@@ -1223,7 +1250,7 @@ function App() {
         <Route
           path="/dateguard/join-member-to-group/success"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/join-member-to-group/success">
               <JoinMemberToGroupSuccess />
             </ProtectedRoute>
           }
@@ -1239,7 +1266,7 @@ function App() {
         <Route
           path="/dateguard/set-time-alarm/:appointmentId/:groupId"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/set-time-alarm/:appointmentId/:groupId">
               <DateGuardSetTimeAlarm />
             </ProtectedRoute>
           }
@@ -1247,7 +1274,7 @@ function App() {
         <Route
           path="/dateguard/count-up/:appointmentId/:groupId"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/count-up/:appointmentId/:groupId">
               <DateGuardCountUp />
             </ProtectedRoute>
           }
@@ -1255,7 +1282,7 @@ function App() {
         <Route
           path="/dateguard/take-photo/:appointmentId/:groupId"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/take-photo/:appointmentId/:groupId">
               <DateGuardPhotoTake />
             </ProtectedRoute>
           }
@@ -1268,7 +1295,7 @@ function App() {
         <Route
           path="/dateguard/emergency-contacts/:alarmId/:memberId"
           element={
-            <ProtectedRoute level={["login"]}>
+            <ProtectedRoute level={["login"]} path="/dateguard/emergency-contacts/:alarmId/:memberId">
               <DateGuardEmergencyContacts />
             </ProtectedRoute>
           }
@@ -1319,7 +1346,7 @@ function App() {
           path="/varidate/invitations-list"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]} path="/varidate/invitations-list">
+              <ProtectedRoute level={["login"]}>
                 <InvitationsList />
               </ProtectedRoute>
             </ServiceRoute>
@@ -1329,7 +1356,7 @@ function App() {
           path="/varidate/past-appointments"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]} path="/varidate/past-appointments">
+              <ProtectedRoute level={["login"]}>
                 <PastInvitations />
               </ProtectedRoute>
             </ServiceRoute>
@@ -1371,7 +1398,7 @@ function App() {
           path="/varidate/upcoming-appointments"
           element={
             <ServiceRoute>
-              <ProtectedRoute level={["login"]} path="/varidate/upcoming-appointments">
+              <ProtectedRoute level={["login"]}>
                 <UpcomingAppointmentsList />
               </ProtectedRoute>
             </ServiceRoute>
@@ -1421,7 +1448,7 @@ function App() {
         <Route
           path="/varidate/reviews"
           element={
-            <ProtectedRoute level={["login"]} path="/varidate/reviews">
+            <ProtectedRoute level={["login"]}>
               <Reviews />
             </ProtectedRoute>
           }
@@ -1447,7 +1474,7 @@ function App() {
         <Route
           path="/service-business/add-staff"
           element={
-            <ProtectedRoute level={["login"]} path="/service-business/add-staff">
+            <ProtectedRoute level={["login"]}>
               <AddStaff />
             </ProtectedRoute>
           }
@@ -1471,7 +1498,7 @@ function App() {
         <Route
           path="/service-business/user-list"
           element={
-            <ProtectedRoute level={["login"]} path="/service-business/user-list">
+            <ProtectedRoute level={["login"]}>
               <UserList />
             </ProtectedRoute>
           }
@@ -1479,7 +1506,7 @@ function App() {
         <Route
           path="/notifications"
           element={
-            <ProtectedRoute level={["login"]} path="/notifications">
+            <ProtectedRoute level={["login"]}>
               <Notifications />
             </ProtectedRoute>
           }
@@ -1487,7 +1514,7 @@ function App() {
         <Route
           path="/chat-log"
           element={
-            <ProtectedRoute level={["login"]} path="/chat-log">
+            <ProtectedRoute level={["login"]}>
               <ChatLogs />
             </ProtectedRoute>
           }
@@ -1504,7 +1531,7 @@ function App() {
         <Route
           path="/location-requests"
           element={
-            <ProtectedRoute level={["login"]} path="/location-requests">
+            <ProtectedRoute level={["login"]}>
               <LocationRequests />
             </ProtectedRoute>
           }
@@ -1562,7 +1589,7 @@ function App() {
         <Route
           path="/settings"
           element={
-            <ProtectedRoute level={["login"]} path="/settings">
+            <ProtectedRoute level={["login"]}>
               <Settings />
             </ProtectedRoute>
           }
@@ -1571,7 +1598,7 @@ function App() {
         <Route
           path="/settings/manage-profile"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/manage-profile">
+            <ProtectedRoute level={["login"]}>
               <ManageProfile />
             </ProtectedRoute>
           }
@@ -1580,7 +1607,7 @@ function App() {
         <Route
           path="/settings/push-notifications"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/push-notifications">
+            <ProtectedRoute level={["login"]}>
               <PushNotifications />
             </ProtectedRoute>
           }
@@ -1589,7 +1616,7 @@ function App() {
         <Route
           path="/settings/contracts"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/contracts">
+            <ProtectedRoute level={["login"]}>
               <Contracts />
             </ProtectedRoute>
           }
@@ -1598,7 +1625,7 @@ function App() {
         <Route
           path="/settings/rates-services"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/rates-services">
+            <ProtectedRoute level={["login"]}>
               <RatesAndServices />
             </ProtectedRoute>
           }
@@ -1607,7 +1634,7 @@ function App() {
         <Route
           path="/settings/permissions"
           element={
-            <ProtectedRoute level={["login"]} path="/permissions">
+            <ProtectedRoute level={["login"]}>
               <Permissions />
             </ProtectedRoute>
           }
@@ -1616,7 +1643,7 @@ function App() {
         <Route
           path="/settings/manage-vai"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/manage-vai">
+            <ProtectedRoute level={["login"]}>
               <ManageVAI />
             </ProtectedRoute>
           }
@@ -1625,7 +1652,7 @@ function App() {
         <Route
           path="/settings/manage-membership"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/manage-membership">
+            <ProtectedRoute level={["login"]}>
               <ManageMembership />
             </ProtectedRoute>
           }
@@ -1634,7 +1661,7 @@ function App() {
         <Route
           path="/profile-permissions"
           element={
-            <ProtectedRoute level={["login"]} path="/profile-permissions">
+            <ProtectedRoute level={["login"]}>
               <ProfilePermissions />
             </ProtectedRoute>
           }
@@ -1642,7 +1669,7 @@ function App() {
         <Route
           path="/kyc-membership-history"
           element={
-            <ProtectedRoute level={["login"]} path="/kyc-membership-history">
+            <ProtectedRoute level={["login"]}>
               <KycMembershipHistory />
             </ProtectedRoute>
           }
@@ -1650,7 +1677,7 @@ function App() {
         <Route
           path="/vairify-membership-history"
           element={
-            <ProtectedRoute level={["login"]} path="/vairify-membership-history">
+            <ProtectedRoute level={["login"]}>
               <VairifyMembershipHistory />
             </ProtectedRoute>
           }
@@ -1658,7 +1685,7 @@ function App() {
         <Route
           path="/vairify-membership-plans"
           element={
-            <ProtectedRoute level={["login"]} path="/vairify-membership-plans"  >
+            <ProtectedRoute level={["login"]}>
               <VairifyMembershipPlans />
             </ProtectedRoute>
           }
@@ -1700,7 +1727,7 @@ function App() {
         <Route
           path="/settings/user-payment-history"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/user-payment-history">
+            <ProtectedRoute level={["login"]}>
               <PaymentHistory />
             </ProtectedRoute>
           }
@@ -1726,7 +1753,7 @@ function App() {
         <Route
           path="/settings/date-history"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/date-history">
+            <ProtectedRoute level={["login"]}>
               <DateHistory />
             </ProtectedRoute>
           }
@@ -1734,7 +1761,7 @@ function App() {
         <Route
           path="/settings/about-me"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/about-me">
+            <ProtectedRoute level={["login"]}>
               <AboutMe />
             </ProtectedRoute>
           }
@@ -1742,7 +1769,7 @@ function App() {
         <Route
           path="/settings/faviourite-locations"
           element={
-            <ProtectedRoute level={["login"]} path="/settings/faviourite-locations">
+            <ProtectedRoute level={["login"]}>
               <MyFavLocations />
             </ProtectedRoute>
           }
@@ -1750,7 +1777,7 @@ function App() {
         <Route
           path="/disclosure"
           element={
-            <ProtectedRoute level={["login"]} path="/disclosure">
+            <ProtectedRoute level={["login"]}>
               <Disclosure />
             </ProtectedRoute>
           }
@@ -1758,7 +1785,7 @@ function App() {
         <Route
           path="/social-links"
           element={
-            <ProtectedRoute level={["login"]} path="/social-links">
+            <ProtectedRoute level={["login"]}>
               <SocialLinks />
             </ProtectedRoute>
           }
@@ -1766,19 +1793,19 @@ function App() {
 
         {/* public routes */}
         <Route path="/privacy-policy" element={
-          <ProtectedRoute level={["login"]} path="/privacy-policy">
+          <ProtectedRoute level={["login"]}>
             <PrivacyPolicy />
           </ProtectedRoute>
         }></Route>
         <Route path="/disclosure" element={
-          <ProtectedRoute level={["login"]} path="/disclosure">
+          <ProtectedRoute level={["login"]}>
             <Disclosure />
           </ProtectedRoute>
         }></Route>
         <Route
           path="/terms-and-conditions"
           element={
-            <ProtectedRoute level={["login"]} path="/terms-and-conditions">
+            <ProtectedRoute level={["login"]}>
               <TermsCondition />
             </ProtectedRoute>
           }

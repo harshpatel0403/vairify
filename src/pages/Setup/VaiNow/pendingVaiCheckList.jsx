@@ -301,7 +301,8 @@ const VaiCheckList = () => {
                                   //   appointment?.companionStatus !== "Scheduled"
                                   // }
                                   onClick={() => accpetAppt(appointment)}
-                                  className="w-full font-bold text-[16px] px-7 py-[3px]  rounded-[25px] border-white bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold change-font-family"
+                                  // className="w-full font-bold text-[16px] px-7 py-[3px]  rounded-[25px] border-white bg-gradient-to-b from-[#0CA36C] to-[#08FA5A] text-[#01195C] font-bold change-font-family"
+                                  className="w-full font-roboto font-bold text-[16px] text-white px-7 py-[6px] rounded-[8px] bg-[#008F34]"
                                 >
                                   Accept
                                 </button>
@@ -316,7 +317,7 @@ const VaiCheckList = () => {
                                   //   appointment?.companionStatus !== "Scheduled"
                                   // }
                                   onClick={() => rejectAppt(appointment?._id)}
-                                  className="w-full font-roboto font-bold text-[16px] text-white px-7 py-[3px]  rounded-[25px] border-white bg-[#DB3002]"
+                                  className="w-full font-roboto font-bold text-[16px] text-white py-[6px] rounded-[8px] border-white bg-[#E43530]"
                                 >
                                   Cancel
                                 </button>

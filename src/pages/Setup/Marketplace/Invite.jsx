@@ -9,9 +9,11 @@ import {
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../../../components/PageTitle";
+import { useTranslation } from "react-i18next";
 
 export default function Invite() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const UserDetails = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const myInvitation = useSelector((state) => state?.Market?.myInvitation);
@@ -41,11 +43,10 @@ export default function Invite() {
     return !isCancelled && isAcceptedOrPending;
   });
 
-
   return (
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Invitations"} />
+        <PageTitle title={t("invite.pageTitle")} />
       </div>
       {filteredInvites?.length ? (
         <div>
@@ -92,7 +93,6 @@ export default function Invite() {
                   //   } flex flex-col rounded-2xl px-3 py-1.5 border-2 border-white`}
                   className="w-full p-[16px] bg-[#919EAB33] rounded-[16px]"
                 >
-
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex gap-[8px] flex-grow">
                       <div>
@@ -118,65 +118,107 @@ export default function Invite() {
                         )}
                       </div>
                       <div>
-                        <div className="sm:text-base text-sm text-white font-medium">{item?.userId?.name}</div>
-                        <div className="sm:text-sm text-xs font-normal text-[#919EAB] uppercase">{item?.userId?.vaiID}</div>
+                        <div className="sm:text-base text-sm text-white font-medium">
+                          {item?.userId?.name}
+                        </div>
+                        <div className="sm:text-sm text-xs font-normal text-[#919EAB] uppercase">
+                          {item?.userId?.vaiID}
+                        </div>
                         <div className="flex gap-[4px]">
-                          <p className="sm:text-base text-sm text-white font-semibold">{item?.userId?.averageRating}</p>
+                          <p className="sm:text-base text-sm text-white font-semibold">
+                            {item?.userId?.averageRating}
+                          </p>
                           <img src="/images/home/star.svg" alt="rating" />
                         </div>
                       </div>
                     </div>
                     <div>
                       <div className="text-white opacity-[0.48] font-normal text-sm">
-                        Price Offered
+                        {t("invite.priceOffered")}
                       </div>
-                      <div className="font-semibold text-white text-[28px] text-right"> ${item.priceoffered}</div>
+                      <div className="font-semibold text-white text-[28px] text-right">
+                        {" "}
+                        ${item.priceoffered}
+                      </div>
                     </div>
                   </div>
                   <div className="mt-[16px]">
                     <div className="flex justify-between gap-2">
-                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Request Appt/time</div>
-                      <p className="text-white sm:text-sm text-xs font-medium text-right">{moment(item.createdAt).format("DD/MM/YY")}{" "} {item?.invitationtime.from} to {item?.invitationtime.to}</p>
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                        {t("invite.requestTime")}
+                      </div>
+                      <p className="text-white sm:text-sm text-xs font-medium text-right">
+                        {moment(item.createdAt).format("DD/MM/YY")}{" "}
+                        {item?.invitationtime.from} to {item?.invitationtime.to}
+                      </p>
                     </div>
                     <div className="flex justify-between gap-2 mt-[2px]">
-                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Requested Service/time</div>
-                      <p className="text-white sm:text-sm text-xs font-medium">{hours} hr {minutes} m</p>
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                        {" "}
+                        {t("invite.requestedServiceTime")}
+                      </div>
+                      <p className="text-white sm:text-sm text-xs font-medium">
+                        {hours} hr {minutes} m
+                      </p>
                     </div>
                     <div className="flex justify-between gap-2 mt-[2px]">
-                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Requested Location</div>
-                      <p className="text-white sm:text-sm text-xs font-medium"> {item.venue}</p>
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                        {t("invite.requestedLocation")}
+                      </div>
+                      <p className="text-white sm:text-sm text-xs font-medium">
+                        {" "}
+                        {item.venue}
+                      </p>
                     </div>
                     <div className="flex justify-between gap-2 mt-[2px]">
-                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Message</div>
-                      <p className="text-white sm:text-sm text-xs font-medium text-right"> {item.specialty}</p>
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                        {t("invite.message")}
+                      </div>
+                      <p className="text-white sm:text-sm text-xs font-medium text-right">
+                        {" "}
+                        {item.specialty}
+                      </p>
                     </div>
                     <div className="flex justify-between gap-2 mt-[2px]">
-                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">Status</div>
-                      <p className={` sm:text-sm text-xs font-medium ${item.status === "pending" ? "text-[#0085B9]" : "text-[#008F34]"}`}>
-                        {item.status === "pending" ? "Pending" : "Accepted"}
+                      <div className="text-white opacity-[0.6] font-normal sm:text-sm text-xs">
+                        {t("invite.status")}
+                      </div>
+                      <p
+                        className={` sm:text-sm text-xs font-medium ${
+                          item.status === "pending"
+                            ? "text-[#0085B9]"
+                            : "text-[#008F34]"
+                        }`}
+                      >
+                        {item.status === "pending"
+                          ? t("invite.pending")
+                          : t("invite.accepted")}
                       </p>
                     </div>
                   </div>
 
                   <div className="mt-[16px] flex gap-[8px]">
                     <Button
-                      text={'View Profile'}
+                      text={t("invite.viewProfile")}
                       onClick={() =>
                         navigate("/user/profile", {
                           state: { item, market: true },
-                        })}
-                      size={'36px'}
-                      className={'py-[4px]'}
+                        })
+                      }
+                      size={"36px"}
+                      className={"py-[4px]"}
                     />
                     <Button
-                      text={'View Invitation'}
+                      text={t("invite.viewInvitation")}
                       onClick={() =>
                         navigate("/marketplace/active/invitation", {
                           state: item,
                         })
                       }
-                      size={'36px'}
-                      className={'py-[4px] !bg-transparent secondary-btn border-2 border-[#919EAB33] hover:!bg-[#919EAB33]'}
+                      size={"36px"}
+                      className={
+                        "py-[4px] !bg-transparent secondary-btn border-2 border-[#919EAB33] hover:!bg-[#919EAB33]"
+                      }
                     />
                     {/* <div className="w-[103px]">
                       <Button
@@ -199,7 +241,7 @@ export default function Invite() {
           <div className="image-not">
             <img src="/images/home/result-not-found.svg" alt="not found" />
           </div>
-          Result not found
+          {t("invite.resultNotFound")}
         </div>
       )}
     </div>

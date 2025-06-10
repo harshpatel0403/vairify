@@ -24,14 +24,19 @@ export default function ESignAndSend() {
     try {
       setLoading(true);
       if (appointment?.from === "vai-check" && !appointment?._id) {
-        await VaridateService.createAppointment({
+        const response = await VaridateService.createAppointment({
           data: JSON.stringify({
             ...appointment,
             clientId: appointment?.clientId?._id,
             companionId: appointment?.companionId?._id,
           }),
         });
-        return navigate('/varidate/last-mile-instruction', { state: appointment })
+
+        const updatedAppointment = {
+          ...appointment,
+          _id: response?._id,
+        };
+        return navigate('/varidate/last-mile-instruction', { state: updatedAppointment })
         // return navigate("/vai-check/list");
       } else if (appointment?.from === "vai-check" && appointment?._id) {
         await VaridateService.updateAppointment(

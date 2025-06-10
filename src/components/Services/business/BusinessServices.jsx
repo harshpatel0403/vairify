@@ -5,6 +5,7 @@ import SelectBox from "../../SelectBox";
 import InputText from "../../InputText";
 import { useEffect } from "react";
 import PageTitle from "../../PageTitle";
+import { toast } from "react-toastify";
 
 export default function BusinessRateServices({ UserData, EditData }) {
   const currencyOptions = ["Currency", "USD", "EUR", "INR", "FDP"];
@@ -39,6 +40,10 @@ export default function BusinessRateServices({ UserData, EditData }) {
   };
 
   const navigateToBusinessServices = () => {
+    if (serviceFields[0].rate == "") {
+      toast.error("Please add service rates");
+      return;
+    }
     const body = {
       userId: UserData?._id,
       user_type: UserData?.user_type,
@@ -118,7 +123,7 @@ export default function BusinessRateServices({ UserData, EditData }) {
       <div>
         <div className="flex justify-between mt-[24px]">
           <label className="text-xl text-white font-medium">
-            rates
+            rates <span className="text-red-500">*</span>
           </label>
           <Button
             text="+ Add"

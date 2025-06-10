@@ -9,7 +9,7 @@ import SelectBox_ from "../../components/SelectBox_";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { HandleCountry, HandleSaveLocation } from "../../redux/action/Auth";
+import { HandleCountry, HandleSaveLocation, HandleUser } from "../../redux/action/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -108,6 +108,9 @@ export default function NewPost() {
 
   const [City, setCity] = useState([]);
 
+  useEffect(() => {
+    dispatch(HandleUser(UserDetails?._id))
+  }, [])
   const times = [
     "01:00",
     "02:00",

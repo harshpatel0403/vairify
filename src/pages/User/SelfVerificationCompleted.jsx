@@ -18,6 +18,8 @@ const SelfVerificationCompleted = () => {
     };
 
     const HandleOnClick = () => {
+        localStorage.removeItem("kycStatus");
+        localStorage.removeItem("kycCheckCount");
         navigate('/setup');
     };
 

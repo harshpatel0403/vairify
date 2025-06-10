@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Button from "../../../components/Button";
 import Header from "../../../components/Header/Header";
 import PageTitle from "../../../components/PageTitle";
 const DateGuardSetup = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handelEditCodes = () => {
@@ -20,7 +22,7 @@ const DateGuardSetup = () => {
 
     <div className="container">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Date Guard"} />
+        <PageTitle title={t("dateguardsetup.pageTitle")} />
       </div>
       <div className="flex items-center justify-center">
         <img src="/images/setup/dateguard.svg" alt="guard" />
@@ -29,19 +31,19 @@ const DateGuardSetup = () => {
         <div className="sm:mt-[24px] mt-[16px]">
           <Button
             onClick={handleActivate}
-            text={"Activate"}
+            text={t("dateguardsetup.activateButton")}
           />
         </div>
         <div className="sm:mt-[24px] mt-[16px]">
           <Button
             onClick={handelGroups}
-            text={"Edit Groups"}
+            text={t("dateguardsetup.editGroupsButton")}
           />
         </div>
         <div className="sm:mt-[24px] mt-[16px]">
           <Button
             onClick={handelEditCodes}
-            text={"Edit Codes"}
+            text={t("dateguardsetup.editCodesButton")}
           />
         </div>
       </div>
