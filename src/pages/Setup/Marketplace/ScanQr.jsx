@@ -111,9 +111,8 @@ export default function SearchScanQR() {
         );
         var Qrtext = codeResult?.getText();
         // const userDetails = await VaridateService.fetchMarketPlaceUserDetails(Qrtext)
-        toast.error(Qrtext);
-        Qrtext = Qrtext.split("/");
-        Qrtext = [Qrtext.length - 1];
+        Qrtext = Qrtext.split("/").pop();
+        // Qrtext = [Qrtext.length - 1];
         dispatch(HandleSearchWithVaiId(Qrtext))
           .then((res) => {
             if (res?.payload?.result?.length) {
