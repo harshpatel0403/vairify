@@ -151,14 +151,14 @@ export default function ProtectedRoute(props) {
           navigate("/get-vai");
         }
       }
-      //  else if (!UserDetails?.isKycCompleted) {
-      // if (!props?.path2) {
-      //   navigate("/vai");
-      // }
-      // if (FACE_VERIFICATION) {
-      //   navigate('/setup')
-      // }
-      // } 
+      else if (!UserDetails?.isKycCompleted) {
+        if (!props?.path2) {
+          navigate("/vai");
+        }
+        // if (FACE_VERIFICATION) {
+        //   navigate('/setup')
+        // }
+      }
       else if (props?.path3) {
         navigate("/self-verification-completed");
       } else {

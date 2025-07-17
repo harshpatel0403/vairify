@@ -196,11 +196,12 @@ const Kyc = () => {
 
         const response = await dispatch(isKycCompletedStatus(data));
         const livenessCheckScore = response?.kycStatus?.result?.breakdown?.authenticityAnalysis?.breakdown?.livenessCheckScore
-        localStorage.setItem("kycStatus", response?.kycStatus?.status);
         if (typeof livenessCheckScore === "number" && livenessCheckScore < 30) {
+          localStorage.setItem("kycStatus", "failed");
           throw new Error("Liveness check score too low");
         }
 
+        localStorage.setItem("kycStatus", response?.kycStatus?.status);
         if (response?.kycStatus?.status === "complete") {
           // if (response?.kycStatus?.result?.outcome === "clear") {
           return;
@@ -266,6 +267,7 @@ const Kyc = () => {
       navigate('/self-verification-completed')
     } catch (error) {
       console.error("Error in KYC process:", error);
+      localStorage.setItem('kycStatus', "failed")
       toast.error(
         `Error in verification process: ${error.message || error.response?.data
         }. Please click 'Restart Verification' to try again.`,
@@ -276,7 +278,7 @@ const Kyc = () => {
         .getElementById("verification-button")
         ?.scrollIntoView({ behavior: "smooth" });
     } finally {
-      let kycCheckCount = 0;
+      let kycCheckCount = parseInt(localStorage.getItem("kycCheckCount") || "0", 10);
       localStorage.setItem("kycCheckCount", kycCheckCount + 1);
       //   dispatch(HandleUpdateUser(UserData?._id));
       setIsLoading(false);

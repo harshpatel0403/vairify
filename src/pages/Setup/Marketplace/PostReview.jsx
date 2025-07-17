@@ -31,10 +31,10 @@ export default function PostReview() {
 
   const formattedTimeRange =
     state?.time?.from && state?.time?.to
-      ? `${moment.utc(state?.time?.from)
+      ? `${moment.utc(state?.time?.from, "YYYY-MM-DD hh:mm A")
         .tz(userTimezone)
         .format("hh:mm A")} - 
-           ${moment.utc(state?.time?.to)
+           ${moment.utc(state?.time?.to, "YYYY-MM-DD hh:mm A")
         .tz(userTimezone)
         .format("hh:mm A")}`
       : "Invalid Time Range";
@@ -188,7 +188,7 @@ export default function PostReview() {
             <div className="w-full flex items-center justify-between bg-[#919EAB29] rounded-[16px] p-[16px] my-[24px]">
               <div>
                 <h3 className="text-[16px] font-medium text-[#212B36]">
-                   {t("postReview.credits")}
+                  {t("postReview.credits")}
                 </h3>
               </div>
               <h3 className="text-[16px] font-medium text-end text-[#212B36]">

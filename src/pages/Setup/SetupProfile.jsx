@@ -124,11 +124,11 @@ const SetupProfile = () => {
       <div className="container">
         {/* <Header /> */}
         <div className="sm:py-[48px] py-[24px]">
-          <div className="mb-2 flex items-center justify-center">
+          <div className="mb-2 flex items-center justify-center flex-wrap text-center">
             <span className="text-white sm:text-[28px] text-[24px] font-semibold">
               {t("setupprofile.title")}
             </span>
-            <span className="text-[#FF7913] ml-1 sm:text-[28px] text-[24px] font-semibold">
+            <span className="text-[#FF7913] ml-1 sm:text-[28px] text-[24px] font-semibold break-words max-w-full text-center">
               {Object.keys(UserData).length > 0 && UserData?.name}
             </span>
           </div>

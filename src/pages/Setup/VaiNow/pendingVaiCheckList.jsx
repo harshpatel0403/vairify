@@ -263,37 +263,38 @@ const VaiCheckList = () => {
                             {statusText}
                           </div>
                         </div>
-                        <div className="flex gap-2 sm:mt-[24px] mt-[16px]">
-                          <div className="w-[100%] text-center">
-                            <Button
-                              onClick={() =>
-                                navigate("/user/profile", {
-                                  state: {
-                                    item: {
-                                      userId:
-                                        appointment?.[
-                                        userType === "client-hobbyist"
-                                          ? "companionId"
-                                          : "clientId"
-                                        ],
-                                    },
-                                    market: true,
-                                  },
-                                })
-                              }
-                              text={" Profile"}
-                              size={'36px'}
-                              className={'py-[4px]'}
-                            />
-                            {/* View Profile */}
-                            {/* </button> */}
-                          </div>
+                        <div className="sm:mt-[24px] mt-[16px]">
+                          <div className="flex gap-2 mb-2">
 
-                          <div className="w-[100%] text-center gap-3 flex flex-wrap justify-center">
-                            {userType !== "client-hobbyist" &&
-                              appointment?.companionStatus !== "Scheduled" &&
-                              appointment?.companionStatus !== "Signed" &&
-                              appointment?.companionStatus !== "Rejected" && (
+                            <div className="w-1/2 text-center">
+                              <Button
+                                onClick={() =>
+                                  navigate("/user/profile", {
+                                    state: {
+                                      item: {
+                                        userId:
+                                          appointment?.[
+                                          userType === "client-hobbyist"
+                                            ? "companionId"
+                                            : "clientId"
+                                          ],
+                                      },
+                                      market: true,
+                                    },
+                                  })
+                                }
+                                text={" Profile"}
+                                size={'36px'}
+                                className={'py-[4px]'}
+                              />
+                              {/* View Profile */}
+                              {/* </button> */}
+                            </div>
+                            <div className="w-1/2 text-center">
+                              {userType !== "client-hobbyist" &&
+                                appointment?.companionStatus !== "Scheduled" &&
+                                appointment?.companionStatus !== "Signed" &&
+                                appointment?.companionStatus !== "Rejected" ? (
                                 <button
                                   // disabled={
                                   //   appointment?.companionStatus !== "Accepted" &&
@@ -306,10 +307,9 @@ const VaiCheckList = () => {
                                 >
                                   Accept
                                 </button>
-                              )}
-                            {userType !== "client-hobbyist" &&
-                              appointment?.companionStatus !== "Scheduled" &&
-                              appointment?.companionStatus !== "Rejected" && (
+                              ) : userType !== "client-hobbyist" &&
+                                appointment?.companionStatus !== "Scheduled" &&
+                                appointment?.companionStatus !== "Rejected" ? (
                                 <button
                                   // disabled={
                                   //   appointment?.companionStatus !== "Accepted" &&
@@ -318,6 +318,27 @@ const VaiCheckList = () => {
                                   // }
                                   onClick={() => rejectAppt(appointment?._id)}
                                   className="w-full font-roboto font-bold text-[16px] text-white py-[6px] rounded-[8px] border-white bg-[#E43530]"
+                                >
+                                  Cancel
+                                </button>
+                              ) : null}
+                            </div>
+                          </div>
+
+                          <div className="w-[100%] text-center gap-3 flex flex-wrap justify-center">
+
+                            {userType !== "client-hobbyist" &&
+                              appointment?.companionStatus !== "Scheduled" &&
+                              appointment?.companionStatus !== "Signed" &&
+                              appointment?.companionStatus !== "Rejected" && (
+                                <button
+                                  // disabled={
+                                  //   appointment?.companionStatus !== "Accepted" &&
+                                  //   appointment?.companionStatus !== "Signed" &&
+                                  //   appointment?.companionStatus !== "Scheduled"
+                                  // }
+                                  onClick={() => rejectAppt(appointment?._id)}
+                                  className="w-[100%] font-roboto font-bold text-[16px] text-white py-[6px] rounded-[8px] border-white bg-[#E43530]"
                                 >
                                   Cancel
                                 </button>

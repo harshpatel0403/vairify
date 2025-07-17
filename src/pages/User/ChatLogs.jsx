@@ -123,8 +123,7 @@ const ChatLogs = () => {
   }
 
 
-  const chatsGroupData = groupItemsByDay(ChatsData || [])
-
+  const chatsGroupData = groupItemsByDay(ChatsData?.filter(item => item?.receiverId && item?.senderId && item?.messages?.length > 0) || [])
 
   return (
     <div className="container mb-[48px]">
@@ -136,7 +135,7 @@ const ChatLogs = () => {
           <>
             <p className="text-white text-[16px] font-medium mb-[8px]">{item}</p>
             {chatsGroupData[item]
-              ?.filter(chat => chat?.receiverId && typeof chat.receiverId === 'object' && chat?.messages?.length > 0)
+              // ?.filter(chat => chat?.receiverId && typeof chat.receiverId === 'object' && chat?.messages?.length > 0)
               ?.map(items => {
 
                 return (

@@ -12,10 +12,12 @@ import { HandleSearchWithVaiId } from "../../../redux/action/MarketplaceSearch";
 import Loading from "../../../components/Loading/Index";
 import PageTitle from "../../../components/PageTitle";
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 const videoConstraints = {
   width: 400,
   height: 400,
-  facingMode: "user",
+  facingMode: isMobile ? { exact: "environment" } : "user",
 };
 
 export default function SearchScanQR() {
@@ -259,7 +261,7 @@ export default function SearchScanQR() {
   return (
     <div className="container mb-[48px]">
       <div className="md:mb-0 sm:mb-[30px] mb-[16px]">
-        <PageTitle title={"Scan Vai Now QR"} isSmall={true}/>
+        <PageTitle title={"Scan Vai Now QR"} isSmall={true} />
       </div>
       <div className="w-full mx-auto flex flex-col justify-center items-center">
         <div className="w-full mx-auto flex items-center justify-center mb-[48px]">

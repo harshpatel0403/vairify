@@ -671,7 +671,8 @@ export default function MyVarify() {
                     <img src="/images/home/profile.svg" alt="profile" />
                     Profile
                   </button>
-                  <button className="bg-transparent p-[7px] rounded-[8px] flex justify-center items-center gap-2 text-white w-full border border-[#919EAB33] text-sm font-medium">
+                  {console.log(item)}
+                  <button className="bg-transparent p-[7px] rounded-[8px] flex justify-center items-center gap-2 text-white w-full border border-[#919EAB33] text-sm font-medium" onClick={() => navigate(`/chat/${item?._id}`)}>
                     <img src="/images/home/comment.svg" alt="profile" />
                     Chat
                   </button>

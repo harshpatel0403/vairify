@@ -159,7 +159,7 @@ function DateGuardEmergencyContacts(props) {
     <div className="container h-full">
       <Tabbar color="#DB3002" tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === 'chat' &&
-        <div className="w-full h-[calc(100vh-142px)] mt-[2rem] flex flex-col justify-between main-container shadow-[0px_5px_10px_rgba(0.5,0.5,0.5,0.1)]">
+        <div className="w-full h-[calc(100vh-200px)] mt-[2rem] flex flex-col justify-between main-container shadow-[0px_5px_10px_rgba(0.5,0.5,0.5,0.1)]">
           <div className="messages-container flex flex-col gap-2 max-h-[92%] overflow-scroll">
             <div className="w-full">
               <div className="emergenct-contact-card">
@@ -290,7 +290,7 @@ function DateGuardEmergencyContacts(props) {
         (loading ? (
           <div className="text-black h-[100vh] flex items-center justify-center w-full"><Loading /></div>
         ) : (
-          <div className="w-full mt-[2rem] h-[calc(100vh-142px)] px-4 shadow-[0px_5px_10px_rgba(0.5,0.5,0.5,0.1)] main-container ">
+          <div className="w-full mt-[2rem] h-[calc(100vh-200px)] px-4 shadow-[0px_5px_10px_rgba(0.5,0.5,0.5,0.1)] main-container ">
             <div className="w-full">
               <div className="emergenct-contact-card">
                 <div className="emergency-contact-data">
@@ -492,7 +492,7 @@ function DateGuardEmergencyContacts(props) {
       )}
       {alarmDetails?.location &&
         activeTab === 'location' &&
-        <div className={`w-full h-[calc(100vh-142px)] mt-[2rem] flex flex-col relative justify-between main-container shadow-[0px_5px_10px_rgba(0.5,0.5,0.5,0.1)]`}>
+        <div className={`w-full h-[80vh] mt-[2rem] flex flex-col relative justify-between main-container shadow-[0px_5px_10px_rgba(0.5,0.5,0.5,0.1)]`}>
           <div className="w-full">
             <div className="emergenct-contact-card">
               <div className="emergency-contact-data">

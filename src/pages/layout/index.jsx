@@ -119,7 +119,7 @@ export default function Layout({ onClick, appComponent }) {
         <div className="datting-layout mx-auto">
           <div className="h-full w-full">
             {/* Main Content */}
-            <div className="w-full h-full">
+            <div className="w-full md:h-full">
               {appComponent}
             </div>
 

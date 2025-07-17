@@ -24,7 +24,7 @@ function Button({
     >
       {showFavIcon && <img src={text == "Favorited" ? 'images/home/like.svg' : 'images/home/like_outline.svg'} className="h-4 w-4 absolute top-[11px] left-[20px]" />
       }
-      <span className={textClass}>{text}</span>
+      <span className={`${textClass} whitespace-nowrap`}>{text}</span>
     </button >
   );
 }

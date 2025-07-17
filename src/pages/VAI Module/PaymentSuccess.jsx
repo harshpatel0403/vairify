@@ -10,7 +10,8 @@ const PaymentSuccess = () => {
   const UserData = useSelector((state) => state?.Auth?.Auth?.data?.user);
   const HandleOnClick = () => {
     console.log(UserData);
-    navigate('/setup');
+    // navigate('/setup');
+    navigate('/vai');
 
   };
   return (

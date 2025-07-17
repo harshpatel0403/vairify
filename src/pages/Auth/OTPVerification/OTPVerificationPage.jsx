@@ -93,8 +93,8 @@ export default function OTPVerificationPage() {
                     if (usr?.isKycCompleted) {
                       navigate("/featured");
                     } else {
-                      // navigate("/vai");
-                      navigate('/setup')
+                      navigate("/vai");
+                      // navigate('/setup')
                     }
                   } else {
                     navigate("/get-vai")
